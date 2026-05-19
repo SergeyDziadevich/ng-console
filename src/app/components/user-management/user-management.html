@@ -1,4 +1,6 @@
 <div class="overflow-x-auto rounded-lg shadow">
+  {{ (msg$ | async)?.msg }}
+
   <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
     <thead class="bg-gray-50">
       <tr>
@@ -10,6 +12,9 @@
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-100">
+      <ng-container>
+        {{ users$ | async }}
+      </ng-container>
       @for (user of users(); track user.id) {
         <tr class="hover:bg-gray-50 transition-colors">
           <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{ user.id }}</td>
