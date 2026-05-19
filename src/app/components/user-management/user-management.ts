@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user-service';
 import { User } from '../../models/user.model';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -6,7 +7,7 @@ import { UsersTable } from './users-table/users-table';
 
 @Component({
   selector: 'app-user-management',
-  imports: [UsersTable],
+  imports: [UsersTable, RouterOutlet, RouterLink],
   templateUrl: './user-management.html',
   styleUrl: './user-management.css',
 })

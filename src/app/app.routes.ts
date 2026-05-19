@@ -9,6 +9,13 @@ export const routes: Routes = [
     path: 'user-management',
     loadComponent: () =>
       import('./components/user-management/user-management').then((m) => m.UserManagement),
+    children: [
+      {
+        path: 'add-user',
+        loadComponent: () =>
+          import('./components/user-management/add-user/add-user').then((m) => m.AddUser),
+      },
+    ],
   },
   {
     path: 'notifications',
