@@ -1,0 +1,61 @@
+<header class="w-full h-16 bg-gray-900 border-b border-gray-700 shadow-sm flex items-center justify-between px-6 z-50">
+
+  <!-- Left: Logo + App Title -->
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </div>
+    <span class="text-xl font-bold text-white tracking-tight">UserHub</span>
+  </div>
+
+  <!-- Right: User info + Dropdown -->
+  <div class="relative flex items-center gap-3">
+
+    <!-- User name & email -->
+    <div class="hidden sm:flex flex-col items-end leading-tight">
+      <span class="text-sm font-semibold text-gray-100">{{ currentUser.name }}</span>
+      <span class="text-xs text-gray-400">{{ currentUser.email }}</span>
+    </div>
+
+    <!-- Avatar button -->
+    <button
+      (click)="toggleDropdown()"
+      class="w-9 h-9 rounded-full bg-indigo-500 text-white text-sm font-bold flex items-center justify-center cursor-pointer hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      {{ currentUser.avatarInitials }}
+    </button>
+
+    <!-- Dropdown -->
+    @if (dropdownOpen()) {
+      <div class="fixed inset-0 z-40" (click)="closeDropdown()"></div>
+
+      <div class="absolute right-0 top-12 w-52 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden">
+
+        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
+          <p class="text-sm font-semibold text-gray-800">{{ currentUser.name }}</p>
+          <p class="text-xs text-gray-500 truncate">{{ currentUser.email }}</p>
+        </div>
+
+        <ul class="py-1">
+          @for (item of menuItems; track item.label) {
+            <li>
+              <button
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors cursor-pointer"
+                (click)="closeDropdown()">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon" />
+                </svg>
+                {{ item.label }}
+              </button>
+            </li>
+          }
+        </ul>
+
+      </div>
+    }
+  </div>
+
+</header>
+
