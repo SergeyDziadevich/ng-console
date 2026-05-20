@@ -47,6 +47,7 @@ export class AddUser {
       setTimeout(() => {
         this.showToast.set(false);
         this.close();
+        this.userService.usersResource.reload();
       }, 2000);
     });
   }
