@@ -26,7 +26,7 @@
             Edit
           </button>
           <button
-            (click)="deleteUser(user)"
+            (click)="confirmDelete(user)"
             class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors">
             Delete
           </button>
@@ -39,3 +39,36 @@
     }
   </tbody>
 </table>
+
+@if (userToDelete()) {
+  <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-semibold text-gray-800">Delete User</h3>
+          <p class="text-sm text-gray-500 mt-0.5">
+            Are you sure you want to delete <span class="font-medium text-gray-700">{{ userToDelete()!.name || userToDelete()!.email }}</span>? This action cannot be undone.
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button
+          (click)="cancelDelete()"
+          class="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 transition-all">
+          Cancel
+        </button>
+        <button
+          (click)="deleteUser()"
+          class="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}
+

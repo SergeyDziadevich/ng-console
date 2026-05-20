@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { User } from '../../../models/user.model';
 
 @Component({
@@ -13,11 +13,25 @@ export class UsersTable {
   edit = output<User>();
   delete = output<User>();
 
+  userToDelete = signal<User | null>(null);
+
   editUser(user: User) {
     this.edit.emit(user);
   }
 
-  deleteUser(user: User) {
-    this.delete.emit(user);
+  confirmDelete(user: User) {
+    this.userToDelete.set(user);
+  }
+
+  cancelDelete() {
+    this.userToDelete.set(null);
+  }
+
+  deleteUser() {
+    const user = this.userToDelete();
+    if (user) {
+      this.delete.emit(user);
+      this.userToDelete.set(null);
+    }
   }
 }

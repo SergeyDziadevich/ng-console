@@ -3,6 +3,13 @@ import { mockUsers } from '../mocks/users-mock';
 import { User } from '../models/user.model';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
+import { CreateUser } from '../components/user-management/add-user/add-user';
+
+export interface UserFilter {
+  filter?: string;
+  value?: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -11,10 +18,25 @@ export class UserService {
   httpClient = inject(HttpClient);
 
   users: Signal<User[]> = signal(mockUsers);
-  usersResource = httpResource<User[]>(() => `${environment.apiUrl}/api/users`);
   users$ = this.httpClient.get<User[]>(`${environment.apiUrl}/api/users`);
 
-  createUser(user: User) {
+  readonly filterParams = signal<UserFilter>({});
+
+  usersResource = httpResource<User[]>(() => {
+    const { filter, value } = this.filterParams();
+    const params = new URLSearchParams();
+    if (filter) params.set('filter', filter);
+    if (value) params.set('value', value);
+    const query = params.toString();
+    return `${environment.apiUrl}/api/users${query ? '?' + query : ''}`;
+  });
+
+  createUser(user: CreateUser): Observable<User> {
     return this.httpClient.post<User>(`${environment.apiUrl}/api/users`, user);
+  }
+
+  deleteUser(id: string) {
+    console.log('deleteUser:', id);
+    return this.httpClient.delete<void>(`${environment.apiUrl}/api/users/${id}`);
   }
 }
