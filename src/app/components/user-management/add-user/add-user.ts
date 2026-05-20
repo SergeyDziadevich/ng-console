@@ -1,8 +1,14 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { form, FormField, required, email, debounce } from '@angular/forms/signals';
+import { Component, inject, signal } from '@angular/core';
+import { form, FormField, required, email } from '@angular/forms/signals';
 import { Router } from '@angular/router';
-import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user-service';
+
+export interface CreateUser {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+}
 
 @Component({
   selector: 'app-add-user',
@@ -14,13 +20,14 @@ export class AddUser {
   private router = inject(Router);
   private userService = inject(UserService);
 
-  userModel = signal<User>({
-    id: 0,
+  userModel = signal<CreateUser>({
     name: '',
     email: '',
     password: '',
     role: 'editor',
   });
+
+  showToast = signal(false);
 
   userForm = form(this.userModel, (schemaPath) => {
     required(schemaPath.email, { message: 'Email is required' });
@@ -35,11 +42,13 @@ export class AddUser {
   onSubmit(event: Event): void {
     event.preventDefault();
 
-    console.log('User model:', this.userModel());
-
-    this.userService.createUser(this.userModel()).subscribe((response) => console.log('User created:', response));
-
-    // this.close();
+    this.userService.createUser(this.userModel()).subscribe(() => {
+      this.showToast.set(true);
+      setTimeout(() => {
+        this.showToast.set(false);
+        this.close();
+      }, 2000);
+    });
   }
 }
 

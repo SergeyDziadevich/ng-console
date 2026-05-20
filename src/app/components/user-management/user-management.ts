@@ -1,13 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user-service';
 import { User } from '../../models/user.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersTable } from './users-table/users-table';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-management',
-  imports: [UsersTable, RouterOutlet, RouterLink],
+  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule],
   templateUrl: './user-management.html',
   styleUrl: './user-management.css',
 })
@@ -17,11 +18,28 @@ export class UserManagement {
   usersResource = this.userService.usersResource;
   users = toSignal(this.userService.users$);
 
+  filterField = signal('name');
+  filterValue = signal('');
+
+  applyFilter() {
+    const value = this.filterValue().trim();
+    this.userService.filterParams.set(
+      value ? { filter: this.filterField(), value } : {}
+    );
+  }
+
+  clearFilter() {
+    this.filterValue.set('');
+    this.userService.filterParams.set({});
+  }
+
   editUser(user: User) {
     console.log('editUser:', user);
   }
 
   deleteUser(user: User) {
-    console.log('deleteUser:', user);
+    this.userService.deleteUser(user._id).subscribe(() => {
+      alert('User deleted successfully');
+    });
   }
 }

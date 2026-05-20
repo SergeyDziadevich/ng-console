@@ -80,3 +80,11 @@
   </div>
 </div>
 
+@if (showToast()) {
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-green-500 text-white text-sm font-medium px-6 py-3 rounded-xl shadow-lg flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+    User added successfully!
+  </div>
+}

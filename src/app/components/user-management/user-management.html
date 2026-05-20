@@ -1,6 +1,39 @@
 <div class="h-full flex flex-col gap-4">
   <!-- Toolbar -->
-  <div class="flex justify-end">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+
+    <!-- Filter -->
+    <div class="flex items-center gap-2">
+      <select
+        [ngModel]="filterField()"
+        (ngModelChange)="filterField.set($event)"
+        class="px-3 py-2 rounded-lg border border-gray-300 text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white">
+        <option value="name">Name</option>
+        <option value="email">Email</option>
+        <option value="role">Role</option>
+      </select>
+      <input
+        type="text"
+        placeholder="Filter value..."
+        [ngModel]="filterValue()"
+        (ngModelChange)="filterValue.set($event)"
+        (keydown.enter)="applyFilter()"
+        class="px-3 py-2 rounded-lg border border-gray-300 text-sm outline-none focus:ring-2 focus:ring-blue-400 w-48"
+      />
+      <button
+        (click)="applyFilter()"
+        class="px-4 py-2 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-95 transition-all">
+        Search
+      </button>
+      @if (userService.filterParams().value) {
+        <button
+          (click)="clearFilter()"
+          class="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 active:scale-95 transition-all">
+          Clear
+        </button>
+      }
+    </div>
+
     <a
       routerLink="add-user"
       class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 active:scale-95 transition-all">
