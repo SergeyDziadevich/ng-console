@@ -40,6 +40,7 @@ export class UserManagement {
   deleteUser(user: User) {
     this.userService.deleteUser(user._id).subscribe(() => {
       alert('User deleted successfully');
+      this.usersResource.reload();
     });
   }
 }

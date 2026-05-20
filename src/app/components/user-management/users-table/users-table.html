@@ -9,9 +9,9 @@
   </tr>
   </thead>
   <tbody class="divide-y divide-gray-100">
-    @for (user of users(); track user.id) {
+    @for (user of users(); track user._id) {
       <tr class="hover:bg-gray-50 transition-colors">
-        <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{ user.id }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{ user._id }}</td>
         <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ user.name }}</td>
         <td class="px-6 py-4 whitespace-nowrap text-gray-600">{{ user.email }}</td>
         <td class="px-6 py-4 whitespace-nowrap">
