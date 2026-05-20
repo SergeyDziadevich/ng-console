@@ -1,10 +1,9 @@
 import { inject, Injectable, signal, Signal } from '@angular/core';
 import { mockUsers } from '../mocks/users-mock';
-import { User } from '../models/user.model';
+import { CreateUser, User } from '../models/user.model';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { CreateUser } from '../components/user-management/add-user/add-user';
 
 export interface UserFilter {
   filter?: string;
@@ -15,7 +14,7 @@ export interface UserFilter {
   providedIn: 'root',
 })
 export class UserService {
-  httpClient = inject(HttpClient);
+  private httpClient = inject(HttpClient);
 
   users: Signal<User[]> = signal(mockUsers);
   users$ = this.httpClient.get<User[]>(`${environment.apiUrl}/api/users`);
