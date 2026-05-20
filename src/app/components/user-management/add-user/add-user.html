@@ -1,4 +1,4 @@
-<div class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+<div class="modal-overlay z-40">
   <!-- Modal card -->
   <div class="relative z-50 w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 flex flex-col gap-6">
 
@@ -22,44 +22,44 @@
 
     <form (submit)="onSubmit($event)">
       <div class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1">
+        <div class="form-field">
           <label class="text-sm font-medium text-gray-700">Full Name</label>
           <input
             type="text"
             placeholder="John Doe"
-            class="px-4 py-2 rounded-lg border text-sm outline-none transition-all focus:ring-2 focus:ring-blue-400"
+            class="px-4 py-2 form-input transition-all"
             [formField]="userForm.name"
           />
         </div>
 
-        <div class="flex flex-col gap-1">
+        <div class="form-field">
           <label class="text-sm font-medium text-gray-700">Email Address</label>
           <input
             type="email"
             placeholder="john@example.com"
-            class="px-4 py-2 rounded-lg border text-sm outline-none transition-all focus:ring-2 focus:ring-blue-400"
+            class="px-4 py-2 form-input transition-all"
             [formField]="userForm.email"
           />
         </div>
 
-        <div class="flex flex-col gap-1">
+        <div class="form-field">
           <label class="text-sm font-medium text-gray-700">Password</label>
           <input
             type="password"
             placeholder="Min. 8 characters"
-            class="px-4 py-2 rounded-lg border text-sm outline-none transition-all focus:ring-2 focus:ring-blue-400"
+            class="px-4 py-2 form-input transition-all"
             [formField]="userForm.password"
           />
         </div>
 
-        <div class="flex flex-col gap-1">
+        <div class="form-field">
           <label class="text-sm font-medium text-gray-700">Role</label>
           <select
             [formField]="userForm.role"
-            class="px-4 py-2 rounded-lg border border-gray-300 text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white">
-            <option value="admin">Admin</option>
-            <option value="editor">Editor</option>
-            <option value="viewer">Viewer</option>
+            class="px-4 py-2 form-input border-gray-300 bg-white">
+            @for (role of userRoles; track role) {
+              <option [value]="role">{{ role }}</option>
+            }
           </select>
         </div>
       </div>
@@ -67,12 +67,12 @@
       <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
         <button
           (click)="close()"
-          class="px-5 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 transition-all">
+          class="px-5 py-2 btn-secondary">
           Cancel
         </button>
         <button
           type="submit"
-          class="px-5 py-2 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-95 transition-all">
+          class="px-5 py-2 btn-primary">
           Add User
         </button>
       </div>

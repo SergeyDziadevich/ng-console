@@ -3,13 +3,8 @@ import { form, FormField, required, email } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user-service';
 import { Toast } from '../../toast/toast';
-
-export interface CreateUser {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-}
+import { UserRole } from '../../../enums/user-role.enum';
+import { CreateUser } from '../../../models/user.model';
 
 @Component({
   selector: 'app-add-user',
@@ -21,11 +16,13 @@ export class AddUser {
   private router = inject(Router);
   private userService = inject(UserService);
 
+  userRoles = Object.values(UserRole);
+
   userModel = signal<CreateUser>({
     name: '',
     email: '',
     password: '',
-    role: 'editor',
+    role: UserRole.User,
   });
 
   showToast = signal(false);

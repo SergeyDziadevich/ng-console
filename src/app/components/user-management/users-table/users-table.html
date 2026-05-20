@@ -1,33 +1,33 @@
 <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
   <thead class="bg-gray-50">
   <tr>
-    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+    <th class="table-th">ID</th>
+    <th class="table-th">Name</th>
+    <th class="table-th">Email</th>
+    <th class="table-th">Role</th>
+    <th class="table-th">Actions</th>
   </tr>
   </thead>
   <tbody class="divide-y divide-gray-100">
     @for (user of users(); track user._id) {
       <tr class="hover:bg-gray-50 transition-colors">
-        <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{ user._id }}</td>
-        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ user.name }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-gray-600">{{ user.email }}</td>
-        <td class="px-6 py-4 whitespace-nowrap">
+        <td class="table-td text-gray-500">{{ user._id }}</td>
+        <td class="table-td font-medium text-gray-900">{{ user.name }}</td>
+        <td class="table-td text-gray-600">{{ user.email }}</td>
+        <td class="table-td">
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {{ user.role ?? 'N/A' }}
             </span>
         </td>
-        <td class="px-6 py-4 whitespace-nowrap space-x-2">
+        <td class="table-td space-x-2">
           <button
             (click)="editUser(user)"
-            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+            class="table-action-btn bg-indigo-600 hover:bg-indigo-700">
             Edit
           </button>
           <button
             (click)="confirmDelete(user)"
-            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition-colors">
+            class="table-action-btn bg-red-600 hover:bg-red-700">
             Delete
           </button>
         </td>
@@ -41,7 +41,7 @@
 </table>
 
 @if (userToDelete()) {
-  <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="modal-overlay z-50">
     <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
@@ -59,7 +59,7 @@
       <div class="flex justify-end gap-3">
         <button
           (click)="cancelDelete()"
-          class="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50 transition-all">
+          class="px-4 py-2 btn-secondary">
           Cancel
         </button>
         <button
@@ -71,4 +71,3 @@
     </div>
   </div>
 }
-
