@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { form, FormField, required, email } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user-service';
+import { Toast } from '../../toast/toast';
 
 export interface CreateUser {
   name: string;
@@ -12,7 +13,7 @@ export interface CreateUser {
 
 @Component({
   selector: 'app-add-user',
-  imports: [FormField],
+  imports: [FormField, Toast],
   templateUrl: './add-user.html',
   styleUrl: './add-user.css',
 })
@@ -48,7 +49,7 @@ export class AddUser {
         this.showToast.set(false);
         this.close();
         this.userService.usersResource.reload();
-      }, 2000);
+      }, 500);
     });
   }
 }

@@ -80,3 +80,8 @@
 
   <router-outlet></router-outlet>
 </div>
+
+@if (toast()) {
+  <app-toast [message]="toast() ?? ''"></app-toast>
+}
+
