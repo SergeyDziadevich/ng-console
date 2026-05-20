@@ -13,4 +13,8 @@ export class UserService {
   users: Signal<User[]> = signal(mockUsers);
   usersResource = httpResource<User[]>(() => `${environment.apiUrl}/api/users`);
   users$ = this.httpClient.get<User[]>(`${environment.apiUrl}/api/users`);
+
+  createUser(user: User) {
+    return this.httpClient.post<User>(`${environment.apiUrl}/api/users`, user);
+  }
 }

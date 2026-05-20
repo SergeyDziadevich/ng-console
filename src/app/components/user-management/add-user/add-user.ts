@@ -1,54 +1,45 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { form, FormField, required, email, debounce } from '@angular/forms/signals';
 import { Router } from '@angular/router';
+import { User } from '../../../models/user.model';
+import { UserService } from '../../../services/user-service';
 
 @Component({
   selector: 'app-add-user',
-  imports: [],
+  imports: [FormField],
   templateUrl: './add-user.html',
   styleUrl: './add-user.css',
 })
 export class AddUser {
   private router = inject(Router);
+  private userService = inject(UserService);
 
-  // Form fields
-  name = signal('');
-  email = signal('');
-  password = signal('');
-  role = signal('viewer');
-
-  submitted = signal(false);
-
-  // Validation
-  nameError = computed(() => (this.name().trim() ? '' : 'Name is required'));
-  emailError = computed(() => {
-    const v = this.email().trim();
-    if (!v) return 'Email is required';
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Invalid email address';
-  });
-  passwordError = computed(() => {
-    const v = this.password();
-    if (!v) return 'Password is required';
-    return v.length < 8 ? 'Minimum 8 characters' : '';
+  userModel = signal<User>({
+    id: 0,
+    name: '',
+    email: '',
+    password: '',
+    role: 'editor',
   });
 
-  isValid = computed(() => !this.nameError() && !this.emailError() && !this.passwordError());
+  userForm = form(this.userModel, (schemaPath) => {
+    required(schemaPath.email, { message: 'Email is required' });
+    email(schemaPath.email, { message: 'Enter a valid email address' });
+    required(schemaPath.password, { message: 'Password is required' });
+  });
 
-  close() {
+  close(): void {
     this.router.navigate(['/user-management']);
   }
 
-  submit() {
-    this.submitted.set(true);
-    if (!this.isValid()) return;
+  onSubmit(event: Event): void {
+    event.preventDefault();
 
-    console.log('New user:', {
-      name: this.name(),
-      email: this.email(),
-      password: this.password(),
-      role: this.role(),
-    });
+    console.log('User model:', this.userModel());
 
-    this.close();
+    this.userService.createUser(this.userModel()).subscribe((response) => console.log('User created:', response));
+
+    // this.close();
   }
 }
 
