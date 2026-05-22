@@ -20,6 +20,10 @@
       </button>
     </div>
 
+    @if (createUserError()) {
+      <p class="mt-3 error-message">{{ createUserError() }}</p>
+    }
+
     <form (submit)="onSubmit($event)">
       <div class="flex flex-col gap-4">
         <div class="form-field">
@@ -30,6 +34,13 @@
             class="px-4 py-2 form-input transition-all"
             [formField]="userForm.name"
           />
+          @if (userForm.name().touched() && userForm.name().invalid()) {
+            <div class="error-message">
+              @for (error of userForm.name().errors(); track error) {
+                <p>{{ error.message }}</p>
+              }
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -40,6 +51,13 @@
             class="px-4 py-2 form-input transition-all"
             [formField]="userForm.email"
           />
+          @if (userForm.email().touched() && userForm.email().invalid()) {
+            <div class="error-message">
+              @for (error of userForm.email().errors(); track error) {
+                <p>{{ error.message }}</p>
+              }
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -50,6 +68,13 @@
             class="px-4 py-2 form-input transition-all"
             [formField]="userForm.password"
           />
+          @if (userForm.password().touched() && userForm.password().invalid()) {
+            <div class="error-message">
+              @for (error of userForm.password().errors(); track error) {
+                <p>{{ error.message }}</p>
+              }
+            </div>
+          }
         </div>
 
         <div class="form-field">
@@ -72,7 +97,8 @@
         </button>
         <button
           type="submit"
-          class="px-5 py-2 btn-primary">
+          class="px-5 py-2 btn-primary"
+          [disabled]="userForm().invalid()">
           Add User
         </button>
       </div>
