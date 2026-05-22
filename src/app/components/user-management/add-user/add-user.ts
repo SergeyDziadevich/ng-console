@@ -5,6 +5,7 @@ import { UserService } from '../../../services/user-service';
 import { Toast } from '../../toast/toast';
 import { UserRole } from '../../../enums/user-role.enum';
 import { CreateUser } from '../../../models/user.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-add-user',
@@ -17,16 +18,14 @@ export class AddUser {
   private userService = inject(UserService);
 
   userRoles = Object.values(UserRole);
-
+  showToast = signal(false);
+  createUserError = signal<string | null>(null);
   userModel = signal<CreateUser>({
     name: '',
     email: '',
     password: '',
     role: UserRole.User,
   });
-
-  showToast = signal(false);
-
   userForm = form(this.userModel, (schemaPath) => {
     required(schemaPath.name, { message: 'Name is required' });
     required(schemaPath.email, { message: 'Email is required' });
@@ -41,15 +40,38 @@ export class AddUser {
 
   onSubmit(event: Event): void {
     event.preventDefault();
+    this.createUserError.set(null);
 
-    this.userService.createUser(this.userModel()).subscribe(() => {
-      this.showToast.set(true);
-      setTimeout(() => {
-        this.showToast.set(false);
-        this.close();
-        this.userService.usersResource.reload();
-      }, 500);
+    this.userService.createUser(this.userModel()).subscribe({
+      next: () => {
+        this.showToast.set(true);
+        setTimeout(() => {
+          this.showToast.set(false);
+          this.close();
+          this.userService.usersResource.reload();
+        }, 500);
+      },
+      error: (error: unknown) => {
+        this.createUserError.set(this.getCreateUserErrorMessage(error));
+      },
     });
+  }
+
+  private getCreateUserErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (typeof error.error === 'string' && error.error.trim()) {
+        return error.error;
+      }
+
+      if (error.error && typeof error.error === 'object' && 'msg' in error.error) {
+        const message = (error.error as { msg?: unknown }).msg;
+        if (typeof message === 'string' && message.trim()) {
+          return message;
+        }
+      }
+    }
+
+    return 'Failed to add user. Please try again.';
   }
 }
 
