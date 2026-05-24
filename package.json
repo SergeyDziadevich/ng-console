@@ -1,5 +1,5 @@
 {
-  "name": "user-management",
+  "name": "cloud-console",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -24,11 +24,11 @@
     "@angular/build": "^21.2.11",
     "@angular/cli": "^21.2.11",
     "@angular/compiler-cli": "^21.2.0",
-    "@tailwindcss/postcss": "^4.1.12",
+    "@tailwindcss/postcss": "^4.3.0",
     "jsdom": "^28.0.0",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.15",
     "prettier": "^3.8.1",
-    "tailwindcss": "^4.1.12",
+    "tailwindcss": "^4.3.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }
