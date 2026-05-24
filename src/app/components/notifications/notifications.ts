@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-notifications',
   imports: [],
   templateUrl: './notifications.html',
-  styleUrl: './notifications.css',
+  styleUrl: './notifications.scss',
 })
 export class Notifications {}

@@ -5,7 +5,7 @@ import { User } from '../../../models/user.model';
   selector: 'app-users-table',
   imports: [],
   templateUrl: './users-table.html',
-  styleUrl: './users-table.css',
+  styleUrl: './users-table.scss',
 })
 export class UsersTable {
   users = input<User[]>([]);

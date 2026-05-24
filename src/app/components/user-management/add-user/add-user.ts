@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-add-user',
   imports: [FormField, Toast],
   templateUrl: './add-user.html',
-  styleUrl: './add-user.css',
+  styleUrl: './add-user.scss',
 })
 export class AddUser {
   private router = inject(Router);
