@@ -11,7 +11,7 @@ import { Toast } from '../toast/toast';
   selector: 'app-user-management',
   imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast],
   templateUrl: './user-management.html',
-  styleUrl: './user-management.css',
+  styleUrl: './user-management.scss',
 })
 export class UserManagement {
   userService = inject(UserService);

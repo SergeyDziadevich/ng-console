@@ -7,7 +7,7 @@ import { TopBar } from './components/top-bar/top-bar';
   selector: 'app-root',
   imports: [RouterOutlet, Sidebar, TopBar],
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styleUrl: './app.scss',
 })
 export class App {
   protected readonly title = signal('user-management');
