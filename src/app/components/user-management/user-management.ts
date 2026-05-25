@@ -6,10 +6,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersTable } from './users-table/users-table';
 import { FormsModule } from '@angular/forms';
 import { Toast } from '../toast/toast';
+import { EditUser } from './edit-user/edit-user';
 
 @Component({
   selector: 'app-user-management',
-  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast],
+  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, EditUser],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })
@@ -22,6 +23,7 @@ export class UserManagement {
   filterField = signal('name');
   filterValue = signal('');
   toast = signal<string | null>(null);
+  userToEdit = signal<User | null>(null);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   showToast(message: string) {
@@ -41,7 +43,17 @@ export class UserManagement {
   }
 
   editUser(user: User) {
-    console.log('editUser:', user);
+    this.userToEdit.set(user);
+  }
+
+  onEditSaved() {
+    this.userToEdit.set(null);
+    this.usersResource.reload();
+    this.showToast('User updated successfully');
+  }
+
+  onEditClosed() {
+    this.userToEdit.set(null);
   }
 
   deleteUser(user: User) {

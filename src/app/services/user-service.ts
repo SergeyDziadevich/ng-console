@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, Signal } from '@angular/core';
 import { mockUsers } from '../mocks/users-mock';
-import { CreateUser, User } from '../models/user.model';
+import { CreateUser, UpdateUser, User } from '../models/user.model';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
@@ -36,5 +36,9 @@ export class UserService {
 
   deleteUser(id: string) {
     return this.httpClient.delete<void>(`${environment.apiUrl}/api/users/${id}`);
+  }
+
+  updateUser(id: string, user: UpdateUser): Observable<User> {
+    return this.httpClient.patch<User>(`${environment.apiUrl}/api/users/${id}`, user);
   }
 }
