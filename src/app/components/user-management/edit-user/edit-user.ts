@@ -1,55 +1,56 @@
-import { Component, inject, signal } from '@angular/core';
-import { form, FormField, required, email, minLength } from '@angular/forms/signals';
-import { Router } from '@angular/router';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { form, FormField, required, email } from '@angular/forms/signals';
 import { UserService } from '../../../services/user-service';
 import { Toast } from '../../toast/toast';
 import { UserModal } from '../user-modal/user-modal';
 import { UserRole } from '../../../enums/user-role.enum';
-import { CreateUser } from '../../../models/user.model';
+import { User } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-add-user',
+  selector: 'app-edit-user',
   imports: [FormField, Toast, UserModal],
-  templateUrl: './add-user.html',
-  styleUrl: './add-user.scss',
+  templateUrl: './edit-user.html',
+  styleUrl: './edit-user.scss',
 })
-export class AddUser {
-  private router = inject(Router);
+export class EditUser {
   private userService = inject(UserService);
+
+  user = input.required<User>();
+  saved = output<void>();
+  closed = output<void>();
 
   userRoles = Object.values(UserRole);
   showToast = signal(false);
   error = signal<string | null>(null);
 
-  userModel = signal<CreateUser>({
+  editModel = signal<{ name: string; email: string; role: UserRole }>({
     name: '',
     email: '',
-    password: '',
     role: UserRole.User,
   });
 
-  userForm = form(this.userModel, (schemaPath) => {
+  editForm = form(this.editModel, (schemaPath) => {
     required(schemaPath.name, { message: 'Name is required' });
     required(schemaPath.email, { message: 'Email is required' });
     email(schemaPath.email, { message: 'Enter a valid email address' });
-    required(schemaPath.password, { message: 'Password is required' });
-    minLength(schemaPath.password, 8, { message: 'Password must be at least 8 characters' });
   });
 
-  close(): void {
-    this.router.navigate(['/user-management']);
+  constructor() {
+    effect(() => {
+      const u = this.user();
+      this.editModel.set({ name: u.name, email: u.email, role: u.role });
+    });
   }
 
   onSubmit(): void {
     this.error.set(null);
-    this.userService.createUser(this.userModel()).subscribe({
+    this.userService.updateUser(this.user()._id, this.editModel()).subscribe({
       next: () => {
         this.showToast.set(true);
         setTimeout(() => {
           this.showToast.set(false);
-          this.close();
-          this.userService.usersResource.reload();
+          this.saved.emit();
         }, 500);
       },
       error: (err: unknown) => {
@@ -70,6 +71,7 @@ export class AddUser {
         }
       }
     }
-    return 'Failed to add user. Please try again.';
+    return 'Failed to update user. Please try again.';
   }
 }
+
