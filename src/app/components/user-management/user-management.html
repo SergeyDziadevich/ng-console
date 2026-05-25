@@ -81,6 +81,14 @@
   <router-outlet></router-outlet>
 </div>
 
+@if (userToEdit()) {
+  <app-add-user
+    [user]="userToEdit()"
+    (saved)="onEditSaved()"
+    (closed)="onEditClosed()"
+  ></app-add-user>
+}
+
 @if (toast()) {
   <app-toast [message]="toast() ?? ''"></app-toast>
 }

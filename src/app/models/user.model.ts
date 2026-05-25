@@ -9,3 +9,4 @@ export interface User {
 }
 
 export type CreateUser = Omit<User, '_id'>;
+export type UpdateUser = Partial<Omit<User, '_id' | 'password'>>;
