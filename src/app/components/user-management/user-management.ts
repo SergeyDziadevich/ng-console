@@ -6,11 +6,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersTable } from './users-table/users-table';
 import { FormsModule } from '@angular/forms';
 import { Toast } from '../toast/toast';
-import { AddUser } from './add-user/add-user';
+import { EditUser } from './edit-user/edit-user';
 
 @Component({
   selector: 'app-user-management',
-  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, AddUser],
+  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, EditUser],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })
