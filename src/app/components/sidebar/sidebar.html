@@ -43,12 +43,12 @@
 
   <!-- Footer -->
   <div class="border-t border-gray-700 px-4 py-4">
-    @if (!collapsed()) {
+    @if (!collapsed() && currentUser()) {
       <div class="flex items-center gap-3">
         <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold shrink-0">A</div>
         <div class="overflow-hidden">
-          <p class="text-sm font-medium leading-tight truncate">Admin</p>
-          <p class="text-xs text-gray-400 truncate">admin&#64;app.com</p>
+          <p class="text-sm font-medium leading-tight truncate">{{ currentUser()?.role }}</p>
+          <p class="text-xs text-gray-400 truncate">{{ currentUser()?.email }}</p>
         </div>
       </div>
     } @else {
