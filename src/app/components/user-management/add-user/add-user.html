@@ -11,8 +11,8 @@
   </svg>
 
   <div class="form-field">
-    <label class="text-sm font-medium text-gray-700">Full Name</label>
-    <input type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="userForm.name" />
+    <label for="add-name" class="text-sm font-medium text-gray-700">Full Name</label>
+    <input id="add-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="userForm.name" />
     @if (userForm.name().touched() && userForm.name().invalid()) {
       <div class="error-message">
         @for (err of userForm.name().errors(); track err) { <p>{{ err.message }}</p> }
@@ -21,8 +21,8 @@
   </div>
 
   <div class="form-field">
-    <label class="text-sm font-medium text-gray-700">Email Address</label>
-    <input type="email" placeholder="john@example.com" class="px-4 py-2 form-input transition-all" [formField]="userForm.email" />
+    <label for="add-email" class="text-sm font-medium text-gray-700">Email Address</label>
+    <input id="add-email" type="email" placeholder="john@example.com" class="px-4 py-2 form-input transition-all" [formField]="userForm.email" />
     @if (userForm.email().touched() && userForm.email().invalid()) {
       <div class="error-message">
         @for (err of userForm.email().errors(); track err) { <p>{{ err.message }}</p> }
@@ -31,8 +31,8 @@
   </div>
 
   <div class="form-field">
-    <label class="text-sm font-medium text-gray-700">Password</label>
-    <input type="password" placeholder="Min. 8 characters" class="px-4 py-2 form-input transition-all" [formField]="userForm.password" />
+    <label for="add-password" class="text-sm font-medium text-gray-700">Password</label>
+    <input id="add-password" type="password" placeholder="Min. 8 characters" class="px-4 py-2 form-input transition-all" [formField]="userForm.password" />
     @if (userForm.password().touched() && userForm.password().invalid()) {
       <div class="error-message">
         @for (err of userForm.password().errors(); track err) { <p>{{ err.message }}</p> }
@@ -41,8 +41,8 @@
   </div>
 
   <div class="form-field">
-    <label class="text-sm font-medium text-gray-700">Role</label>
-    <select [formField]="userForm.role" class="px-4 py-2 form-input border-gray-300 bg-white">
+    <label for="add-role" class="text-sm font-medium text-gray-700">Role</label>
+    <select id="add-role" [formField]="userForm.role" class="px-4 py-2 form-input border-gray-300 bg-white">
       @for (role of userRoles; track role) { <option [value]="role">{{ role }}</option> }
     </select>
   </div>
