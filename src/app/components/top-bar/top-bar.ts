@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-top-bar',
   imports: [CommonModule],
   templateUrl: './top-bar.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopBar {
+  private readonly authService = inject(AuthService);
+
   protected dropdownOpen = signal(false);
 
   protected currentUser = {
@@ -22,12 +26,20 @@ export class TopBar {
     { label: 'Sign Out', icon: 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1' },
   ];
 
-  protected toggleDropdown() {
-    this.dropdownOpen.update(v => !v);
+  protected toggleDropdown(): void {
+    this.dropdownOpen.update((v) => !v);
   }
 
-  protected closeDropdown() {
+  protected closeDropdown(): void {
     this.dropdownOpen.set(false);
   }
+
+  protected onMenuItemClick(label: string): void {
+    this.closeDropdown();
+    if (label === 'Sign Out') {
+      this.authService.logout();
+    }
+  }
 }
+
 
