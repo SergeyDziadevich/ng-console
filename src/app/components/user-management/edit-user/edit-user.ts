@@ -1,11 +1,16 @@
-import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { Component, inject, linkedSignal, signal } from '@angular/core';
 import { form, FormField, required, email } from '@angular/forms/signals';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
+import { httpResource } from '@angular/common/http';
 import { UserService } from '../../../services/user-service';
 import { Toast } from '../../toast/toast';
 import { UserModal } from '../user-modal/user-modal';
 import { UserRole } from '../../../enums/user-role.enum';
 import { User } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-user',
@@ -15,19 +20,25 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class EditUser {
   private userService = inject(UserService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  user = input.required<User>();
-  saved = output<void>();
-  closed = output<void>();
+  private userId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id') ?? '')));
+
+  userResource = httpResource<User>(() => {
+    const id = this.userId();
+    if (!id) return undefined;
+    return `${environment.apiUrl}/api/users/${id}`;
+  });
 
   userRoles = Object.values(UserRole);
   showToast = signal(false);
   error = signal<string | null>(null);
 
-  editModel = signal<{ name: string; email: string; role: UserRole }>({
-    name: '',
-    email: '',
-    role: UserRole.User,
+  editModel = linkedSignal<{ name: string; email: string; role: UserRole }>(() => {
+    const u = this.userResource.value();
+    if (!u) return { name: '', email: '', role: UserRole.User };
+    return { name: u.name, email: u.email, role: u.role || UserRole.User };
   });
 
   editForm = form(this.editModel, (schemaPath) => {
@@ -36,21 +47,24 @@ export class EditUser {
     email(schemaPath.email, { message: 'Enter a valid email address' });
   });
 
-  constructor() {
-    effect(() => {
-      const u = this.user();
-      this.editModel.set({ name: u.name, email: u.email, role: u.role });
-    });
+
+  close(): void {
+    this.router.navigate(['/user-management']);
   }
 
   onSubmit(): void {
+    const id = this.userId();
+    if (!id) return;
     this.error.set(null);
-    this.userService.updateUser(this.user()._id, this.editModel()).subscribe({
+    const model = this.editModel();
+    if (!model.role) model.role = UserRole.User;
+    this.userService.updateUser(id, model).subscribe({
       next: () => {
         this.showToast.set(true);
         setTimeout(() => {
           this.showToast.set(false);
-          this.saved.emit();
+          this.userService.usersResource.reload();
+          this.close();
         }, 500);
       },
       error: (err: unknown) => {
@@ -74,4 +88,3 @@ export class EditUser {
     return 'Failed to update user. Please try again.';
   }
 }
-

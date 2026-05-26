@@ -15,6 +15,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/user-management/add-user/add-user').then((m) => m.AddUser),
       },
+      {
+        path: 'edit-user/:id',
+        loadComponent: () =>
+          import('./components/user-management/edit-user/edit-user').then((m) => m.EditUser),
+      },
     ],
   },
   {
