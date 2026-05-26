@@ -1,5 +1,5 @@
 {
-  "name": "cloud-console",
+  "name": "ng-console",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
