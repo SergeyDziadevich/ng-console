@@ -81,13 +81,6 @@
   <router-outlet></router-outlet>
 </div>
 
-@if (userToEdit(); as editTarget) {
-  <app-edit-user
-    [user]="editTarget"
-    (saved)="onEditSaved()"
-    (closed)="onEditClosed()"
-  ></app-edit-user>
-}
 
 @if (toast()) {
   <app-toast [message]="toast() ?? ''"></app-toast>
