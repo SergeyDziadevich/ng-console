@@ -11,10 +11,11 @@ export interface LoginCredentials {
 }
 
 export interface AuthResponse {
-  token: string;
+  token?: string;
   user: {
     name: string;
     email: string;
+    role: string;
   };
 }
 
@@ -30,13 +31,16 @@ export class AuthService {
   readonly currentUser = signal<AuthResponse['user'] | null>(null);
 
   login(credentials: LoginCredentials) {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, credentials).pipe(
-      tap((res) => {
-        localStorage.setItem(TOKEN_KEY, res.token);
-        this.isAuthenticated.set(true);
-        this.currentUser.set(res.user);
-      }),
-    );
+    return this.http
+      .post(`${environment.apiUrl}/api/auth`, credentials, { responseType: 'json' })
+      .pipe(
+        tap((res: any) => {
+          console.log('Login successful: ', res);
+          localStorage.setItem(TOKEN_KEY, `${res.name}-${res.email}`);
+          this.isAuthenticated.set(true);
+          this.currentUser.set(res);
+        }),
+      );
   }
 
   logout(): void {

@@ -42,6 +42,7 @@ export class Login {
       },
       error: (err) => {
         this.loading.set(false);
+
         this.errorMessage.set(
           err?.error?.message ?? 'Invalid email or password. Please try again.',
         );
