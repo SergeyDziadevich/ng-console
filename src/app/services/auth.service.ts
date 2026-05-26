@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 export interface LoginCredentials {
   // email: string;
-  name: string;
+  username: string;
   password: string;
 }
 
@@ -32,16 +32,30 @@ export class AuthService {
 
   login(credentials: LoginCredentials) {
     return this.http
-      .post(`${environment.apiUrl}/api/auth`, credentials, { responseType: 'json' })
+      .post(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
       .pipe(
         tap((res: any) => {
-          console.log('Login successful: ', res);
-          localStorage.setItem(TOKEN_KEY, `${res.name}-${res.email}`);
+          console.log('Login successful: ', res.access_token);
+         // {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
+          localStorage.setItem(TOKEN_KEY, `${res.access_token}`);
           this.isAuthenticated.set(true);
           this.currentUser.set(res);
         }),
       );
   }
+
+  // login(credentials: LoginCredentials) {
+  //   return this.http
+  //     .post(`${environment.apiUrl}/api/auth`, credentials, { responseType: 'json' })
+  //     .pipe(
+  //       tap((res: any) => {
+  //         console.log('Login successful: ', res);
+  //         localStorage.setItem(TOKEN_KEY, `${res.name}-${res.email}`);
+  //         this.isAuthenticated.set(true);
+  //         this.currentUser.set(res);
+  //       }),
+  //     );
+  // }
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);

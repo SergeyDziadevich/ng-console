@@ -32,11 +32,11 @@
             type="text"
             placeholder="John Doe"
             class="px-4 py-2 form-input transition-all"
-            [formField]="userForm.name"
+            [formField]="userForm.username"
           />
-          @if (userForm.name().touched() && userForm.name().invalid()) {
+          @if (userForm.username().touched() && userForm.username().invalid()) {
             <div class="error-message">
-              @for (error of userForm.name().errors(); track error) {
+              @for (error of userForm.username().errors(); track error) {
                 <p>{{ error.message }}</p>
               }
             </div>

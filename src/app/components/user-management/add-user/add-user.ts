@@ -21,13 +21,13 @@ export class AddUser {
   showToast = signal(false);
   createUserError = signal<string | null>(null);
   userModel = signal<CreateUser>({
-    name: '',
+    username: '',
     email: '',
     password: '',
     role: UserRole.User,
   });
   userForm = form(this.userModel, (schemaPath) => {
-    required(schemaPath.name, { message: 'Name is required' });
+    required(schemaPath.username, { message: 'Name is required' });
     required(schemaPath.email, { message: 'Email is required' });
     email(schemaPath.email, { message: 'Enter a valid email address' });
     required(schemaPath.password, { message: 'Password is required' });
