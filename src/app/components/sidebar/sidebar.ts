@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthResponse } from '../../services/auth.service';
 
 interface NavItem {
   label: string;
@@ -15,6 +16,8 @@ interface NavItem {
 })
 export class Sidebar {
   collapsed = signal(false);
+
+  currentUser = input.required<AuthResponse['user'] | null>();
 
   navItems: NavItem[] = [
     {
