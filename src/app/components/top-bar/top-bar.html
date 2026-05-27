@@ -54,7 +54,7 @@
 
     <!-- Dropdown -->
     @if (dropdownOpen()) {
-      <div class="fixed inset-0 z-40" (click)="closeDropdown()"></div>
+      <div class="fixed inset-0 z-40" role="button" tabindex="0" aria-label="Close menu" (click)="closeDropdown()" (keydown)="closeDropdown()"></div>
 
       <div class="absolute right-0 top-12 w-52 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden">
 

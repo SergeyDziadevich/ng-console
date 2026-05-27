@@ -41,6 +41,11 @@ export const routes: Routes = [
         redirectTo: 'user-management',
         pathMatch: 'full',
       },
+      {
+        path: 'edit-user/:id',
+        loadComponent: () =>
+          import('./components/user-management/edit-user/edit-user').then((m) => m.EditUser),
+      },
     ],
   },
 ];
