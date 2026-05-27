@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet, Router } from '@angular/router';
 import { UserService } from '../../services/user-service';
 import { User } from '../../models/user.model';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -15,6 +15,7 @@ import { Toast } from '../toast/toast';
 })
 export class UserManagement {
   userService = inject(UserService);
+  private router = inject(Router);
 
   usersResource = this.userService.usersResource;
   users = toSignal(this.userService.users$);
@@ -41,7 +42,7 @@ export class UserManagement {
   }
 
   editUser(user: User) {
-    console.log('editUser:', user);
+    this.router.navigate(['/user-management', 'edit-user', user._id]);
   }
 
   deleteUser(user: User) {

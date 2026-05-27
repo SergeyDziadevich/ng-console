@@ -1,111 +1,55 @@
-<div class="modal-overlay z-40">
-  <!-- Modal card -->
-  <div class="relative z-50 w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 flex flex-col gap-6">
+<app-user-modal
+  title="Add New User"
+  submitLabel="Add User"
+  [submitDisabled]="userForm().invalid()"
+  [error]="error()"
+  (closeModal)="close()"
+  (submitted)="onSubmit()">
 
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-          </svg>
-        </div>
-        <h2 class="text-xl font-semibold text-gray-800">Add New User</h2>
+  <svg modal-icon xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+  </svg>
+
+  <div class="form-field">
+    <label for="add-name" class="text-sm font-medium text-gray-700">Full Name</label>
+    <input id="add-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="userForm.name" />
+    @if (userForm.name().touched() && userForm.name().invalid()) {
+      <div class="error-message">
+        @for (err of userForm.name().errors(); track err) { <p>{{ err.message }}</p> }
       </div>
-      <button
-        (click)="close()"
-        class="text-gray-400 hover:text-gray-600 transition-colors rounded-lg p-1 hover:bg-gray-100">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    @if (createUserError()) {
-      <p class="mt-3 error-message">{{ createUserError() }}</p>
     }
-
-    <form (submit)="onSubmit($event)">
-      <div class="flex flex-col gap-4">
-        <div class="form-field">
-          <label class="text-sm font-medium text-gray-700">Full Name</label>
-          <input
-            type="text"
-            placeholder="John Doe"
-            class="px-4 py-2 form-input transition-all"
-            [formField]="userForm.name"
-          />
-          @if (userForm.name().touched() && userForm.name().invalid()) {
-            <div class="error-message">
-              @for (error of userForm.name().errors(); track error) {
-                <p>{{ error.message }}</p>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="form-field">
-          <label class="text-sm font-medium text-gray-700">Email Address</label>
-          <input
-            type="email"
-            placeholder="john@example.com"
-            class="px-4 py-2 form-input transition-all"
-            [formField]="userForm.email"
-          />
-          @if (userForm.email().touched() && userForm.email().invalid()) {
-            <div class="error-message">
-              @for (error of userForm.email().errors(); track error) {
-                <p>{{ error.message }}</p>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="form-field">
-          <label class="text-sm font-medium text-gray-700">Password</label>
-          <input
-            type="password"
-            placeholder="Min. 8 characters"
-            class="px-4 py-2 form-input transition-all"
-            [formField]="userForm.password"
-          />
-          @if (userForm.password().touched() && userForm.password().invalid()) {
-            <div class="error-message">
-              @for (error of userForm.password().errors(); track error) {
-                <p>{{ error.message }}</p>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="form-field">
-          <label class="text-sm font-medium text-gray-700">Role</label>
-          <select
-            [formField]="userForm.role"
-            class="px-4 py-2 form-input border-gray-300 bg-white">
-            @for (role of userRoles; track role) {
-              <option [value]="role">{{ role }}</option>
-            }
-          </select>
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
-        <button
-          (click)="close()"
-          class="px-5 py-2 btn-secondary">
-          Cancel
-        </button>
-        <button
-          type="submit"
-          class="px-5 py-2 btn-primary"
-          [disabled]="userForm().invalid()">
-          Add User
-        </button>
-      </div>
-    </form>
   </div>
-</div>
+
+  <div class="form-field">
+    <label for="add-email" class="text-sm font-medium text-gray-700">Email Address</label>
+    <input id="add-email" type="email" placeholder="john@example.com" class="px-4 py-2 form-input transition-all" [formField]="userForm.email" />
+    @if (userForm.email().touched() && userForm.email().invalid()) {
+      <div class="error-message">
+        @for (err of userForm.email().errors(); track err) { <p>{{ err.message }}</p> }
+      </div>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="add-password" class="text-sm font-medium text-gray-700">Password</label>
+    <input id="add-password" type="password" placeholder="Min. 8 characters" class="px-4 py-2 form-input transition-all" [formField]="userForm.password" />
+    @if (userForm.password().touched() && userForm.password().invalid()) {
+      <div class="error-message">
+        @for (err of userForm.password().errors(); track err) { <p>{{ err.message }}</p> }
+      </div>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="add-role" class="text-sm font-medium text-gray-700">Role</label>
+    <select id="add-role" [formField]="userForm.role" class="px-4 py-2 form-input border-gray-300 bg-white">
+      @for (role of userRoles; track role) { <option [value]="role">{{ role }}</option> }
+    </select>
+  </div>
+
+</app-user-modal>
 
 @if (showToast()) {
   <app-toast message="User added successfully!"></app-toast>
 }
+
