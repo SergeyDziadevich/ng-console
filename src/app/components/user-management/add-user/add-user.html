@@ -12,10 +12,10 @@
 
   <div class="form-field">
     <label for="add-name" class="text-sm font-medium text-gray-700">Full Name</label>
-    <input id="add-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="userForm.name" />
-    @if (userForm.name().touched() && userForm.name().invalid()) {
+    <input id="add-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="userForm.username" />
+    @if (userForm.username().touched() && userForm.username().invalid()) {
       <div class="error-message">
-        @for (err of userForm.name().errors(); track err) { <p>{{ err.message }}</p> }
+        @for (err of userForm.username().errors(); track err) { <p>{{ err.message }}</p> }
       </div>
     }
   </div>
