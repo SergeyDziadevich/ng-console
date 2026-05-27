@@ -21,10 +21,10 @@
     <!-- Name -->
     <div class="form-field">
       <label for="edit-name" class="text-sm font-medium text-gray-700">Full Name</label>
-      <input id="edit-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="editForm.name" />
-      @if (editForm.name().touched() && editForm.name().invalid()) {
+      <input id="edit-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="editForm.username" />
+      @if (editForm.username().touched() && editForm.username().invalid()) {
         <div class="error-message">
-          @for (err of editForm.name().errors(); track err) { <p>{{ err.message }}</p> }
+          @for (err of editForm.username().errors(); track err) { <p>{{ err.message }}</p> }
         </div>
       }
     </div>

@@ -35,18 +35,17 @@ export class EditUser {
   showToast = signal(false);
   error = signal<string | null>(null);
 
-  editModel = linkedSignal<{ name: string; email: string; role: UserRole }>(() => {
+  editModel = linkedSignal<{ username: string; email: string; role: UserRole }>(() => {
     const u = this.userResource.value();
-    if (!u) return { name: '', email: '', role: UserRole.User };
-    return { name: u.name, email: u.email, role: u.role || UserRole.User };
+    if (!u) return { username: '', email: '', role: UserRole.User };
+    return { username: u.username, email: u.email, role: u.role || UserRole.User };
   });
 
   editForm = form(this.editModel, (schemaPath) => {
-    required(schemaPath.name, { message: 'Name is required' });
+    required(schemaPath.username, { message: 'Name is required' });
     required(schemaPath.email, { message: 'Email is required' });
     email(schemaPath.email, { message: 'Enter a valid email address' });
   });
-
 
   close(): void {
     this.router.navigate(['/user-management']);
