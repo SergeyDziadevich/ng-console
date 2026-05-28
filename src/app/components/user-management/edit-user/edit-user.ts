@@ -35,18 +35,38 @@ export class EditUser {
   showToast = signal(false);
   error = signal<string | null>(null);
 
-  editModel = linkedSignal<{ name: string; email: string; role: UserRole }>(() => {
-    const u = this.userResource.value();
-    if (!u) return { name: '', email: '', role: UserRole.User };
-    return { name: u.name, email: u.email, role: u.role || UserRole.User };
-  });
+  editModel = linkedSignal<{ username: string; email: string; role: UserRole; avatarUrl?: string }>(
+    () => {
+      const u = this.userResource.value();
+      if (!u) return { username: '', email: '', role: UserRole.User, avatarUrl: undefined };
+      return {
+        username: u.username,
+        email: u.email,
+        role: u.role || UserRole.User,
+        avatarUrl: u.avatarUrl,
+      };
+    },
+  );
+
+  avatarPreview = linkedSignal<string | null>(() => this.userResource.value()?.avatarUrl ?? null);
 
   editForm = form(this.editModel, (schemaPath) => {
-    required(schemaPath.name, { message: 'Name is required' });
+    required(schemaPath.username, { message: 'Name is required' });
     required(schemaPath.email, { message: 'Email is required' });
     email(schemaPath.email, { message: 'Enter a valid email address' });
   });
 
+  onAvatarChange(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      this.avatarPreview.set(result);
+      this.editModel.update((m) => ({ ...m, avatarUrl: result }));
+    };
+    reader.readAsDataURL(file);
+  }
 
   close(): void {
     this.router.navigate(['/user-management']);

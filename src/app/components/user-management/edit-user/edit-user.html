@@ -21,10 +21,10 @@
     <!-- Name -->
     <div class="form-field">
       <label for="edit-name" class="text-sm font-medium text-gray-700">Full Name</label>
-      <input id="edit-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="editForm.name" />
-      @if (editForm.name().touched() && editForm.name().invalid()) {
+      <input id="edit-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="editForm.username" />
+      @if (editForm.username().touched() && editForm.username().invalid()) {
         <div class="error-message">
-          @for (err of editForm.name().errors(); track err) { <p>{{ err.message }}</p> }
+          @for (err of editForm.username().errors(); track err) { <p>{{ err.message }}</p> }
         </div>
       }
     </div>
@@ -46,6 +46,24 @@
       <select id="edit-role" [formField]="editForm.role" class="px-4 py-2 form-input border-gray-300 bg-white">
         @for (role of userRoles; track role) { <option [value]="role">{{ role }}</option> }
       </select>
+    </div>
+
+    <!-- Avatar -->
+    <div class="form-field">
+      <label for="avatar" class="text-sm font-medium text-gray-700">Avatar</label>
+      <div class="flex items-center gap-4 mt-1">
+        @if (avatarPreview()) {
+          <img [src]="avatarPreview()" alt="Avatar preview" class="w-12 h-12 rounded-full object-cover border border-gray-200" />
+        } @else {
+          <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+        }
+        <input id="avatar" type="file" accept="image/*" (change)="onAvatarChange($event)"
+          class="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+      </div>
     </div>
 
   </app-user-modal>

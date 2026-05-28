@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 export interface LoginCredentials {
   // email: string;
-  name: string;
+  username: string;
   password: string;
 }
 
@@ -28,17 +28,44 @@ export class AuthService {
 
   readonly isAuthenticated = signal(!!localStorage.getItem(TOKEN_KEY));
 
-  readonly currentUser = signal<AuthResponse['user'] | null>(null);
+  readonly currentUser = signal<AuthResponse['user'] | null>(
+    this.decodeToken(localStorage.getItem(TOKEN_KEY))
+  );
+
+  /**
+   * Decodes the payload of a JWT access token without verifying the signature.
+   * Returns the parsed payload object, or null if the token is invalid/missing.
+   */
+  decodeToken(token: string | null): AuthResponse['user'] | null {
+    if (!token) return null;
+    try {
+      const payloadBase64 = token.split('.')[1];
+      // Convert base64url → base64 and decode
+      const decoded = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+      const payload = JSON.parse(decoded);
+      console.log('Decoded token payload:', payload);
+      return {
+        name: payload.name ?? payload.username ?? '',
+        email: payload.email ?? '',
+        role: payload.role ?? '',
+      };
+    } catch (e) {
+      console.error('Failed to decode token', e);
+      return null;
+    }
+  }
 
   login(credentials: LoginCredentials) {
     return this.http
-      .post(`${environment.apiUrl}/api/auth`, credentials, { responseType: 'json' })
+      .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
       .pipe(
-        tap((res: any) => {
-          console.log('Login successful: ', res);
-          localStorage.setItem(TOKEN_KEY, `${res.name}-${res.email}`);
+        tap((res) => {
+          const token: string = res.access_token;
+          console.log('Login successful – raw token:', token);
+          localStorage.setItem(TOKEN_KEY, token);
           this.isAuthenticated.set(true);
-          this.currentUser.set(res);
+          // Decode the JWT to populate currentUser from its claims
+          this.currentUser.set(this.decodeToken(token));
         }),
       );
   }
