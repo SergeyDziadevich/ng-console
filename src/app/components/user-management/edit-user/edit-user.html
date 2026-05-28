@@ -48,6 +48,24 @@
       </select>
     </div>
 
+    <!-- Avatar -->
+    <div class="form-field">
+      <label class="text-sm font-medium text-gray-700">Avatar</label>
+      <div class="flex items-center gap-4 mt-1">
+        @if (avatarPreview()) {
+          <img [src]="avatarPreview()" alt="Avatar preview" class="w-12 h-12 rounded-full object-cover border border-gray-200" />
+        } @else {
+          <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+        }
+        <input type="file" accept="image/*" (change)="onAvatarChange($event)"
+          class="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+      </div>
+    </div>
+
   </app-user-modal>
 }
 
