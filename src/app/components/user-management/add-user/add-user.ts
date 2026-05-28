@@ -21,16 +21,30 @@ export class AddUser {
   userRoles = Object.values(UserRole);
   showToast = signal(false);
   error = signal<string | null>(null);
+  avatarPreview = signal<string | null>(null);
 
   userModel = signal<CreateUser>({
-    name: '',
+    username: '',
     email: '',
     password: '',
     role: UserRole.User,
+    avatarUrl: undefined,
   });
 
+  onAvatarChange(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      this.avatarPreview.set(result);
+      this.userModel.update((m) => ({ ...m, avatar: result }));
+    };
+    reader.readAsDataURL(file);
+  }
+
   userForm = form(this.userModel, (schemaPath) => {
-    required(schemaPath.name, { message: 'Name is required' });
+    required(schemaPath.username, { message: 'Name is required' });
     required(schemaPath.email, { message: 'Email is required' });
     email(schemaPath.email, { message: 'Enter a valid email address' });
     required(schemaPath.password, { message: 'Password is required' });
