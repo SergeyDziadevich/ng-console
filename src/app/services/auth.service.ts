@@ -57,9 +57,9 @@ export class AuthService {
 
   login(credentials: LoginCredentials) {
     return this.http
-      .post(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
+      .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
       .pipe(
-        tap((res: any) => {
+        tap((res) => {
           const token: string = res.access_token;
           console.log('Login successful – raw token:', token);
           localStorage.setItem(TOKEN_KEY, token);
@@ -69,19 +69,6 @@ export class AuthService {
         }),
       );
   }
-
-  // login(credentials: LoginCredentials) {
-  //   return this.http
-  //     .post(`${environment.apiUrl}/api/auth`, credentials, { responseType: 'json' })
-  //     .pipe(
-  //       tap((res: any) => {
-  //         console.log('Login successful: ', res);
-  //         localStorage.setItem(TOKEN_KEY, `${res.name}-${res.email}`);
-  //         this.isAuthenticated.set(true);
-  //         this.currentUser.set(res);
-  //       }),
-  //     );
-  // }
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
