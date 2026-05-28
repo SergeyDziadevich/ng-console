@@ -7,7 +7,8 @@ export interface User {
   email: string;
   password: string;
   role: UserRole;
-  settings?: string
+  settings?: string;
+  avatarUrl?: string;
 }
 
 export type CreateUser = Omit<User, '_id'>;
