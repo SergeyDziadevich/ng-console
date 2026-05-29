@@ -7,6 +7,9 @@ export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  // Re-validate token expiry on every navigation attempt.
+  authService.checkSession();
+
   if (authService.isAuthenticated()) {
     return true;
   }
