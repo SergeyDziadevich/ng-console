@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { SseService } from '../../services/sse.service';
 import { Subscription } from 'rxjs';
-import { DatePipe, JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-notifications',
-  imports: [DatePipe, JsonPipe],
+  imports: [DatePipe],
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
 })
