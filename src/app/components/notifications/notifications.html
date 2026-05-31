@@ -1,1 +1,8 @@
-<p>notifications works!</p>
+<h2>Real-time Stream</h2>
+<ul>
+  @for (msg of messages(); track msg) {
+    @if (!(msg?.type === 'keepAlive')) {
+      <li>{{ msg.message }} - {{ msg.timestamp | date:'mediumTime' }}</li>
+    }
+  }
+</ul>
