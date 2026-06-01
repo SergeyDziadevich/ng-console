@@ -20,6 +20,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
+        path: 'ai-assistant',
+        loadComponent: () =>
+          import('./components/ai-assistant/ai-assistant').then((m) => m.AiAssistant),
+      },
+      {
         path: 'user-management',
         loadComponent: () =>
           import('./components/user-management/user-management').then((m) => m.UserManagement),
