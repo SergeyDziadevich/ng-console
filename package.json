@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "node scripts/set-env.js",
     "start": "ng serve",
+    "prebuild": "node scripts/set-env.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -18,6 +20,7 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@genkit-ai/google-genai": "^1.36.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -28,6 +31,7 @@
     "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.3.0",
     "angular-eslint": "21.4.0",
+    "dotenv": "^17.4.2",
     "eslint": "^10.3.0",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.15",
