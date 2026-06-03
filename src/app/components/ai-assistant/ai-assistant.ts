@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
+import { WeatherWidget } from './weather-widget/weather-widget';
+
 interface Message {
   role: 'user' | 'model';
   text: string;
@@ -10,7 +12,7 @@ interface Message {
 
 @Component({
   selector: 'app-ai-assistant',
-  imports: [FormsModule],
+  imports: [FormsModule, WeatherWidget],
   templateUrl: './ai-assistant.html',
   styleUrl: './ai-assistant.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
