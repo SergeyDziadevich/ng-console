@@ -12,9 +12,9 @@
         [class.self-end]="msg.role === 'user'"
         [class.bg-indigo-600]="msg.role === 'user'"
         [class.text-white]="msg.role === 'user'"
-        [class.self-start]="msg.role === 'assistant'"
-        [class.bg-gray-100]="msg.role === 'assistant'"
-        [class.text-gray-800]="msg.role === 'assistant'"
+        [class.self-start]="msg.role === 'model'"
+        [class.bg-gray-100]="msg.role === 'model'"
+        [class.text-gray-800]="msg.role === 'model'"
       >{{ msg.text }}</div>
     }
     @if (loading()) {

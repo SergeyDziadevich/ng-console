@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: 'user' | 'model';
   text: string;
 }
 
@@ -36,11 +36,17 @@ export class AiAssistant {
     this.loading.set(true);
     this.error.set(null);
 
+    // Include the full conversation history (already contains the new user message)
+    const history = this.messages();
+
     this.http
-      .post<{ text: string }>(`${environment.apiUrl}/api/ai/generate`, { message: text })
+      .post<{ text: string }>(`${environment.apiUrl}/api/ai/generate`, {
+        message: text,
+        messages: history.map((msg) => ({ role: msg.role, content: msg.text })),
+      })
       .subscribe({
         next: (res) => {
-          this.messages.update((msgs) => [...msgs, { role: 'assistant', text: res.text }]);
+          this.messages.update((msgs) => [...msgs, { role: 'model', text: res.text }]);
           this.loading.set(false);
         },
         error: () => {
