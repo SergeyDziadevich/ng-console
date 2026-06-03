@@ -1,0 +1,21 @@
+@if (isWeather) {
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/90 to-indigo-600/90 p-6 text-white shadow-xl backdrop-blur-md transition-all hover:scale-[1.02] mt-2 mb-2 max-w-sm border border-white/20">
+    <div class="absolute -right-4 -top-4 opacity-20 text-9xl">
+      {{ getWeatherIcon() }}
+    </div>
+    
+    <div class="relative z-10 flex flex-col gap-1">
+      <h3 class="text-lg font-medium text-white/90 uppercase tracking-wider text-xs">{{ city }}</h3>
+      
+      <div class="flex items-center gap-4 mt-1">
+        <span class="text-6xl font-bold tracking-tighter drop-shadow-md">{{ temperature }}</span>
+        <div class="flex flex-col pt-2">
+          <span class="text-3xl drop-shadow-md">{{ getWeatherIcon() }}</span>
+          <span class="text-sm font-medium capitalize text-white/90 mt-1">{{ condition }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <span class="text-sm leading-relaxed whitespace-pre-wrap">{{ text }}</span>
+}

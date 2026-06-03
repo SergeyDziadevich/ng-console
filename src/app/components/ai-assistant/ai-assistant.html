@@ -15,7 +15,9 @@
         [class.self-start]="msg.role === 'model'"
         [class.bg-gray-100]="msg.role === 'model'"
         [class.text-gray-800]="msg.role === 'model'"
-      >{{ msg.text }}</div>
+      >
+        <app-weather-widget [text]="msg.text"></app-weather-widget>
+      </div>
     }
     @if (loading()) {
       <div class="self-start bg-gray-100 text-gray-400 text-sm px-4 py-2 rounded-2xl animate-pulse" aria-label="Loading response">
