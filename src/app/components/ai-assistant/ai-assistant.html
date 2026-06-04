@@ -16,7 +16,13 @@
         [class.bg-gray-100]="msg.role === 'model'"
         [class.text-gray-800]="msg.role === 'model'"
       >
-        <app-weather-widget [text]="msg.text"></app-weather-widget>
+        @if (isWeatherMessage(msg.text)) {
+          <app-weather-widget [text]="msg.text"></app-weather-widget>
+        } @else if (isUsersMessage(msg.text)) {
+          <app-users-widget [text]="msg.text"></app-users-widget>
+        } @else {
+          <span class="text-sm leading-relaxed whitespace-pre-wrap">{{ msg.text }}</span>
+        }
       </div>
     }
     @if (loading()) {
