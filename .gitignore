@@ -47,3 +47,4 @@ Thumbs.db
 # Environment secrets — never commit the real .env
 .env
 
+tasks.json
