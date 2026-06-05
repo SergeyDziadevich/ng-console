@@ -1,27 +1,36 @@
-// Reads .env and writes values into Angular environment files at build time.
-// Run automatically via the `prestart` and `prebuild` npm scripts.
-const { writeFileSync } = require('fs');
-const { resolve } = require('path');
-require('dotenv').config({ path: resolve(__dirname, '../.env') });
+const { writeFile } = require('fs');
+const path = require('path');
+require('dotenv').config();
 
-const geminiApiKey = process.env['GEMINI_API_KEY'] ?? '';
+const targetPath = path.join(__dirname, '../src/environments/environment.ts');
+const targetProdPath = path.join(__dirname, '../src/environments/environment.prod.ts');
 
-const devEnv = `export const environment = {
+const envConfigFile = `export const environment = {
   production: false,
-  apiUrl: 'http://localhost:4200',
-  geminiApiKey: '${geminiApiKey}',
+  apiUrl: '${process.env.API_URL || 'http://localhost:3000'}',
+  geminiApiKey: '${process.env.GEMINI_API_KEY || 'your-gemini-api-key-here'}',
 };
 `;
 
-const prodEnv = `export const environment = {
+const envConfigProdFile = `export const environment = {
   production: true,
-  apiUrl: 'https://your-production-api.com',
-  geminiApiKey: '${geminiApiKey}',
+  apiUrl: '${process.env.API_URL || 'http://localhost:3000'}',
+  geminiApiKey: '${process.env.GEMINI_API_KEY || 'your-gemini-api-key-here'}',
 };
 `;
 
-writeFileSync(resolve(__dirname, '../src/environments/environment.ts'), devEnv);
-writeFileSync(resolve(__dirname, '../src/environments/environment.prod.ts'), prodEnv);
+writeFile(targetPath, envConfigFile, function (err) {
+  if (err) {
+    console.error('Error writing environment.ts:', err);
+  } else {
+    console.log(`Generated environment.ts at ${targetPath}`);
+  }
+});
 
-console.log('✅ Environment files generated from .env');
-
+writeFile(targetProdPath, envConfigProdFile, function (err) {
+  if (err) {
+    console.error('Error writing environment.prod.ts:', err);
+  } else {
+    console.log(`Generated environment.prod.ts at ${targetProdPath}`);
+  }
+});

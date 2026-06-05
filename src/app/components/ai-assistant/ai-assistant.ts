@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -16,7 +16,6 @@ interface Message {
   imports: [FormsModule, WeatherWidget, UsersWidget],
   templateUrl: './ai-assistant.html',
   styleUrl: './ai-assistant.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiAssistant {
   private readonly http = inject(HttpClient);
