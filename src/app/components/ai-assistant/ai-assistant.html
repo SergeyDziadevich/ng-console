@@ -12,10 +12,18 @@
         [class.self-end]="msg.role === 'user'"
         [class.bg-indigo-600]="msg.role === 'user'"
         [class.text-white]="msg.role === 'user'"
-        [class.self-start]="msg.role === 'assistant'"
-        [class.bg-gray-100]="msg.role === 'assistant'"
-        [class.text-gray-800]="msg.role === 'assistant'"
-      >{{ msg.text }}</div>
+        [class.self-start]="msg.role === 'model'"
+        [class.bg-gray-100]="msg.role === 'model'"
+        [class.text-gray-800]="msg.role === 'model'"
+      >
+        @if (isWeatherMessage(msg.text)) {
+          <app-weather-widget [text]="msg.text"></app-weather-widget>
+        } @else if (isUsersMessage(msg.text)) {
+          <app-users-widget [text]="msg.text"></app-users-widget>
+        } @else {
+          <span class="text-sm leading-relaxed whitespace-pre-wrap">{{ msg.text }}</span>
+        }
+      </div>
     }
     @if (loading()) {
       <div class="self-start bg-gray-100 text-gray-400 text-sm px-4 py-2 rounded-2xl animate-pulse" aria-label="Loading response">
