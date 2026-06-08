@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
+import { provideExperimentalWebMcpTools } from '@angular/core';
+
 import { authGuard, canMatchAuthGuard, noAuthGuard } from './guards/auth.guard';
+import { addUserTool } from './web-mcp-tools/add-user.tool';
 
 export const routes: Routes = [
   {
@@ -14,6 +17,7 @@ export const routes: Routes = [
     // canMatch prevents downloading the shell (and all child) bundles when not authenticated
     canMatch: [canMatchAuthGuard],
     canActivate: [authGuard],
+    providers: [provideExperimentalWebMcpTools([addUserTool])],
     children: [
       {
         path: 'dashboard',
