@@ -3,7 +3,6 @@ import {
   inject,
   provideBrowserGlobalErrorListeners,
   provideExperimentalWebMcpTools,
-  Service,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -13,13 +12,14 @@ import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { UserService } from './services/user-service';
 import { CreateUser } from './models/user.model';
+import { AuthService } from './services/auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideExperimentalWebMcpTools([
       {
         name: 'add_user',
-        description: 'Adds a new user to the system.',
+        description: 'Adds a new user to the system. (Admin only)',
         inputSchema: {
           type: 'object',
           properties: {
@@ -39,6 +39,21 @@ export const appConfig: ApplicationConfig = {
           required: ['username', 'email', 'password', 'role'],
         },
         execute: async (args: Record<string, unknown>) => {
+          const authService = inject(AuthService);
+          const currentUser = authService.currentUser();
+
+          if (currentUser?.role !== 'admin') {
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: 'Access Denied: You do not have permission to add users. This action requires administrative privileges.',
+                },
+              ],
+              isError: true,
+            };
+          }
+
           const userService = inject(UserService);
           try {
             const user = await firstValueFrom(userService.createUser(args as CreateUser));
@@ -70,4 +85,3 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
   ],
 };
-
