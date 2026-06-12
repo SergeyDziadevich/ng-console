@@ -22,6 +22,7 @@ export class Login {
     // email: ['', [Validators.required, Validators.email]],
     name: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(6)]],
+    twoFactorCode: [''],
   });
 
   protected onSubmit(): void {
@@ -33,9 +34,9 @@ export class Login {
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    const { name, password } = this.form.getRawValue();
+    const { name, password, twoFactorCode } = this.form.getRawValue();
 
-    this.authService.login({ username: name!, password: password! }).subscribe({
+    this.authService.login({ username: name!, password: password!, twoFactorCode: twoFactorCode ?? undefined }).subscribe({
       next: () => {
         this.loading.set(false);
         this.router.navigate(['/']);

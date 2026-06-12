@@ -8,6 +8,7 @@ export interface LoginCredentials {
   // email: string;
   username: string;
   password: string;
+  twoFactorCode?: string;
 }
 
 export interface AuthResponse {
@@ -119,6 +120,14 @@ export class AuthService {
     this.isAuthenticated.set(false);
     this.currentUser.set(null);
     this.router.navigate(['/login']);
+  }
+
+  generate2FA() {
+    return this.http.post<{ qrCodeUrl: string }>(`${environment.apiUrl}/api/auth/2fa/generate`, {}, { responseType: 'json' });
+  }
+
+  turnOn2FA(twoFactorCode: string) {
+    return this.http.post(`${environment.apiUrl}/api/auth/2fa/turn-on`, { twoFactorCode }, { responseType: 'json' });
   }
 
   getToken(): string | null {
