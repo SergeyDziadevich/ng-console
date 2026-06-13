@@ -8,7 +8,12 @@ export interface LoginCredentials {
   // email: string;
   username: string;
   password: string;
-  twoFactorCode?: string;
+}
+
+export interface LoginResponse {
+  access_token?: string;
+  requires2fa?: boolean;
+  tempToken?: string;
 }
 
 export interface AuthResponse {
@@ -102,14 +107,30 @@ export class AuthService {
 
   login(credentials: LoginCredentials) {
     return this.http
-      .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
+      .post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
+      .pipe(
+        tap((res) => {
+          if (res.access_token) {
+            const token: string = res.access_token;
+            console.log('Login successful – raw token:', token);
+            localStorage.setItem(TOKEN_KEY, token);
+            this.isAuthenticated.set(true);
+            // Decode the JWT to populate currentUser from its claims
+            this.currentUser.set(this.decodeToken(token));
+          }
+        }),
+      );
+  }
+
+  verify2FA(tempToken: string, code: string) {
+    return this.http
+      .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/2fa/authenticate`, { tempToken, code }, { responseType: 'json' })
       .pipe(
         tap((res) => {
           const token: string = res.access_token;
-          console.log('Login successful – raw token:', token);
+          console.log('2FA successful – raw token:', token);
           localStorage.setItem(TOKEN_KEY, token);
           this.isAuthenticated.set(true);
-          // Decode the JWT to populate currentUser from its claims
           this.currentUser.set(this.decodeToken(token));
         }),
       );
