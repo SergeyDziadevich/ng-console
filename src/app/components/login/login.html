@@ -17,6 +17,7 @@
 
     <!-- Card -->
     <div class="bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-8">
+      @if (step() === 1) {
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
         <!-- Error Alert -->
@@ -107,18 +108,7 @@
           }
         </div>
 
-        <!-- 2FA Code (Optional) -->
-        <div class="mb-6">
-          <label for="twoFactorCode" class="block text-sm font-medium text-gray-300 mb-1.5">
-            2FA Code (Optional)
-          </label>
-          <input
-            id="twoFactorCode"
-            type="text"
-            formControlName="twoFactorCode"
-            placeholder="6-digit code"
-            class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors border-gray-600" />
-        </div>
+
 
         <!-- Submit -->
         <button
@@ -139,6 +129,62 @@
         </button>
 
       </form>
+      } @else {
+      <form [formGroup]="codeForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- Error Alert -->
+        @if (errorMessage()) {
+          <div role="alert"
+            class="mb-5 flex items-start gap-2 rounded-lg bg-red-900/40 border border-red-700 px-4 py-3 text-sm text-red-300">
+            <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- 2FA Code -->
+        <div class="mb-6">
+          <label for="twoFactorCode" class="block text-sm font-medium text-gray-300 mb-1.5">
+            2FA Code
+          </label>
+          <input
+            id="twoFactorCode"
+            type="text"
+            formControlName="twoFactorCode"
+            placeholder="6-digit code"
+            aria-required="true"
+            [attr.aria-describedby]="codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched ? 'code-error' : null"
+            class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            [class.border-red-500]="codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched"
+            [class.border-gray-600]="!(codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched)" />
+          @if (codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched) {
+            <p id="code-error" class="mt-1.5 text-xs text-red-400" role="alert">
+              Code is required.
+            </p>
+          }
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800">
+          @if (loading()) {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              Verifying…
+            </span>
+          } @else {
+            Verify Code
+          }
+        </button>
+      </form>
+      }
     </div>
   </div>
 </div>
