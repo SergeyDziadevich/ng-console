@@ -1,49 +1,120 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { QuillModule } from 'ngx-quill';
 import { TicketService } from '../../services/ticket.service';
-import { Ticket } from '../../models/ticket.model';
+import { Ticket, TicketStatus } from '../../models/ticket.model';
+import { UserService } from '../../../../services/user-service';
 
 @Component({
   selector: 'app-ticket-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, QuillModule],
   templateUrl: './ticket-detail.component.html',
-  styles: [`
-    .comments-section { margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; }
-    .comment { background: #f9f9f9; padding: 10px; margin-bottom: 5px; border-radius: 4px; }
-  `]
 })
 export class TicketDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private ticketService = inject(TicketService);
+  private userService = inject(UserService);
   
-  ticket?: Ticket;
-  newCommentText = '';
+  ticket = signal<Ticket | null>(null);
+  isLoading = signal(true);
+  error = signal(false);
+  newCommentText = signal('');
+
+  usersResource = this.userService.usersResource;
+
+  isEditing = signal(false);
+  editableTitle = signal('');
+  editableDescription = signal('');
+  editableAbout = signal('');
+  editableStatus = signal<TicketStatus>(TicketStatus.TODO);
+  editableEstimations = signal<number | null>(null);
+  editableAssignedPersonId = signal<string | null>(null);
 
   ngOnInit() {
+    this.usersResource.reload();
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.loadTicket(id);
+    } else {
+      this.isLoading.set(false);
+      this.error.set(true);
     }
   }
 
   loadTicket(id: number) {
-    this.ticketService.getTicket(id).subscribe(ticket => {
-      this.ticket = ticket;
+    this.isLoading.set(true);
+    this.ticketService.getTicket(id).subscribe({
+      next: (ticket) => {
+        this.ticket.set(ticket);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.error.set(true);
+        this.isLoading.set(false);
+      }
     });
   }
 
   addComment() {
-    if (!this.ticket || !this.newCommentText.trim()) return;
+    const t = this.ticket();
+    const text = this.newCommentText().trim();
+    if (!t || !text) return;
     
-    this.ticketService.addComment(this.ticket.id, this.newCommentText).subscribe(comment => {
-      if (!this.ticket!.comments) {
-        this.ticket!.comments = [];
-      }
-      this.ticket!.comments.push(comment);
-      this.newCommentText = '';
+    this.ticketService.addComment(t.id, text).subscribe(comment => {
+      const currentComments = t.comments || [];
+      this.ticket.update(ticket => ticket ? { ...ticket, comments: [...currentComments, comment] } : null);
+      this.newCommentText.set('');
     });
+  }
+
+  getAssignedPersonName(): string {
+    const t = this.ticket();
+    if (!t || !t.assignedPersonId) return 'Unassigned';
+    
+    const users = this.usersResource.value();
+    if (users) {
+      const user = users.find(u => u._id === t.assignedPersonId);
+      if (user) {
+        return user.displayName || user.username;
+      }
+    }
+    
+    return t.assignedPersonId;
+  }
+
+  editTicket() {
+    const t = this.ticket();
+    if (t) {
+      this.editableTitle.set(t.title || '');
+      this.editableDescription.set(t.description || '');
+      this.editableAbout.set(t.about || '');
+      this.editableStatus.set(t.status);
+      this.editableEstimations.set(t.estimations || null);
+      this.editableAssignedPersonId.set(t.assignedPersonId || null);
+      this.isEditing.set(true);
+    }
+  }
+
+  saveTicket() {
+    const t = this.ticket();
+    if (!t) return;
+    const title = this.editableTitle();
+    const desc = this.editableDescription();
+    const about = this.editableAbout();
+    const status = this.editableStatus();
+    const estimations = this.editableEstimations() || undefined;
+    const assignedPersonId = this.editableAssignedPersonId() || undefined;
+    
+    this.ticketService.updateTicket(t.id, { title, description: desc, about, status, estimations, assignedPersonId }).subscribe(() => {
+      this.ticket.update(ticket => ticket ? { ...ticket, title, description: desc, about, status, estimations, assignedPersonId } : null);
+      this.isEditing.set(false);
+    });
+  }
+
+  cancelEdit() {
+    this.isEditing.set(false);
   }
 }

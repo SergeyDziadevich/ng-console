@@ -1,26 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { TicketService } from '../../services/ticket.service';
-import { Ticket } from '../../models/ticket.model';
 
 @Component({
   selector: 'app-ticket-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterLink, CommonModule],
   templateUrl: './ticket-list.component.html',
-  styles: [`
-    .ticket-card { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
-    .status { font-weight: bold; }
-  `]
 })
 export class TicketListComponent implements OnInit {
-  private ticketService = inject(TicketService);
-  tickets: Ticket[] = [];
+  ticketService = inject(TicketService);
+  ticketsResource = this.ticketService.ticketsResource;
 
   ngOnInit() {
-    this.ticketService.getTickets().subscribe(tickets => {
-      this.tickets = tickets;
-    });
+    this.ticketsResource.reload();
   }
 }

@@ -19,6 +19,7 @@ export interface Ticket {
   updatedAt: string;
   status: TicketStatus;
   assignedPersonId?: string;
+  about?: string;
   estimations?: number;
   comments?: Comment[];
 }
