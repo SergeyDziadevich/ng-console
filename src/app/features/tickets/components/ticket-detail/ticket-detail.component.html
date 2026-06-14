@@ -1,0 +1,26 @@
+<div *ngIf="ticket" class="ticket-detail">
+  <h2>{{ ticket.title }}</h2>
+  <div class="ticket-meta">
+    <p><strong>Status:</strong> {{ ticket.status }}</p>
+    <p><strong>Description:</strong> {{ ticket.description }}</p>
+    <p *ngIf="ticket.estimations"><strong>Estimations:</strong> {{ ticket.estimations }}</p>
+    <p *ngIf="ticket.assignedPersonId"><strong>Assigned to:</strong> {{ ticket.assignedPersonId }}</p>
+  </div>
+
+  <div class="comments-section">
+    <h3>Comments</h3>
+    <div *ngIf="ticket.comments?.length === 0">No comments yet.</div>
+    <div *ngFor="let comment of ticket.comments" class="comment">
+      <p>{{ comment.text }}</p>
+      <small>{{ comment.createdAt | date:'short' }}</small>
+    </div>
+
+    <div class="add-comment">
+      <textarea [(ngModel)]="newCommentText" placeholder="Add a comment..."></textarea>
+      <button (click)="addComment()">Post Comment</button>
+    </div>
+  </div>
+</div>
+<div *ngIf="!ticket">
+  Loading ticket details...
+</div>
