@@ -9,6 +9,7 @@ export interface User {
   role: UserRole;
   settings?: string;
   avatarUrl?: string;
+  isTwoFactorEnabled?: boolean;
 }
 
 export type CreateUser = Omit<User, '_id'>;
