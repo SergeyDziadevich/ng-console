@@ -1,18 +1,17 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ticket, Comment } from '../models/ticket.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TicketService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/tickets'; // Assuming proxy or interceptor routes this correctly
+  private apiUrl = `${environment.apiUrl}/api/tickets`;
 
-  getTickets(): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(this.apiUrl);
-  }
+  ticketsResource = httpResource<Ticket[]>(() => this.apiUrl);
 
   getTicket(id: number): Observable<Ticket> {
     return this.http.get<Ticket>(`${this.apiUrl}/${id}`);
