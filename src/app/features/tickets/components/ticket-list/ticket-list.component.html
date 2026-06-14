@@ -1,0 +1,13 @@
+<div class="tickets-container">
+  <h2>Tickets</h2>
+  <div class="ticket-list">
+    <div *ngFor="let ticket of tickets" class="ticket-card" [routerLink]="['/tickets', ticket.id]">
+      <h3>{{ ticket.title }}</h3>
+      <p>{{ ticket.description }}</p>
+      <div class="meta">
+        <span class="status">Status: {{ ticket.status }}</span>
+        <span *ngIf="ticket.assignedPersonId">Assigned: {{ ticket.assignedPersonId }}</span>
+      </div>
+    </div>
+  </div>
+</div>
