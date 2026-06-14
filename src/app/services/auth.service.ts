@@ -10,6 +10,12 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface LoginResponse {
+  access_token?: string;
+  requires2fa?: boolean;
+  tempToken?: string;
+}
+
 export interface AuthResponse {
   token?: string;
   user: {
@@ -101,14 +107,30 @@ export class AuthService {
 
   login(credentials: LoginCredentials) {
     return this.http
-      .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
+      .post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
+      .pipe(
+        tap((res) => {
+          if (res.access_token) {
+            const token: string = res.access_token;
+            console.log('Login successful – raw token:', token);
+            localStorage.setItem(TOKEN_KEY, token);
+            this.isAuthenticated.set(true);
+            // Decode the JWT to populate currentUser from its claims
+            this.currentUser.set(this.decodeToken(token));
+          }
+        }),
+      );
+  }
+
+  verify2FA(tempToken: string, code: string) {
+    return this.http
+      .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/2fa/authenticate`, { tempToken, code }, { responseType: 'json' })
       .pipe(
         tap((res) => {
           const token: string = res.access_token;
-          console.log('Login successful – raw token:', token);
+          console.log('2FA successful – raw token:', token);
           localStorage.setItem(TOKEN_KEY, token);
           this.isAuthenticated.set(true);
-          // Decode the JWT to populate currentUser from its claims
           this.currentUser.set(this.decodeToken(token));
         }),
       );
@@ -119,6 +141,14 @@ export class AuthService {
     this.isAuthenticated.set(false);
     this.currentUser.set(null);
     this.router.navigate(['/login']);
+  }
+
+  generate2FA() {
+    return this.http.post<{ qrCodeUrl: string }>(`${environment.apiUrl}/api/auth/2fa/generate`, {}, { responseType: 'json' });
+  }
+
+  turnOn2FA(twoFactorCode: string) {
+    return this.http.post(`${environment.apiUrl}/api/auth/2fa/turn-on`, { twoFactorCode }, { responseType: 'json' });
   }
 
   getToken(): string | null {
