@@ -1,0 +1,238 @@
+<div class="p-4 md:p-6 flex flex-col gap-4 max-w-6xl mx-auto w-full">
+  <!-- Header / Breadcrumb -->
+  <div class="flex items-center gap-3 text-gray-500 mb-2">
+    <a routerLink="/tickets" class="hover:text-blue-600 transition-colors flex items-center gap-1">
+      <app-svg-icon name="back" customClass="h-4 w-4"></app-svg-icon>
+      Back to Tickets
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex flex-1 justify-center items-center">
+      <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  }
+
+  @if (!isLoading() && ticket()) {
+    <div class="bg-white rounded-lg shadow border border-gray-100 overflow-hidden">
+      <!-- Ticket Meta Header -->
+      <div class="p-6 border-b border-gray-100 bg-gray-50">
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+          <div>
+            @if (!isEditing()) {
+              <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+                {{ ticket()!.title }}
+                @if (ticket()!.epic) {
+                  <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-700 border border-purple-200 uppercase tracking-wider">
+                    {{ ticket()!.epic?.name }}
+                  </span>
+                }
+              </h1>
+            } @else {
+              <div class="flex items-center gap-3 w-full max-w-2xl">
+                <input 
+                  type="text" 
+                  [ngModel]="editableTitle()" 
+                  (ngModelChange)="editableTitle.set($event)"
+                  class="block w-full text-xl font-semibold rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 mb-1 py-1.5 px-3 min-w-[400px]"
+                  placeholder="Ticket Title">
+                
+                <select 
+                  [ngModel]="editableEpicId()" 
+                  (ngModelChange)="editableEpicId.set($event)"
+                  class="block w-40 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1.5 px-3 bg-white text-gray-900 font-medium">
+                  <option value="">No Epic</option>
+                  @for (epic of epicsResource.value() || []; track epic.id) {
+                    <option [value]="epic.id.toString()">{{ epic.name }}</option>
+                  }
+                </select>
+              </div>
+            }
+            <p class="text-sm text-gray-500 mt-1">Created on {{ ticket()!.createdAt | date:'medium' }}</p>
+          </div>
+          <div class="flex flex-col items-end gap-3">
+            @if (!isEditing()) {
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 text-sm font-bold rounded-full border shadow-sm"
+                      [class.bg-gray-50]="ticket()!.priority === 'low'"
+                      [class.text-gray-700]="ticket()!.priority === 'low'"
+                      [class.border-gray-200]="ticket()!.priority === 'low'"
+                      [class.bg-yellow-50]="ticket()!.priority === 'medium'"
+                      [class.text-yellow-700]="ticket()!.priority === 'medium'"
+                      [class.border-yellow-200]="ticket()!.priority === 'medium'"
+                      [class.bg-orange-50]="ticket()!.priority === 'high'"
+                      [class.text-orange-700]="ticket()!.priority === 'high'"
+                      [class.border-orange-200]="ticket()!.priority === 'high'"
+                      [class.bg-red-50]="ticket()!.priority === 'critical'"
+                      [class.text-red-700]="ticket()!.priority === 'critical'"
+                      [class.border-red-200]="ticket()!.priority === 'critical'">
+                  {{ (ticket()!.priority || 'medium') | uppercase }}
+                </span>
+                <span class="px-3 py-1 text-sm font-bold rounded-full border shadow-sm"
+                      [class.bg-gray-50]="ticket()!.status === 'todo'"
+                      [class.text-gray-700]="ticket()!.status === 'todo'"
+                      [class.border-gray-200]="ticket()!.status === 'todo'"
+                      [class.bg-blue-50]="ticket()!.status === 'in progress'"
+                      [class.text-blue-700]="ticket()!.status === 'in progress'"
+                      [class.border-blue-200]="ticket()!.status === 'in progress'"
+                      [class.bg-green-50]="ticket()!.status === 'done'"
+                      [class.text-green-700]="ticket()!.status === 'done'"
+                      [class.border-green-200]="ticket()!.status === 'done'">
+                  {{ ticket()!.status | uppercase }}
+                </span>
+              </div>
+              <button (click)="editTicket()" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+                <app-svg-icon name="edit" customClass="h-4 w-4"></app-svg-icon>
+                Edit Ticket
+              </button>
+            } @else {
+              <div class="flex items-center gap-2">
+                <select 
+                  [ngModel]="editablePriority()" 
+                  (ngModelChange)="editablePriority.set($event)"
+                  class="block w-40 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1.5 px-3 bg-white text-gray-900 font-medium">
+                  <option value="low">LOW</option>
+                  <option value="medium">MEDIUM</option>
+                  <option value="high">HIGH</option>
+                  <option value="critical">CRITICAL</option>
+                </select>
+                <select 
+                  [ngModel]="editableStatus()" 
+                  (ngModelChange)="editableStatus.set($event)"
+                  class="block w-40 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1.5 px-3 bg-white text-gray-900 font-medium">
+                  <option value="todo">TODO</option>
+                  <option value="in progress">IN PROGRESS</option>
+                  <option value="done">DONE</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-2">
+                <button (click)="cancelEdit()" class="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm text-sm">Cancel</button>
+                <button (click)="saveTicket()" class="px-3 py-1.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors shadow-sm text-sm">Save</button>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-6 text-sm text-gray-600 mt-3">
+          <div class="flex items-center gap-1.5">
+            <app-svg-icon name="user" customClass="h-4 w-4 text-gray-400"></app-svg-icon>
+            @if (!isEditing()) {
+              <span class="font-medium text-gray-800">{{ getAssignedPersonName() }}</span>
+            } @else {
+              <select 
+                [ngModel]="editableAssignedPersonId()" 
+                (ngModelChange)="editableAssignedPersonId.set($event)"
+                class="block w-48 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1 px-2 border bg-white">
+                <option [ngValue]="null">Unassigned</option>
+                @for (user of usersResource.value(); track user._id) {
+                  <option [value]="user._id">{{ user.displayName || user.username }}</option>
+                }
+              </select>
+            }
+          </div>
+          @if (ticket()!.estimations || isEditing()) {
+            <div class="flex items-center gap-1.5">
+              <app-svg-icon name="clock" customClass="h-4 w-4 text-gray-400"></app-svg-icon>
+              @if (!isEditing()) {
+                <span class="font-medium text-gray-800">{{ ticket()!.estimations }} hours</span>
+              } @else {
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="number" 
+                    [ngModel]="editableEstimations()" 
+                    (ngModelChange)="editableEstimations.set($event)"
+                    class="block w-24 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1 px-2 border"
+                    placeholder="Hours">
+                  <span class="text-xs text-gray-500">hours</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Ticket Metadata (About) -->
+      @if (ticket()!.about || isEditing()) {
+        <div class="p-6 border-b border-gray-100 bg-white">
+          <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">About</h4>
+          @if (!isEditing()) {
+            <p class="text-gray-900 font-medium whitespace-pre-wrap">{{ ticket()!.about }}</p>
+          } @else {
+            <textarea 
+              [ngModel]="editableAbout()"
+              (ngModelChange)="editableAbout.set($event)"
+              rows="3" 
+              class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 mt-2"
+              placeholder="Add additional info about this ticket..."></textarea>
+          }
+        </div>
+      }
+
+      <!-- Ticket Details / Description -->
+      <div class="p-6">
+        <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Description</h3>
+        
+        @if (!isEditing()) {
+          <div class="text-gray-800 mb-6 prose max-w-none min-h-[500px]" [innerHTML]="ticket()!.description"></div>
+        } @else {
+          <div class="mb-6">
+            <quill-editor 
+              [ngModel]="editableDescription()"
+              (ngModelChange)="editableDescription.set($event)"
+              [styles]="{'height': '50vh', 'max-height': '600px', 'overflow-y': 'auto'}"
+              class="block"
+              theme="snow">
+            </quill-editor>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="mt-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Comments</h3>
+      
+      <div class="flex flex-col gap-4 mb-6 max-h-96 overflow-y-auto pr-2">
+        @for (comment of ticket()!.comments; track comment.id) {
+          <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold text-sm text-gray-900">{{ comment.authorId || 'Unknown User' }}</span>
+              <span class="text-xs text-gray-400">{{ comment.createdAt | date:'short' }}</span>
+            </div>
+            <p class="text-gray-700 text-sm whitespace-pre-wrap">{{ comment.text }}</p>
+          </div>
+        } @empty {
+          <div class="text-gray-500 italic text-sm py-4">No comments yet. Be the first to comment!</div>
+        }
+      </div>
+
+      <!-- Add Comment Form -->
+      <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
+        <h4 class="text-sm font-semibold text-gray-700 mb-3">Add a Comment</h4>
+        <textarea 
+          [ngModel]="newCommentText()" 
+          (ngModelChange)="newCommentText.set($event)"
+          rows="3" 
+          class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border mb-3"
+          placeholder="Write your update here..."></textarea>
+        <div class="flex justify-end">
+          <button 
+            (click)="addComment()"
+            [disabled]="!newCommentText().trim()"
+            class="px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
+            Post Comment
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="flex flex-1 flex-col items-center justify-center gap-4 text-center px-4 py-12">
+      <app-svg-icon name="warning" customClass="w-16 h-16 text-red-400"></app-svg-icon>
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800">Ticket Not Found</h2>
+        <p class="mt-1 text-sm text-gray-500">We couldn't load this ticket. It may have been deleted or doesn't exist.</p>
+      </div>
+    </div>
+  }
+</div>
