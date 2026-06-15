@@ -48,3 +48,6 @@ Thumbs.db
 .env
 
 tasks.json
+
+AGENTS.md
+.github/copilot-instructions.md
