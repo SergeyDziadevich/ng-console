@@ -4,11 +4,23 @@ export enum TicketStatus {
   DONE = 'done',
 }
 
+export enum TicketPriority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical',
+}
+
 export interface Comment {
   id: number;
   text: string;
   createdAt: string;
   authorId?: string;
+}
+
+export interface EpicTag {
+  id: number;
+  name: string;
 }
 
 export interface Ticket {
@@ -18,8 +30,10 @@ export interface Ticket {
   createdAt: string;
   updatedAt: string;
   status: TicketStatus;
+  priority?: TicketPriority;
   assignedPersonId?: string;
   about?: string;
   estimations?: number;
   comments?: Comment[];
+  epic?: EpicTag;
 }

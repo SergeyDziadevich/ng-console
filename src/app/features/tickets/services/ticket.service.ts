@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Ticket, Comment } from '../models/ticket.model';
+import { Ticket, Comment, EpicTag } from '../models/ticket.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -12,6 +12,7 @@ export class TicketService {
   private apiUrl = `${environment.apiUrl}/api/tickets`;
 
   ticketsResource = httpResource<Ticket[]>(() => this.apiUrl);
+  epicsResource = httpResource<EpicTag[]>(() => `${this.apiUrl}/epics`);
 
   getTicket(id: number): Observable<Ticket> {
     return this.http.get<Ticket>(`${this.apiUrl}/${id}`);
