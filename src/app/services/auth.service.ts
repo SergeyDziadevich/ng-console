@@ -19,6 +19,7 @@ export interface LoginResponse {
 export interface AuthResponse {
   token?: string;
   user: {
+    id: string;
     name: string;
     email: string;
     role: string;
@@ -60,6 +61,7 @@ export class AuthService {
       const payload = JSON.parse(decoded);
       console.log('Decoded token payload:', payload);
       return {
+        id: payload.sub ?? '',
         name: payload.name ?? payload.username ?? '',
         email: payload.email ?? '',
         role: payload.role ?? '',

@@ -35,7 +35,12 @@
           <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon" />
         </svg>
         @if (!collapsed()) {
-          <span class="text-sm font-medium whitespace-nowrap">{{ item.label }}</span>
+          <span class="text-sm font-medium whitespace-nowrap flex-1">{{ item.label }}</span>
+          @if (item.label === 'Tickets') {
+            <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-100 bg-purple-600 rounded-full shadow-sm">Preview</span>
+          } @else if (item.label === 'AI Assistant') {
+            <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-100 bg-green-600 rounded-full shadow-sm">Beta</span>
+          }
         }
       </a>
     }
