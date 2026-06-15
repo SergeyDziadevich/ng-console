@@ -1,0 +1,115 @@
+<div class="h-full flex flex-col gap-4 p-4">
+  <!-- Toolbar -->
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-4">
+      <h1 class="text-2xl font-semibold text-gray-800">Tickets</h1>
+      <label class="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
+        <input type="checkbox" [checked]="showAssignedToMeOnly()" (change)="toggleAssignedToMeFilter()" class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer">
+        <span class="text-sm font-medium text-gray-700">Assigned to me</span>
+      </label>
+      <select class="bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              (change)="onEpicChange($event)">
+        <option value="">All Epics</option>
+        @for (epic of epicsResource.value() || []; track epic.id) {
+          <option [value]="epic.id" [selected]="epic.id.toString() === selectedEpicId()">{{ epic.name }}</option>
+        }
+      </select>
+    </div>
+    <button class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Add Ticket
+    </button>
+  </div>
+
+  @if (ticketsResource.isLoading()) {
+    <div class="flex flex-1 justify-center items-center">
+      <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  }
+
+  @if (!ticketsResource.isLoading() && ticketsResource.value()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (ticket of filteredTickets(); track ticket.id) {
+        <div class="bg-white rounded-lg shadow p-5 cursor-pointer hover:shadow-md transition-shadow border border-gray-100" [routerLink]="['/tickets', ticket.id]">
+          <div class="flex justify-between items-start mb-3">
+            <h3 class="text-lg font-semibold text-gray-900">{{ ticket.title }}</h3>
+            <div class="flex items-center gap-2">
+              @if (ticket.epic) {
+                <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                  {{ ticket.epic.name }}
+                </span>
+              }
+              <span class="px-2.5 py-1 text-xs font-bold rounded-full border"
+                    [class.bg-gray-50]="ticket.priority === 'low'"
+                    [class.text-gray-700]="ticket.priority === 'low'"
+                    [class.border-gray-200]="ticket.priority === 'low'"
+                    [class.bg-yellow-50]="ticket.priority === 'medium'"
+                    [class.text-yellow-700]="ticket.priority === 'medium'"
+                    [class.border-yellow-200]="ticket.priority === 'medium'"
+                    [class.bg-orange-50]="ticket.priority === 'high'"
+                    [class.text-orange-700]="ticket.priority === 'high'"
+                    [class.border-orange-200]="ticket.priority === 'high'"
+                    [class.bg-red-50]="ticket.priority === 'critical'"
+                    [class.text-red-700]="ticket.priority === 'critical'"
+                    [class.border-red-200]="ticket.priority === 'critical'">
+                {{ (ticket.priority || 'medium') | uppercase }}
+              </span>
+              <span class="px-2.5 py-1 text-xs font-bold rounded-full border"
+                    [class.bg-gray-50]="ticket.status === 'todo'"
+                    [class.text-gray-700]="ticket.status === 'todo'"
+                    [class.border-gray-200]="ticket.status === 'todo'"
+                    [class.bg-blue-50]="ticket.status === 'in progress'"
+                    [class.text-blue-700]="ticket.status === 'in progress'"
+                    [class.border-blue-200]="ticket.status === 'in progress'"
+                    [class.bg-green-50]="ticket.status === 'done'"
+                    [class.text-green-700]="ticket.status === 'done'"
+                    [class.border-green-200]="ticket.status === 'done'">
+                {{ ticket.status | uppercase }}
+              </span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600 mb-5 line-clamp-3">{{ ticket.about || 'No additional information.' }}</p>
+          <div class="flex justify-between items-center pt-3 border-t border-gray-100 text-xs font-medium text-gray-500">
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              {{ getAssignedPersonName(ticket.assignedPersonId) }}
+            </span>
+            <span *ngIf="ticket.estimations">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ ticket.estimations }}h
+            </span>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-span-full text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <p class="text-lg">No tickets found.</p>
+          <p class="text-sm mt-1">Create a new ticket to get started.</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (ticketsResource.error()) {
+    <div class="flex flex-1 flex-col items-center justify-center gap-4 text-center px-4 bg-white rounded-lg shadow-sm border border-gray-100 py-12">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+      </svg>
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800">Something went wrong</h2>
+        <p class="mt-1 text-sm text-gray-500">We couldn't load the tickets. Please try again.</p>
+      </div>
+      <button (click)="ticketsResource.reload()" class="mt-4 px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+        Retry
+      </button>
+    </div>
+  }
+</div>

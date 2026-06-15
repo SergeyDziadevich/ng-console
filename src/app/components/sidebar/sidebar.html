@@ -29,13 +29,18 @@
       <a
         [routerLink]="item.route"
         routerLinkActive="bg-indigo-600 text-white"
-        [routerLinkActiveOptions]="{ exact: true }"
+        [routerLinkActiveOptions]="{ exact: item.route === '/' }"
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon" />
         </svg>
         @if (!collapsed()) {
-          <span class="text-sm font-medium whitespace-nowrap">{{ item.label }}</span>
+          <span class="text-sm font-medium whitespace-nowrap flex-1">{{ item.label }}</span>
+          @if (item.label === 'Tickets') {
+            <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-100 bg-purple-600 rounded-full shadow-sm">Preview</span>
+          } @else if (item.label === 'AI Assistant') {
+            <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-100 bg-green-600 rounded-full shadow-sm">Beta</span>
+          }
         }
       </a>
     }
