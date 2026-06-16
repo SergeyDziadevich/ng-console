@@ -7,11 +7,13 @@ import { TicketService } from '../../services/ticket.service';
 import { Ticket, TicketStatus, TicketPriority } from '../../models/ticket.model';
 import { UserService } from '../../../../services/user-service';
 import { SvgIconComponent } from '../../../../components/icons/svg-icon.component';
+import { firstValueFrom } from 'rxjs';
+import { form, FormField, FormRoot, required, min } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-ticket-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, QuillModule, SvgIconComponent],
+  imports: [CommonModule, FormsModule, RouterLink, QuillModule, SvgIconComponent, FormField, FormRoot],
   templateUrl: './ticket-detail.component.html',
 })
 export class TicketDetailComponent implements OnInit {
@@ -28,14 +30,6 @@ export class TicketDetailComponent implements OnInit {
   epicsResource = this.ticketService.epicsResource;
 
   isEditing = signal(false);
-  editableTitle = signal('');
-  editableDescription = signal('');
-  editableAbout = signal('');
-  editableStatus = signal<TicketStatus>(TicketStatus.TODO);
-  editablePriority = signal<TicketPriority>(TicketPriority.MEDIUM);
-  editableEstimations = signal<number | null>(null);
-  editableAssignedPersonId = signal<string | null>(null);
-  editableEpicId = signal<string>('');
 
   ngOnInit() {
     this.usersResource.reload();
@@ -62,6 +56,62 @@ export class TicketDetailComponent implements OnInit {
       }
     });
   }
+
+  ticketModel = signal({
+    title: '',
+    description: '',
+    about: '',
+    status: TicketStatus.TODO,
+    priority: TicketPriority.MEDIUM,
+    estimations: null as number | null,
+    assignedPersonId: '',
+    epicId: '',
+  });
+
+  ticketForm = form(this.ticketModel, (schemaPath) => {
+    required(schemaPath.title, { message: 'Title is required' });
+    required(schemaPath.description, { message: 'Description is required' });
+    min(schemaPath.estimations, 0, { message: 'Estimation cannot be negative' });
+  }, {
+    submission: {
+      action: async () => {
+        if (this.ticketForm().invalid()) return undefined;
+
+        const t = this.ticket();
+        if (!t) return undefined;
+
+        const val = this.ticketModel();
+        const epicId = val.epicId ? Number(val.epicId) : null;
+        const epicObj = epicId ? { id: epicId, name: this.epicsResource.value()?.find(e => e.id === epicId)?.name || '' } : undefined;
+
+        const payload: any = {
+          title: val.title,
+          description: val.description,
+          about: val.about || '',
+          status: val.status,
+          priority: val.priority,
+          estimations: val.estimations || undefined,
+          assignedPersonId: val.assignedPersonId || undefined,
+        };
+
+        if (epicObj) {
+          payload.epic = epicObj;
+        } else {
+          payload.epic = null;
+        }
+
+        try {
+          await firstValueFrom(this.ticketService.updateTicket(t.id, payload));
+          this.ticket.update(ticket => ticket ? { ...ticket, title: val.title, description: val.description, about: val.about, status: val.status, priority: val.priority, estimations: val.estimations || undefined, assignedPersonId: val.assignedPersonId || undefined, epic: epicObj } : null);
+          this.isEditing.set(false);
+          return undefined;
+        } catch (err) {
+          console.error('Error updating ticket:', err);
+          return undefined;
+        }
+      }
+    }
+  });
 
   addComment() {
     const t = this.ticket();
@@ -93,42 +143,18 @@ export class TicketDetailComponent implements OnInit {
   editTicket() {
     const t = this.ticket();
     if (t) {
-      this.editableTitle.set(t.title || '');
-      this.editableDescription.set(t.description || '');
-      this.editableAbout.set(t.about || '');
-      this.editableStatus.set(t.status);
-      this.editablePriority.set(t.priority || TicketPriority.MEDIUM);
-      this.editableEstimations.set(t.estimations || null);
-      this.editableAssignedPersonId.set(t.assignedPersonId || null);
-      this.editableEpicId.set(t.epic?.id?.toString() || '');
+      this.ticketModel.set({
+        title: t.title || '',
+        description: t.description || '',
+        about: t.about || '',
+        status: t.status,
+        priority: t.priority || TicketPriority.MEDIUM,
+        estimations: t.estimations || null,
+        assignedPersonId: t.assignedPersonId || '',
+        epicId: t.epic?.id?.toString() || '',
+      });
       this.isEditing.set(true);
     }
-  }
-
-  saveTicket() {
-    const t = this.ticket();
-    if (!t) return;
-    const title = this.editableTitle();
-    const desc = this.editableDescription();
-    const about = this.editableAbout();
-    const status = this.editableStatus();
-    const priority = this.editablePriority();
-    const estimations = this.editableEstimations() || undefined;
-    const assignedPersonId = this.editableAssignedPersonId() || undefined;
-    const epicId = this.editableEpicId() ? Number(this.editableEpicId()) : null;
-    const epicObj = epicId ? { id: epicId, name: this.epicsResource.value()?.find(e => e.id === epicId)?.name || '' } : undefined;
-    // TypeORM update with { epic: epicObj } works since entity has @ManyToOne to EpicTag
-    const payload: any = { title, description: desc, about, status, priority, estimations, assignedPersonId };
-    if (epicObj) {
-      payload.epic = epicObj;
-    } else {
-      payload.epic = null;
-    }
-
-    this.ticketService.updateTicket(t.id, payload).subscribe(() => {
-      this.ticket.update(ticket => ticket ? { ...ticket, title, description: desc, about, status, priority, estimations, assignedPersonId, epic: epicObj } : null);
-      this.isEditing.set(false);
-    });
   }
 
   cancelEdit() {

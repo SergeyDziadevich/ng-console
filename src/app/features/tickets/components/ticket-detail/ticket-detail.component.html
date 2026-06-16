@@ -16,6 +16,7 @@
   @if (!isLoading() && ticket()) {
     <div class="bg-white rounded-lg shadow border border-gray-100 overflow-hidden">
       <!-- Ticket Meta Header -->
+      <form [formRoot]="ticketForm" class="block">
       <div class="p-6 border-b border-gray-100 bg-gray-50">
         <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
           <div>
@@ -32,14 +33,12 @@
               <div class="flex items-center gap-3 w-full max-w-2xl">
                 <input 
                   type="text" 
-                  [ngModel]="editableTitle()" 
-                  (ngModelChange)="editableTitle.set($event)"
+                  [formField]="ticketForm.title"
                   class="block w-full text-xl font-semibold rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 mb-1 py-1.5 px-3 min-w-[400px]"
                   placeholder="Ticket Title">
                 
                 <select 
-                  [ngModel]="editableEpicId()" 
-                  (ngModelChange)="editableEpicId.set($event)"
+                  [formField]="ticketForm.epicId"
                   class="block w-40 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1.5 px-3 bg-white text-gray-900 font-medium">
                   <option value="">No Epic</option>
                   @for (epic of epicsResource.value() || []; track epic.id) {
@@ -81,15 +80,14 @@
                   {{ ticket()!.status | uppercase }}
                 </span>
               </div>
-              <button (click)="editTicket()" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
+              <button type="button" (click)="editTicket()" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1">
                 <app-svg-icon name="edit" customClass="h-4 w-4"></app-svg-icon>
                 Edit Ticket
               </button>
             } @else {
               <div class="flex items-center gap-2">
                 <select 
-                  [ngModel]="editablePriority()" 
-                  (ngModelChange)="editablePriority.set($event)"
+                  [formField]="ticketForm.priority"
                   class="block w-40 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1.5 px-3 bg-white text-gray-900 font-medium">
                   <option value="low">LOW</option>
                   <option value="medium">MEDIUM</option>
@@ -97,8 +95,7 @@
                   <option value="critical">CRITICAL</option>
                 </select>
                 <select 
-                  [ngModel]="editableStatus()" 
-                  (ngModelChange)="editableStatus.set($event)"
+                  [formField]="ticketForm.status"
                   class="block w-40 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1.5 px-3 bg-white text-gray-900 font-medium">
                   <option value="todo">TODO</option>
                   <option value="in progress">IN PROGRESS</option>
@@ -106,8 +103,8 @@
                 </select>
               </div>
               <div class="flex items-center gap-2">
-                <button (click)="cancelEdit()" class="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm text-sm">Cancel</button>
-                <button (click)="saveTicket()" class="px-3 py-1.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors shadow-sm text-sm">Save</button>
+                <button type="button" (click)="cancelEdit()" class="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 font-medium rounded-md hover:bg-gray-50 transition-colors shadow-sm text-sm">Cancel</button>
+                <button type="submit" class="px-3 py-1.5 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors shadow-sm text-sm">Save</button>
               </div>
             }
           </div>
@@ -119,10 +116,9 @@
               <span class="font-medium text-gray-800">{{ getAssignedPersonName() }}</span>
             } @else {
               <select 
-                [ngModel]="editableAssignedPersonId()" 
-                (ngModelChange)="editableAssignedPersonId.set($event)"
+                [formField]="ticketForm.assignedPersonId"
                 class="block w-48 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1 px-2 border bg-white">
-                <option [ngValue]="null">Unassigned</option>
+                <option value="">Unassigned</option>
                 @for (user of usersResource.value(); track user._id) {
                   <option [value]="user._id">{{ user.displayName || user.username }}</option>
                 }
@@ -138,8 +134,7 @@
                 <div class="flex items-center gap-2">
                   <input 
                     type="number" 
-                    [ngModel]="editableEstimations()" 
-                    (ngModelChange)="editableEstimations.set($event)"
+                    [formField]="ticketForm.estimations"
                     class="block w-24 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-1 px-2 border"
                     placeholder="Hours">
                   <span class="text-xs text-gray-500">hours</span>
@@ -158,8 +153,7 @@
             <p class="text-gray-900 font-medium whitespace-pre-wrap">{{ ticket()!.about }}</p>
           } @else {
             <textarea 
-              [ngModel]="editableAbout()"
-              (ngModelChange)="editableAbout.set($event)"
+              [formField]="ticketForm.about"
               rows="3" 
               class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 mt-2"
               placeholder="Add additional info about this ticket..."></textarea>
@@ -176,8 +170,7 @@
         } @else {
           <div class="mb-6">
             <quill-editor 
-              [ngModel]="editableDescription()"
-              (ngModelChange)="editableDescription.set($event)"
+              [formField]="ticketForm.description"
               [styles]="{'height': '50vh', 'max-height': '600px', 'overflow-y': 'auto'}"
               class="block"
               theme="snow">
@@ -185,6 +178,7 @@
           </div>
         }
       </div>
+      </form>
     </div>
 
     <!-- Comments Section -->
