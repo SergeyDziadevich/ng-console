@@ -1,16 +1,17 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { form, FormField, FormRoot, required, min } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
 import { TicketService } from '../../services/ticket.service';
 import { UserService } from '../../../../services/user-service';
-import { TicketPriority, TicketStatus } from '../../models/ticket.model';
+import { Ticket, TicketPriority, TicketStatus } from '../../models/ticket.model';
 import { Toast } from '../../../../components/toast/toast';
 
 @Component({
   selector: 'app-create-ticket',
   standalone: true,
-  imports: [FormsModule, RouterLink, CommonModule, Toast],
+  imports: [FormField, FormRoot, RouterLink, CommonModule, Toast],
   templateUrl: './create-ticket.component.html',
 })
 export class CreateTicketComponent implements OnInit {
@@ -21,19 +22,62 @@ export class CreateTicketComponent implements OnInit {
   usersResource = this.userService.usersResource;
   epicsResource = this.ticketService.epicsResource;
 
-  // Form fields as signals
-  title = signal('');
-  description = signal('');
-  about = signal('');
-  status = signal<TicketStatus>(TicketStatus.TODO);
-  priority = signal<TicketPriority>(TicketPriority.MEDIUM);
-  assignedPersonId = signal<string>('');
-  epicId = signal<string>('');
-  estimations = signal<number | null>(null);
+  ticketModel = signal({
+    title: '',
+    description: '',
+    about: '',
+    status: TicketStatus.TODO,
+    priority: TicketPriority.MEDIUM,
+    assignedPersonId: '',
+    epicId: '',
+    estimations: null as number | null,
+  });
+
+  ticketForm = form(this.ticketModel, (schemaPath) => {
+    required(schemaPath.title, { message: 'Title is required' });
+    required(schemaPath.description, { message: 'Description is required' });
+    min(schemaPath.estimations, 0, { message: 'Estimation cannot be negative' });
+  }, {
+    submission: {
+      action: async () => {
+        if (this.ticketForm().invalid()) {
+          return undefined;
+        }
+
+        this.isSubmitting.set(true);
+
+        const formVal = this.ticketModel();
+        const ticketData = {
+          title: formVal.title,
+          description: formVal.description,
+          about: formVal.about || undefined,
+          status: formVal.status,
+          priority: formVal.priority,
+          assignedPersonId: formVal.assignedPersonId || undefined,
+          estimations: formVal.estimations || undefined,
+          epic: formVal.epicId ? { id: Number(formVal.epicId) } : undefined,
+        };
+
+        try {
+          await firstValueFrom(this.ticketService.createTicket(ticketData as unknown as Partial<Ticket>));
+          this.isSubmitting.set(false);
+          this.showToast.set(true);
+          setTimeout(() => {
+            this.router.navigate(['/tickets']);
+          }, 1500);
+          return undefined;
+        } catch (err) {
+          console.error('Error creating ticket:', err);
+          this.isSubmitting.set(false);
+          return undefined;
+        }
+      }
+    }
+  });
 
   isSubmitting = signal(false);
   showToast = signal(false);
-  
+
   // Enum references for template
   TicketStatus = TicketStatus;
   TicketPriority = TicketPriority;
@@ -43,36 +87,4 @@ export class CreateTicketComponent implements OnInit {
     this.epicsResource.reload();
   }
 
-  onSubmit(form: any) {
-    if (form.invalid || !this.title() || !this.description()) {
-      return;
-    }
-
-    this.isSubmitting.set(true);
-
-    const ticketData = {
-      title: this.title(),
-      description: this.description(),
-      about: this.about() || undefined,
-      status: this.status(),
-      priority: this.priority(),
-      assignedPersonId: this.assignedPersonId() || undefined,
-      estimations: this.estimations() || undefined,
-      epic: this.epicId() ? { id: Number(this.epicId()) } : undefined,
-    };
-
-    this.ticketService.createTicket(ticketData as any).subscribe({
-      next: () => {
-        this.isSubmitting.set(false);
-        this.showToast.set(true);
-        setTimeout(() => {
-          this.router.navigate(['/tickets']);
-        }, 1500);
-      },
-      error: (err) => {
-        console.error('Error creating ticket:', err);
-        this.isSubmitting.set(false);
-      }
-    });
-  }
 }
