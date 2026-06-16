@@ -1,0 +1,130 @@
+<div class="max-w-3xl mx-auto my-8">
+  <div class="mb-4">
+    <a routerLink="/tickets" class="inline-flex text-sm font-medium text-gray-500 hover:text-gray-700 items-center gap-1 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Tickets
+    </a>
+  </div>
+
+  <div class="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">Create New Ticket</h1>
+    </div>
+
+  <form #ticketForm="ngForm" (ngSubmit)="onSubmit(ticketForm)" class="space-y-6">
+    <!-- Title -->
+    <div>
+      <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+      <input type="text" id="title" name="title" [(ngModel)]="title" required
+             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+             placeholder="Brief summary of the issue or task"
+             #titleInput="ngModel">
+      @if (titleInput.invalid && (titleInput.dirty || titleInput.touched)) {
+        <p class="mt-1 text-sm text-red-600">Title is required.</p>
+      }
+    </div>
+
+    <!-- About -->
+    <div>
+      <label for="about" class="block text-sm font-medium text-gray-700 mb-1">About</label>
+      <textarea id="about" name="about" [(ngModel)]="about" rows="2"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+                placeholder="Any other details about this ticket..."></textarea>
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+      <textarea id="description" name="description" [(ngModel)]="description" required rows="4"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+                placeholder="Detailed description of the ticket"
+                #descriptionInput="ngModel"></textarea>
+      @if (descriptionInput.invalid && (descriptionInput.dirty || descriptionInput.touched)) {
+        <p class="mt-1 text-sm text-red-600">Description is required.</p>
+      }
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Status -->
+      <div>
+        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+        <select id="status" name="status" [(ngModel)]="status"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white">
+          <option [value]="TicketStatus.TODO">Todo</option>
+          <option [value]="TicketStatus.IN_PROGRESS">In Progress</option>
+          <option [value]="TicketStatus.DONE">Done</option>
+        </select>
+      </div>
+
+      <!-- Priority -->
+      <div>
+        <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+        <select id="priority" name="priority" [(ngModel)]="priority"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white">
+          <option [value]="TicketPriority.LOW">Low</option>
+          <option [value]="TicketPriority.MEDIUM">Medium</option>
+          <option [value]="TicketPriority.HIGH">High</option>
+          <option [value]="TicketPriority.CRITICAL">Critical</option>
+        </select>
+      </div>
+
+      <!-- Assignee -->
+      <div>
+        <label for="assignedPersonId" class="block text-sm font-medium text-gray-700 mb-1">Assign To</label>
+        <select id="assignedPersonId" name="assignedPersonId" [(ngModel)]="assignedPersonId"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white">
+          <option value="">Unassigned</option>
+          @for (user of usersResource.value(); track user._id) {
+            <option [value]="user._id">{{ user.displayName || user.username }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Epic -->
+      <div>
+        <label for="epicId" class="block text-sm font-medium text-gray-700 mb-1">Epic</label>
+        <select id="epicId" name="epicId" [(ngModel)]="epicId"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white">
+          <option value="">No Epic</option>
+          @for (epic of epicsResource.value(); track epic.id) {
+            <option [value]="epic.id">{{ epic.name }}</option>
+          }
+        </select>
+      </div>
+      
+      <!-- Estimations -->
+      <div>
+        <label for="estimations" class="block text-sm font-medium text-gray-700 mb-1">Estimation (hours)</label>
+        <input type="number" id="estimations" name="estimations" [(ngModel)]="estimations" min="0" step="1"
+               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+               placeholder="e.g. 5">
+      </div>
+    </div>
+
+
+
+    <!-- Actions -->
+    <div class="flex justify-end pt-4 border-t border-gray-100 gap-3">
+      <button type="button" routerLink="/tickets"
+              class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+        Cancel
+      </button>
+      <button type="submit" [disabled]="ticketForm.invalid || isSubmitting()"
+              class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+        @if (isSubmitting()) {
+          <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          Creating...
+        } @else {
+          Create Ticket
+        }
+      </button>
+    </div>
+  </form>
+  </div>
+</div>
+
+@if (showToast()) {
+  <app-toast [message]="'Ticket created successfully!'" [type]="'success'"></app-toast>
+}

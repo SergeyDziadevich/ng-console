@@ -51,6 +51,11 @@ export const routes: Routes = [
           import('./features/tickets/components/ticket-list/ticket-list.component').then((m) => m.TicketListComponent),
       },
       {
+        path: 'tickets/new',
+        loadComponent: () =>
+          import('./features/tickets/components/create-ticket/create-ticket.component').then((m) => m.CreateTicketComponent),
+      },
+      {
         path: 'tickets/:id',
         loadComponent: () =>
           import('./features/tickets/components/ticket-detail/ticket-detail.component').then((m) => m.TicketDetailComponent),
