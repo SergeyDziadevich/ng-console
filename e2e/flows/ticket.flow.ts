@@ -19,15 +19,14 @@ export class TicketFlow {
   async addTicket(data: { title: string, about?: string, description: string }) {
     // Explicitly login first to avoid redirect race conditions
     await this.loginPage.goto();
-    await this.loginPage.login('olegsith', '12345678');
-    
+    await this.loginPage.login('test-user', '12345678');
+
     // Wait for the login to complete and redirect away from /login
     await this.page.waitForURL(url => !url.toString().includes('/login'));
 
-    // Now go to the tickets page
     await this.ticketList.goto();
     await this.ticketList.clickAddTicket();
-    
+
     // Ensure we navigated to the create page
     await expect(this.page).toHaveURL(/.*\/tickets\/new/);
 
@@ -45,7 +44,7 @@ export class TicketFlow {
 
     // Wait for redirect to ticket list (ensure it ends with /tickets or has query params, but not /tickets/new)
     await expect(this.page).toHaveURL(/.*\/tickets(?:\?.*)?$/);
-    
+
     // Force reload the page to ensure we bypass any frontend cache or Angular httpResource quirks
     await this.page.reload();
 
