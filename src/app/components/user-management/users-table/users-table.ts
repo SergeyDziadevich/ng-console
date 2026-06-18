@@ -1,9 +1,10 @@
 import { Component, input, output, signal } from '@angular/core';
 import { User } from '../../../models/user.model';
+import { HasPermissionDirective } from '../../../directives/has-permission.directive';
 
 @Component({
   selector: 'app-users-table',
-  imports: [],
+  imports: [HasPermissionDirective],
   templateUrl: './users-table.html',
   styleUrl: './users-table.scss',
 })
