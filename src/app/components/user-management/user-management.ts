@@ -6,10 +6,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersTable } from './users-table/users-table';
 import { FormsModule } from '@angular/forms';
 import { Toast } from '../toast/toast';
+import { HasPermissionDirective } from '../../directives/has-permission.directive';
 
 @Component({
   selector: 'app-user-management',
-  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast],
+  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, HasPermissionDirective],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })
