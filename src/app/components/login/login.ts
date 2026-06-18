@@ -1,10 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject, signal, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild, ElementRef, afterNextRender } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
-declare var google: any;
+export interface GoogleCredentialResponse {
+  credential: string;
+}
+
+declare let google: {
+  accounts: {
+    id: {
+      initialize: (config: { client_id: string; callback: (res: GoogleCredentialResponse) => void }) => void;
+      renderButton: (parent: HTMLElement, options: Record<string, string>) => void;
+    };
+  };
+};
 
 @Component({
   selector: 'app-login',
@@ -13,7 +24,7 @@ declare var google: any;
   styleUrl: './login.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Login implements AfterViewInit {
+export class Login {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -32,30 +43,33 @@ export class Login implements AfterViewInit {
     twoFactorCode: ['', [Validators.required]],
   });
 
-  @ViewChild('googleBtn') googleBtn!: ElementRef;
+  protected readonly googleBtn = viewChild<ElementRef>('googleBtn');
 
-  ngAfterViewInit(): void {
-    this.renderGoogleButton();
+  constructor() {
+    afterNextRender(() => {
+      const btn = this.googleBtn();
+      if (btn) {
+        this.renderGoogleButton(btn.nativeElement);
+      }
+    });
   }
 
-  private renderGoogleButton(): void {
+  private renderGoogleButton(element: HTMLElement): void {
     if (typeof google === 'undefined') {
-      setTimeout(() => this.renderGoogleButton(), 100);
+      setTimeout(() => this.renderGoogleButton(element), 100);
       return;
     }
     google.accounts.id.initialize({
       client_id: environment.googleClientId,
       callback: this.handleGoogleCredentialResponse.bind(this)
     });
-    if (this.googleBtn) {
-      google.accounts.id.renderButton(
-        this.googleBtn.nativeElement,
-        { theme: 'outline', size: 'large', width: '320' }
-      );
-    }
+    google.accounts.id.renderButton(
+      element,
+      { theme: 'outline', size: 'large', width: '320' }
+    );
   }
 
-  protected handleGoogleCredentialResponse(response: any): void {
+  protected handleGoogleCredentialResponse(response: GoogleCredentialResponse): void {
     this.loading.set(true);
     this.errorMessage.set(null);
 
