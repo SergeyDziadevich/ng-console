@@ -124,6 +124,22 @@ export class AuthService {
       );
   }
 
+  googleLogin(token: string) {
+    return this.http
+      .post<LoginResponse>(`${environment.apiUrl}/api/auth/google`, { token }, { responseType: 'json' })
+      .pipe(
+        tap((res) => {
+          if (res.access_token) {
+            const accessToken: string = res.access_token;
+            console.log('Google Login successful – raw token:', accessToken);
+            localStorage.setItem(TOKEN_KEY, accessToken);
+            this.isAuthenticated.set(true);
+            this.currentUser.set(this.decodeToken(accessToken));
+          }
+        }),
+      );
+  }
+
   verify2FA(tempToken: string, code: string) {
     return this.http
       .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/2fa/authenticate`, { tempToken, code }, { responseType: 'json' })
