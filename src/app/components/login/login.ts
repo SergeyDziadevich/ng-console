@@ -1,7 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild, ElementRef, afterNextRender } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment';
+
+export interface GoogleCredentialResponse {
+  credential: string;
+}
+
+declare let google: {
+  accounts: {
+    id: {
+      initialize: (config: { client_id: string; callback: (res: GoogleCredentialResponse) => void }) => void;
+      renderButton: (parent: HTMLElement, options: Record<string, string>) => void;
+    };
+  };
+};
 
 @Component({
   selector: 'app-login',
@@ -28,6 +42,55 @@ export class Login {
   protected readonly codeForm = this.fb.group({
     twoFactorCode: ['', [Validators.required]],
   });
+
+  protected readonly googleBtn = viewChild<ElementRef>('googleBtn');
+
+  constructor() {
+    afterNextRender(() => {
+      const btn = this.googleBtn();
+      if (btn) {
+        this.renderGoogleButton(btn.nativeElement);
+      }
+    });
+  }
+
+  private renderGoogleButton(element: HTMLElement): void {
+    if (typeof google === 'undefined') {
+      setTimeout(() => this.renderGoogleButton(element), 100);
+      return;
+    }
+    google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: this.handleGoogleCredentialResponse.bind(this)
+    });
+    google.accounts.id.renderButton(
+      element,
+      { theme: 'outline', size: 'large', width: '320' }
+    );
+  }
+
+  protected handleGoogleCredentialResponse(response: GoogleCredentialResponse): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    this.authService.googleLogin(response.credential).subscribe({
+      next: (res) => {
+        this.loading.set(false);
+        if (res.requires2fa && res.tempToken) {
+          this.step.set(2);
+          this.tempToken.set(res.tempToken);
+        } else {
+          this.router.navigate(['/']);
+        }
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.errorMessage.set(
+          err?.error?.message ?? 'Google login failed. Please try again.',
+        );
+      },
+    });
+  }
 
   protected onSubmit(): void {
     if (this.step() === 1) {
