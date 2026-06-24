@@ -26,6 +26,7 @@
     "ngx-quill": "^30.1.3",
     "quill": "^2.0.3",
     "rxjs": "~7.8.0",
+    "socket.io-client": "^4.8.3",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
