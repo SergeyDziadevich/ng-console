@@ -1,10 +1,18 @@
 import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
+import { environment } from '../../../environments/environment';
 
 interface NotificationMessage {
   title: string;
   replayed: boolean;
   isSystem?: boolean;
+}
+
+interface NotificationPayload {
+  id: string;
+  title: string;
+  body: string;
+  ts: number;
 }
 
 @Component({
@@ -19,7 +27,7 @@ export class Notifications implements OnInit, OnDestroy {
   private socket!: Socket;
 
   ngOnInit(): void {
-    this.socket = io('http://localhost:3000', {
+    this.socket = io(environment.apiUrl, {
       transports: ['websocket'], // skip polling -> no sticky-session requirement
       reconnection: false, // we reconnect manually, with the button
     });
@@ -32,19 +40,28 @@ export class Notifications implements OnInit, OnDestroy {
       this.isOnline.set(false);
     });
 
-    this.socket.on('notification', (n: any) => {
-      console.log('Notif', n);
+    this.socket.on('notification', (n: NotificationPayload) => {
+      console.log('Notification', n);
       const replayed = this.socket.recovered;
 
-      this.messages.update(msgs => [{
-        title: n.title,
-        replayed: !!replayed
-      }, ...msgs]);
+      this.messages.update((msgs) => [
+        {
+          title: n.title,
+          replayed: !!replayed,
+        },
+        ...msgs,
+      ]);
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+
   sendNotification(title: string): void {
-    fetch('http://localhost:3000/api/notifications/notify', {
+    fetch(`${environment.apiUrl}/api/notifications/notify`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ title }),
@@ -53,20 +70,17 @@ export class Notifications implements OnInit, OnDestroy {
 
   dropConnection(): void {
     this.socket.io.engine.close();
-    this.messages.update(msgs => [{
-      title: '⚡ dropped — staying offline until you click Reconnect',
-      isSystem: true,
-      replayed: false
-    }, ...msgs]);
+    this.messages.update((msgs) => [
+      {
+        title: '⚡ dropped — staying offline until you click Reconnect',
+        isSystem: true,
+        replayed: false,
+      },
+      ...msgs,
+    ]);
   }
 
   reconnect(): void {
     this.socket.connect();
-  }
-
-  ngOnDestroy(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
   }
 }
