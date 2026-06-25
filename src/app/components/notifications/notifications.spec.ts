@@ -25,7 +25,13 @@ vi.mock('socket.io-client', () => {
 describe('Notifications', () => {
   let component: Notifications;
   let fixture: ComponentFixture<Notifications>;
-  let mockSocket: any;
+  let mockSocket: {
+    on: Mock;
+    io: { engine: { close: Mock } };
+    connect: Mock;
+    disconnect: Mock;
+    recovered: boolean;
+  };
   let globalFetchMock: Mock;
 
   beforeEach(async () => {
@@ -54,20 +60,20 @@ describe('Notifications', () => {
   });
 
   it('should handle connect event', () => {
-    const connectHandler = mockSocket.on.mock.calls.find((call: any[]) => call[0] === 'connect')[1];
+    const connectHandler = mockSocket.on.mock.calls.find((call: unknown[]) => call[0] === 'connect')![1];
     connectHandler();
     expect(component.isOnline()).toBe(true);
   });
 
   it('should handle disconnect event', () => {
     component.isOnline.set(true);
-    const disconnectHandler = mockSocket.on.mock.calls.find((call: any[]) => call[0] === 'disconnect')[1];
+    const disconnectHandler = mockSocket.on.mock.calls.find((call: unknown[]) => call[0] === 'disconnect')![1];
     disconnectHandler();
     expect(component.isOnline()).toBe(false);
   });
 
   it('should handle notification event', () => {
-    const notifHandler = mockSocket.on.mock.calls.find((call: any[]) => call[0] === 'notification')[1];
+    const notifHandler = mockSocket.on.mock.calls.find((call: unknown[]) => call[0] === 'notification')![1];
     
     mockSocket.recovered = true;
     notifHandler({ title: 'Test Notif', id: '1', body: 'body', ts: 123 });
