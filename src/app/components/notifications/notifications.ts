@@ -1,4 +1,6 @@
-import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 
@@ -6,6 +8,7 @@ interface NotificationMessage {
   title: string;
   replayed: boolean;
   isSystem?: boolean;
+  timestamp?: number;
 }
 
 interface NotificationPayload {
@@ -17,6 +20,7 @@ interface NotificationPayload {
 
 @Component({
   selector: 'app-notifications',
+  imports: [DatePipe],
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +29,7 @@ export class Notifications implements OnInit, OnDestroy {
   messages = signal<NotificationMessage[]>([]);
   isOnline = signal(false);
   private socket!: Socket;
+  private http = inject(HttpClient);
 
   ngOnInit(): void {
     this.socket = io(environment.apiUrl, {
@@ -48,6 +53,7 @@ export class Notifications implements OnInit, OnDestroy {
         {
           title: n.title,
           replayed: !!replayed,
+          timestamp: n.ts,
         },
         ...msgs,
       ]);
@@ -61,11 +67,7 @@ export class Notifications implements OnInit, OnDestroy {
   }
 
   sendNotification(title: string): void {
-    fetch(`${environment.apiUrl}/api/notifications/notify`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ title }),
-    });
+    this.http.post(`${environment.apiUrl}/api/notifications/notify`, { title }).subscribe();
   }
 
   dropConnection(): void {
