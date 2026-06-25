@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 
@@ -6,6 +7,7 @@ interface NotificationMessage {
   title: string;
   replayed: boolean;
   isSystem?: boolean;
+  timestamp?: number;
 }
 
 interface NotificationPayload {
@@ -17,6 +19,7 @@ interface NotificationPayload {
 
 @Component({
   selector: 'app-notifications',
+  imports: [DatePipe],
   templateUrl: './notifications.html',
   styleUrl: './notifications.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,6 +51,7 @@ export class Notifications implements OnInit, OnDestroy {
         {
           title: n.title,
           replayed: !!replayed,
+          timestamp: n.ts,
         },
         ...msgs,
       ]);
