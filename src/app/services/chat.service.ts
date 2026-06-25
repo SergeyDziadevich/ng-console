@@ -16,6 +16,7 @@ export interface ChatRoom {
     username: string;
     displayName?: string;
     avatarUrl?: string;
+    lastReadAt?: string;
   }[];
 }
 
@@ -75,7 +76,22 @@ export class ChatService {
         console.log('Received new WebSocket message:', message);
         if (this.activeRoomId() === message.roomId) {
           this.activeRoomMessages.update((msgs) => [...msgs, message]);
+          this.markAsRead(message.roomId);
         }
+      });
+    });
+
+    this.socket.on('readReceiptUpdated', (data: { roomId: string, userId: string, lastReadAt: string }) => {
+      this.zone.run(() => {
+        this.rooms.update(rooms => rooms.map(room => {
+          if (room.id !== data.roomId) return room;
+          
+          const updatedMembers = room.members?.map(m => 
+            m.userId === data.userId ? { ...m, lastReadAt: data.lastReadAt } : m
+          );
+          
+          return { ...room, members: updatedMembers };
+        }));
       });
     });
 
@@ -99,6 +115,12 @@ export class ChatService {
       this.socket.emit('sendMessage', { roomId, content });
     } else {
       console.error('Cannot send message: Socket is not connected');
+    }
+  }
+
+  markAsRead(roomId: string): void {
+    if (this.socket && this.isOnline()) {
+      this.socket.emit('markAsRead', { roomId });
     }
   }
 
@@ -130,6 +152,7 @@ export class ChatService {
     this.activeRoomId.set(roomId);
     this.activeRoomMessages.set([]);
     this.fetchRoomMessages(roomId);
+    this.markAsRead(roomId);
   }
 
   private fetchRoomMessages(roomId: string): void {

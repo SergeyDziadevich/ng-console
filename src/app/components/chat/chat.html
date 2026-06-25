@@ -186,7 +186,23 @@
                 >
                   <p class="text-sm whitespace-pre-wrap break-words leading-relaxed">{{ msg.content }}</p>
                 </div>
-                <span class="text-[10px] text-gray-400 mt-1 px-1">{{ msg.createdAt | date:'shortTime' }}</span>
+                <div class="flex items-center gap-1 mt-1 px-1">
+                  <span class="text-[10px] text-gray-400">{{ msg.createdAt | date:'shortTime' }}</span>
+                  @if (msg.senderId === currentUser()?.id) {
+                    @if (isMessageRead(msg)) {
+                      <!-- Double Blue Check for Read -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 12l3 3 7-7" />
+                        <path d="M2 12l3 3 7-7" opacity="0.5" />
+                      </svg>
+                    } @else {
+                      <!-- Single Gray Check for Sent/Delivered -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12l5 5L20 7" />
+                      </svg>
+                    }
+                  }
+                </div>
               </div>
             </div>
           </div>
