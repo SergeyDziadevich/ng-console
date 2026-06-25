@@ -38,6 +38,10 @@ export class UserService {
     return this.httpClient.delete<void>(`${environment.apiUrl}/api/users/${id}`);
   }
 
+  getUserById(id: string): Observable<User> {
+    return this.httpClient.get<User>(`${environment.apiUrl}/api/users/${id}`);
+  }
+
   updateUser(id: string, user: UpdateUser): Observable<User> {
     return this.httpClient.patch<User>(`${environment.apiUrl}/api/users/${id}`, user);
   }
