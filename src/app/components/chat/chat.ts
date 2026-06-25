@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatService } from '../../services/chat.service';
+import { ChatService, ChatMessage } from '../../services/chat.service';
 import { UserService } from '../../services/user-service';
 import { AuthService } from '../../services/auth.service';
 
@@ -151,5 +151,22 @@ export class Chat implements OnInit, OnDestroy {
   resetAddUserForm() {
     this.userSearchQuery.set('');
     this.selectedUsersToAdd.set([]);
+  }
+
+  isMessageRead(message: ChatMessage): boolean {
+    const room = this.chatService.rooms().find(r => r.id === message.roomId);
+    if (!room || !room.members) return false;
+
+    const currentUserId = this.currentUser()?.id;
+    const otherMembers = room.members.filter(m => m.userId !== currentUserId);
+    
+    if (otherMembers.length === 0) return false;
+
+    const messageTime = new Date(message.createdAt).getTime();
+
+    return otherMembers.some(m => {
+      if (!m.lastReadAt) return false;
+      return new Date(m.lastReadAt).getTime() >= messageTime;
+    });
   }
 }
