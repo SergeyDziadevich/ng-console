@@ -1,5 +1,11 @@
 import { UserRole } from '../enums/user-role.enum';
 
+export interface UserSettings {
+  receiveNotifications?: boolean;
+  receiveEmails?: boolean;
+  receiveSMS?: boolean;
+}
+
 export interface User {
   _id: string;
   username: string;
@@ -7,7 +13,7 @@ export interface User {
   email: string;
   password: string;
   role: UserRole;
-  settings?: string;
+  settings?: UserSettings;
   avatarUrl?: string;
   isTwoFactorEnabled?: boolean;
 }

@@ -36,14 +36,21 @@
         [class.italic]="msg.isSystem"
         [class.text-sm]="msg.isSystem"
       >
-        @if (msg.isSystem) {
-          {{ msg.title }}
-        } @else {
-          <b class="font-semibold">{{ msg.title }}</b>
-          @if (msg.replayed) {
-            <small class="text-yellow-700 font-medium ml-2 text-xs">🔁 REPLAYED</small>
+        <div class="flex justify-between items-center gap-4">
+          <div>
+            @if (msg.isSystem) {
+              {{ msg.title }}
+            } @else {
+              <b class="font-semibold">{{ msg.title }}</b>
+              @if (msg.replayed) {
+                <small class="text-yellow-700 font-medium ml-2 text-xs">🔁 REPLAYED</small>
+              }
+            }
+          </div>
+          @if (msg.timestamp) {
+            <span class="text-xs text-gray-500 whitespace-nowrap">{{ msg.timestamp | date:'short' }}</span>
           }
-        }
+        </div>
       </li>
     }
   </ul>
