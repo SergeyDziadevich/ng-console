@@ -8,7 +8,6 @@ const targetProdPath = path.join(__dirname, '../src/environments/environment.pro
 const envConfigFile = `export const environment = {
   production: false,
   apiUrl: '${process.env.API_URL || 'http://localhost:3000'}',
-  geminiApiKey: '${process.env.GEMINI_API_KEY || 'your-gemini-api-key-here'}',
   googleClientId: '${process.env.GOOGLE_CLIENT_ID}',
 };
 `;
@@ -16,7 +15,6 @@ const envConfigFile = `export const environment = {
 const envConfigProdFile = `export const environment = {
   production: true,
   apiUrl: '${process.env.API_URL || 'http://localhost:3000'}',
-  geminiApiKey: '${process.env.GEMINI_API_KEY || 'your-gemini-api-key-here'}',
   googleClientId: '${process.env.GOOGLE_CLIENT_ID}',
 };
 `;
