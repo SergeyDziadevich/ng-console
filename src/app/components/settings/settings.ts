@@ -1,8 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
-import { User } from '../../models/user.model';
+import { User, UserSettings } from '../../models/user.model';
 import { Toast } from '../toast/toast';
 
 @Component({
@@ -10,8 +10,9 @@ import { Toast } from '../toast/toast';
   imports: [ReactiveFormsModule, Toast],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Settings implements OnInit {
+export class Settings implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
@@ -33,6 +34,10 @@ export class Settings implements OnInit {
     code: ['', [Validators.required, Validators.minLength(6)]],
   });
 
+  ngOnDestroy() {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
   showToast(message: string) {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toast.set(message);
@@ -41,29 +46,28 @@ export class Settings implements OnInit {
 
   ngOnInit() {
     const user = this.authService.currentUser();
-    if (user?.id) {
-      this.userService.getUserById(user.id).subscribe({
-        next: (userData: User) => {
-          const settings = typeof userData.settings === 'object' ? (userData.settings as any) : {};
-          this.receiveNotifications.set(settings?.receiveNotifications ?? true);
-          this.receiveEmails.set(settings?.receiveEmails ?? false);
-          this.receiveSMS.set(settings?.receiveSMS ?? false);
-          setTimeout(() => {
-            this.isLoading.set(false);
-            setTimeout(() => this.isReady.set(true), 50);
-          }, 400);
-        },
-        error: () => {
-          setTimeout(() => {
-            this.isLoading.set(false);
-            setTimeout(() => this.isReady.set(true), 50);
-          }, 400);
-        },
-      });
-    } else {
-      this.isLoading.set(false);
-      setTimeout(() => this.isReady.set(true), 50);
+    if (!user?.id) {
+      this.finishLoading(0);
+      return;
     }
+
+    this.userService.getUserById(user.id).subscribe({
+      next: (userData: User) => {
+        const settings: UserSettings = typeof userData.settings === 'object' ? userData.settings ?? {} : {};
+        this.receiveNotifications.set(settings.receiveNotifications ?? true);
+        this.receiveEmails.set(settings.receiveEmails ?? false);
+        this.receiveSMS.set(settings.receiveSMS ?? false);
+        this.finishLoading();
+      },
+      error: () => this.finishLoading(),
+    });
+  }
+
+  private finishLoading(loadingDelayMs = 50) {
+    setTimeout(() => {
+      this.isLoading.set(false);
+      requestAnimationFrame(() => this.isReady.set(true));
+    }, loadingDelayMs);
   }
 
   toggleSetting(settingKey: 'receiveNotifications' | 'receiveEmails' | 'receiveSMS', event: Event) {
@@ -101,7 +105,7 @@ export class Settings implements OnInit {
         this.qrCodeUrl.set(res.qrCodeUrl);
         this.isGenerating.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage.set('Failed to generate 2FA QR code.');
         this.isGenerating.set(false);
       },
@@ -124,7 +128,7 @@ export class Settings implements OnInit {
         this.qrCodeUrl.set(null);
         this.twoFactorForm.reset();
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage.set('Failed to verify 2FA code. Please try again.');
         this.isSubmitting.set(false);
       },
