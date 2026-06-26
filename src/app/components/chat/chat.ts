@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatService, ChatMessage } from '../../services/chat.service';
+import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user-service';
 import { AuthService } from '../../services/auth.service';
+import { ChatMessage } from '../../models/chat.model';
 
 @Component({
   selector: 'app-chat',
@@ -27,7 +28,7 @@ export class Chat {
   isAddingUser = signal(false);
   userSearchQuery = signal('');
   selectedUsersToAdd = signal<string[]>([]);
-  
+
   availableUsersToAdd = computed(() => {
     const allUsers = this.users();
     const activeRoomId = this.chatService.activeRoomId();
@@ -37,19 +38,19 @@ export class Chat {
     if (!room) return [];
 
     const roomMemberIds = new Set(room.members?.map(m => m.userId) ?? []);
-    
+
     // Filter out existing members
     let available = allUsers.filter(u => !roomMemberIds.has(u._id));
-    
+
     // Filter by search query
     const query = this.userSearchQuery().toLowerCase().trim();
     if (query) {
-      available = available.filter(u => 
-        (u.displayName?.toLowerCase().includes(query)) || 
+      available = available.filter(u =>
+        (u.displayName?.toLowerCase().includes(query)) ||
         (u.username?.toLowerCase().includes(query))
       );
     }
-    
+
     return available;
   });
 
@@ -150,7 +151,7 @@ export class Chat {
 
     const currentUserId = this.currentUser()?.id;
     const otherMembers = room.members.filter(m => m.userId !== currentUserId);
-    
+
     if (otherMembers.length === 0) return false;
 
     const messageTime = new Date(message.createdAt).getTime();

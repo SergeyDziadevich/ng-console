@@ -1,4 +1,4 @@
-import { Component, input, signal, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, input, signal, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthResponse } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
@@ -15,7 +15,7 @@ interface NavItem {
   templateUrl: './sidebar.html',
   styles: ``,
 })
-export class Sidebar implements OnInit, OnDestroy {
+export class Sidebar {
   chatService = inject(ChatService);
   collapsed = signal(false);
 
@@ -61,15 +61,5 @@ export class Sidebar implements OnInit, OnDestroy {
 
   toggle() {
     this.collapsed.update((v) => !v);
-  }
-
-  ngOnInit() {
-    // Connect globally so we can receive unread messages anywhere
-    this.chatService.connect();
-    this.chatService.fetchRooms();
-  }
-
-  ngOnDestroy() {
-    this.chatService.disconnect();
   }
 }

@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, NgZone, computed } from '@angular/core';
+import { inject, Injectable, signal, NgZone, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
@@ -18,6 +18,17 @@ export class ChatService {
   readonly activeRoomId = signal<string | null>(null);
   readonly isOnline = signal(false);
   readonly hasUnreadChats = computed(() => this.rooms().some(r => r.hasUnread));
+
+  constructor() {
+    effect(() => {
+      if (this.authService.isAuthenticated()) {
+        this.connect();
+        this.fetchRooms();
+      } else {
+        this.disconnect();
+      }
+    });
+  }
 
   connect(): void {
     if (this.socket) {
