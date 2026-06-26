@@ -1,0 +1,258 @@
+<div class="flex h-full bg-white text-gray-900 rounded-lg overflow-hidden shadow-2xl border border-gray-200">
+  <!-- Sidebar / Room List -->
+  <div class="w-1/4 flex flex-col border-r border-gray-200 bg-gray-50/50 backdrop-blur-sm">
+    <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white/80">
+      <h2 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">Chats</h2>
+      <button (click)="toggleCreateRoom()" class="p-2 rounded-full bg-indigo-600 hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Create Room Form -->
+    @if (isCreatingRoom()) {
+      <div class="p-4 border-b border-gray-200 bg-gray-50 animate-in slide-in-from-top-4 fade-in duration-200">
+        <h3 class="text-sm font-semibold mb-3 text-gray-700">Create New Room</h3>
+        <input
+          type="text"
+          [ngModel]="newRoomName()"
+          (ngModelChange)="newRoomName.set($event)"
+          placeholder="Room Name"
+          class="w-full mb-3 px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-900"
+        />
+
+        <div class="max-h-40 overflow-y-auto mb-3 space-y-1 custom-scrollbar">
+          @for (user of users(); track user._id) {
+            @if (user._id !== currentUser()?.id) {
+              <label class="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors group">
+                <input
+                  type="checkbox"
+                  [checked]="selectedUserIds().includes(user._id)"
+                  (change)="toggleUserSelection(user._id)"
+                  class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 bg-white focus:ring-indigo-500 focus:ring-offset-white"
+                />
+                <span class="ml-3 text-sm text-gray-700 group-hover:text-gray-900">{{ user.displayName || user.username }}</span>
+              </label>
+            }
+          }
+        </div>
+
+        <div class="flex gap-2">
+          <button (click)="createRoom()" [disabled]="!newRoomName() || selectedUserIds().length === 0" class="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-1.5 rounded-md text-sm font-medium transition-colors">
+            Create
+          </button>
+          <button (click)="toggleCreateRoom()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-1.5 rounded-md text-sm font-medium transition-colors">
+            Cancel
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Room List -->
+    <div class="flex-1 overflow-y-auto custom-scrollbar">
+      @if (chatService.rooms().length === 0 && !isCreatingRoom()) {
+        <div class="p-8 text-center text-gray-500 flex flex-col items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          <p class="text-sm">No chats yet.</p>
+          <p class="text-xs mt-1">Create a room to start chatting.</p>
+        </div>
+      }
+
+      @for (room of chatService.rooms(); track room.id) {
+        <div 
+          (click)="selectRoom(room.id)"
+          [class.bg-indigo-50]="chatService.activeRoomId() === room.id"
+          [class.border-l-indigo-500]="chatService.activeRoomId() === room.id"
+          class="p-4 border-b border-gray-100 border-l-4 border-l-transparent hover:bg-gray-50 cursor-pointer transition-all duration-200 group"
+        >
+          <div class="flex items-center gap-2">
+            <h4 class="font-medium text-gray-800 group-hover:text-gray-900">{{ room.name }}</h4>
+            @if (room.hasUnread) {
+              <span class="h-2 w-2 rounded-full bg-green-500 shrink-0"></span>
+            }
+          </div>
+          <p class="text-xs text-gray-500 mt-1 truncate">
+            {{ room.members?.length || 0 }} members
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Main Chat Area -->
+  <div class="w-3/4 flex flex-col bg-white relative">
+    @if (chatService.activeRoomId()) {
+      <!-- Chat Header -->
+      <div class="p-4 border-b border-gray-200 bg-white/90 backdrop-blur-md flex items-center justify-between shadow-sm z-10">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <span class="relative flex h-2.5 w-2.5">
+              @if (chatService.isOnline()) {
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              } @else {
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+              }
+            </span>
+            <!-- Find the active room name -->
+            @for (room of chatService.rooms(); track room.id) {
+              @if (room.id === chatService.activeRoomId()) {
+                <span>{{ room.name }}</span>
+              }
+            }
+          </h3>
+          <!-- Find the active room members -->
+          @for (room of chatService.rooms(); track room.id) {
+            @if (room.id === chatService.activeRoomId()) {
+              <div class="flex flex-wrap items-center gap-1 mt-1.5 ml-4">
+                @for (member of room.members; track member.userId) {
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                    {{ member.displayName || member.username }}
+                  </span>
+                }
+                <!-- Add User Button -->
+                <button (click)="toggleAddUser()" class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors ml-1" title="Add User">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Add User Modal -->
+      @if (isAddingUser()) {
+        <div class="absolute top-20 left-4 z-20 w-80 bg-white rounded-lg shadow-xl border border-gray-200 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div class="p-3 border-b border-gray-100 flex justify-between items-center">
+            <h4 class="text-sm font-semibold text-gray-700">Add to Room</h4>
+            <button (click)="toggleAddUser()" class="text-gray-400 hover:text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-3">
+            <input
+              type="text"
+              [ngModel]="userSearchQuery()"
+              (ngModelChange)="userSearchQuery.set($event)"
+              placeholder="Search users..."
+              class="w-full mb-3 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-800"
+            />
+            <div class="max-h-48 overflow-y-auto space-y-1 custom-scrollbar">
+              @for (user of availableUsersToAdd(); track user._id) {
+                <label class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors group">
+                  <input
+                    type="checkbox"
+                    [checked]="selectedUsersToAdd().includes(user._id)"
+                    (change)="toggleAddUserSelection(user._id)"
+                    class="form-checkbox h-3.5 w-3.5 text-indigo-600 rounded border-gray-300 bg-white focus:ring-indigo-500 focus:ring-offset-white"
+                  />
+                  <span class="ml-2 text-sm text-gray-700 group-hover:text-gray-900">{{ user.displayName || user.username }}</span>
+                </label>
+              }
+              @if (availableUsersToAdd().length === 0) {
+                <p class="text-xs text-gray-500 text-center py-2">No users found.</p>
+              }
+            </div>
+            <button
+              (click)="addUsersToRoom()"
+              [disabled]="selectedUsersToAdd().length === 0"
+              class="w-full mt-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-1.5 rounded-md text-sm font-medium transition-colors">
+              Add Selected Users
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Messages Area -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-gradient-to-b from-gray-50 to-white">
+        @for (msg of chatService.activeRoomMessages(); track msg.id) {
+          <div class="flex flex-col" [ngClass]="{'items-end': msg.senderId === currentUser()?.id, 'items-start': msg.senderId !== currentUser()?.id}">
+            <div class="flex items-end gap-2 max-w-[75%]" [ngClass]="{'flex-row-reverse': msg.senderId === currentUser()?.id}">
+              <!-- Avatar placeholder -->
+              <div class="h-8 w-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-xs font-bold text-gray-600 shadow-sm border border-gray-300">
+                {{ (msg.senderDisplayName || msg.senderName || '?').charAt(0).toUpperCase() }}
+              </div>
+
+              <div class="flex flex-col" [ngClass]="{'items-end': msg.senderId === currentUser()?.id, 'items-start': msg.senderId !== currentUser()?.id}">
+                <span class="text-[10px] text-gray-500 mb-1 px-1">{{ msg.senderDisplayName || msg.senderName }}</span>
+                <div
+                  class="px-4 py-2 rounded-2xl shadow-sm backdrop-blur-sm"
+                  [ngClass]="{
+                    'bg-indigo-600 text-white rounded-br-none': msg.senderId === currentUser()?.id,
+                    'bg-white border border-gray-200 text-gray-800 rounded-bl-none': msg.senderId !== currentUser()?.id
+                  }"
+                >
+                  <p class="text-sm whitespace-pre-wrap break-words leading-relaxed">{{ msg.content }}</p>
+                </div>
+                <div class="flex items-center gap-1 mt-1 px-1">
+                  <span class="text-[10px] text-gray-400">{{ msg.createdAt | date:'shortTime' }}</span>
+                  @if (msg.senderId === currentUser()?.id) {
+                    @if (isMessageRead(msg)) {
+                      <!-- Double Blue Check for Read -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 12l3 3 7-7" />
+                        <path d="M2 12l3 3 7-7" opacity="0.5" />
+                      </svg>
+                    } @else {
+                      <!-- Single Gray Check for Sent/Delivered -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12l5 5L20 7" />
+                      </svg>
+                    }
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        @if (chatService.activeRoomMessages().length === 0) {
+          <div class="h-full flex items-center justify-center text-gray-500 text-sm italic">
+            No messages yet. Say hello!
+          </div>
+        }
+      </div>
+
+      <!-- Input Area -->
+      <div class="p-4 border-t border-gray-200 bg-white/90 backdrop-blur-md">
+        <form (submit)="$event.preventDefault(); sendMessage()" class="flex gap-2">
+          <input
+            type="text"
+            [ngModel]="newMessage()"
+            (ngModelChange)="newMessage.set($event)"
+            name="message"
+            placeholder="Type a message..."
+            autocomplete="off"
+            class="flex-1 bg-gray-100 border border-transparent text-gray-900 rounded-full px-5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all placeholder-gray-500"
+          />
+          <button
+            type="submit"
+            [disabled]="!newMessage().trim() || !chatService.isOnline()"
+            class="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full p-2.5 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/25"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    } @else {
+      <!-- Empty State -->
+      <div class="flex-1 flex flex-col items-center justify-center text-gray-500 p-8">
+        <div class="h-24 w-24 rounded-full bg-gray-50 flex items-center justify-center mb-6 shadow-inner border border-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 opacity-40 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-medium text-gray-700 mb-2">Your Messages</h3>
+        <p class="text-sm text-center max-w-sm">Select a chat from the sidebar or create a new room to start communicating with your team.</p>
+      </div>
+    }
+  </div>
+</div>

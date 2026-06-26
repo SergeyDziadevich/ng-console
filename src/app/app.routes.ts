@@ -70,6 +70,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/settings/settings').then((m) => m.Settings),
       },
       {
+        path: 'chats',
+        loadComponent: () => import('./components/chat/chat').then((m) => m.Chat),
+      },
+      {
         path: '',
         redirectTo: 'user-management',
         pathMatch: 'full',
