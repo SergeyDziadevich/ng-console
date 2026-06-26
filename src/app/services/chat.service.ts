@@ -4,33 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-import { User } from '../models/user.model';
-
-export interface ChatRoom {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  members?: {
-    userId: string;
-    username: string;
-    displayName?: string;
-    avatarUrl?: string;
-    lastReadAt?: string;
-  }[];
-  hasUnread?: boolean;
-}
-
-export interface ChatMessage {
-  id: string;
-  roomId: string;
-  senderId: string;
-  senderName?: string;
-  senderDisplayName?: string;
-  senderAvatarUrl?: string;
-  content: string;
-  createdAt: string;
-}
+import { ChatMessage, ChatRoom } from '../models/chat.model';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
@@ -80,7 +54,7 @@ export class ChatService {
           this.activeRoomMessages.update((msgs) => [...msgs, message]);
           this.markAsRead(message.roomId);
         } else {
-          this.rooms.update(rooms => rooms.map(room => 
+          this.rooms.update(rooms => rooms.map(room =>
             room.id === message.roomId ? { ...room, hasUnread: true } : room
           ));
         }
@@ -91,17 +65,17 @@ export class ChatService {
       this.zone.run(() => {
         this.rooms.update(rooms => rooms.map(room => {
           if (room.id !== data.roomId) return room;
-          
-          const updatedMembers = room.members?.map(m => 
+
+          const updatedMembers = room.members?.map(m =>
             m.userId === data.userId ? { ...m, lastReadAt: data.lastReadAt } : m
           );
-          
+
           return { ...room, members: updatedMembers };
         }));
       });
     });
 
-    this.socket.on('error', (err: any) => {
+    this.socket.on('error', (err: unknown) => {
       this.zone.run(() => {
         console.error('Chat Socket Error:', err);
       });
@@ -128,7 +102,7 @@ export class ChatService {
     if (this.socket && this.isOnline()) {
       this.socket.emit('markAsRead', { roomId });
       // Update locally
-      this.rooms.update(rooms => rooms.map(room => 
+      this.rooms.update(rooms => rooms.map(room =>
         room.id === roomId ? { ...room, hasUnread: false } : room
       ));
     }
