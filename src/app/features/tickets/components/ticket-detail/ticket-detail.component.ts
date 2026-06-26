@@ -84,7 +84,7 @@ export class TicketDetailComponent implements OnInit {
         const epicId = val.epicId ? Number(val.epicId) : null;
         const epicObj = epicId ? { id: epicId, name: this.epicsResource.value()?.find(e => e.id === epicId)?.name || '' } : undefined;
 
-        const payload: any = {
+        const payload: Record<string, unknown> = {
           title: val.title,
           description: val.description,
           about: val.about || '',
