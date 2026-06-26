@@ -44,13 +44,13 @@
         </td>
         <td class="table-td space-x-2">
           <button
-            *hasPermission="'edit-user'"
+            *appHasPermission="'edit-user'"
             (click)="editUser(user)"
             class="table-action-btn bg-indigo-600 hover:bg-indigo-700">
             Edit
           </button>
           <button
-            *hasPermission="'delete-user'"
+            *appHasPermission="'delete-user'"
             (click)="confirmDelete(user)"
             class="table-action-btn bg-red-600 hover:bg-red-700">
             Delete

@@ -64,6 +64,8 @@
       @for (room of chatService.rooms(); track room.id) {
         <div 
           (click)="selectRoom(room.id)"
+          (keydown.enter)="selectRoom(room.id)"
+          tabindex="0"
           [class.bg-indigo-50]="chatService.activeRoomId() === room.id"
           [class.border-l-indigo-500]="chatService.activeRoomId() === room.id"
           class="p-4 border-b border-gray-100 border-l-4 border-l-transparent hover:bg-gray-50 cursor-pointer transition-all duration-200 group"
