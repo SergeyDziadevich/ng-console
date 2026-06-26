@@ -11,8 +11,8 @@ import { UserService } from '../../services/user-service';
 describe('Settings', () => {
   let component: Settings;
   let fixture: ComponentFixture<Settings>;
-  let mockAuthService: any;
-  let mockUserService: any;
+  let mockAuthService: unknown;
+  let mockUserService: unknown;
 
   beforeEach(async () => {
     mockAuthService = {

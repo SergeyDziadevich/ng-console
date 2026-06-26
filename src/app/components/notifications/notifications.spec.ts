@@ -73,7 +73,7 @@ describe('Notifications', () => {
   });
 
   it('should handle notification event', () => {
-    const notifHandler = mockSocket.on.mock.calls.find((call: any[]) => call[0] === 'notification')![1];
+    const notifHandler = mockSocket.on.mock.calls.find((call: unknown[]) => call[0] === 'notification')![1];
     
     mockSocket.recovered = true;
     notifHandler({ title: 'Test Notif', id: '1', body: 'body', ts: 123 });
