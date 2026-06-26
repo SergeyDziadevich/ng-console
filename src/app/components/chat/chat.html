@@ -14,20 +14,20 @@
     @if (isCreatingRoom()) {
       <div class="p-4 border-b border-gray-200 bg-gray-50 animate-in slide-in-from-top-4 fade-in duration-200">
         <h3 class="text-sm font-semibold mb-3 text-gray-700">Create New Room</h3>
-        <input 
-          type="text" 
-          [ngModel]="newRoomName()" 
+        <input
+          type="text"
+          [ngModel]="newRoomName()"
           (ngModelChange)="newRoomName.set($event)"
           placeholder="Room Name"
           class="w-full mb-3 px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-900"
         />
-        
+
         <div class="max-h-40 overflow-y-auto mb-3 space-y-1 custom-scrollbar">
           @for (user of users(); track user._id) {
             @if (user._id !== currentUser()?.id) {
               <label class="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors group">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   [checked]="selectedUserIds().includes(user._id)"
                   (change)="toggleUserSelection(user._id)"
                   class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 bg-white focus:ring-indigo-500 focus:ring-offset-white"
@@ -37,7 +37,7 @@
             }
           }
         </div>
-        
+
         <div class="flex gap-2">
           <button (click)="createRoom()" [disabled]="!newRoomName() || selectedUserIds().length === 0" class="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-1.5 rounded-md text-sm font-medium transition-colors">
             Create
@@ -68,7 +68,12 @@
           [class.border-l-indigo-500]="chatService.activeRoomId() === room.id"
           class="p-4 border-b border-gray-100 border-l-4 border-l-transparent hover:bg-gray-50 cursor-pointer transition-all duration-200 group"
         >
-          <h4 class="font-medium text-gray-800 group-hover:text-gray-900">{{ room.name }}</h4>
+          <div class="flex items-center gap-2">
+            <h4 class="font-medium text-gray-800 group-hover:text-gray-900">{{ room.name }}</h4>
+            @if (room.hasUnread) {
+              <span class="h-2 w-2 rounded-full bg-green-500 shrink-0"></span>
+            }
+          </div>
           <p class="text-xs text-gray-500 mt-1 truncate">
             {{ room.members?.length || 0 }} members
           </p>
@@ -132,9 +137,9 @@
             </button>
           </div>
           <div class="p-3">
-            <input 
-              type="text" 
-              [ngModel]="userSearchQuery()" 
+            <input
+              type="text"
+              [ngModel]="userSearchQuery()"
               (ngModelChange)="userSearchQuery.set($event)"
               placeholder="Search users..."
               class="w-full mb-3 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm text-gray-800"
@@ -142,8 +147,8 @@
             <div class="max-h-48 overflow-y-auto space-y-1 custom-scrollbar">
               @for (user of availableUsersToAdd(); track user._id) {
                 <label class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors group">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     [checked]="selectedUsersToAdd().includes(user._id)"
                     (change)="toggleAddUserSelection(user._id)"
                     class="form-checkbox h-3.5 w-3.5 text-indigo-600 rounded border-gray-300 bg-white focus:ring-indigo-500 focus:ring-offset-white"
@@ -155,9 +160,9 @@
                 <p class="text-xs text-gray-500 text-center py-2">No users found.</p>
               }
             </div>
-            <button 
-              (click)="addUsersToRoom()" 
-              [disabled]="selectedUsersToAdd().length === 0" 
+            <button
+              (click)="addUsersToRoom()"
+              [disabled]="selectedUsersToAdd().length === 0"
               class="w-full mt-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white py-1.5 rounded-md text-sm font-medium transition-colors">
               Add Selected Users
             </button>
@@ -174,10 +179,10 @@
               <div class="h-8 w-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-xs font-bold text-gray-600 shadow-sm border border-gray-300">
                 {{ (msg.senderDisplayName || msg.senderName || '?').charAt(0).toUpperCase() }}
               </div>
-              
+
               <div class="flex flex-col" [ngClass]="{'items-end': msg.senderId === currentUser()?.id, 'items-start': msg.senderId !== currentUser()?.id}">
                 <span class="text-[10px] text-gray-500 mb-1 px-1">{{ msg.senderDisplayName || msg.senderName }}</span>
-                <div 
+                <div
                   class="px-4 py-2 rounded-2xl shadow-sm backdrop-blur-sm"
                   [ngClass]="{
                     'bg-indigo-600 text-white rounded-br-none': msg.senderId === currentUser()?.id,
@@ -217,17 +222,17 @@
       <!-- Input Area -->
       <div class="p-4 border-t border-gray-200 bg-white/90 backdrop-blur-md">
         <form (submit)="$event.preventDefault(); sendMessage()" class="flex gap-2">
-          <input 
-            type="text" 
+          <input
+            type="text"
             [ngModel]="newMessage()"
             (ngModelChange)="newMessage.set($event)"
             name="message"
-            placeholder="Type a message..." 
+            placeholder="Type a message..."
             autocomplete="off"
             class="flex-1 bg-gray-100 border border-transparent text-gray-900 rounded-full px-5 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all placeholder-gray-500"
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             [disabled]="!newMessage().trim() || !chatService.isOnline()"
             class="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full p-2.5 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/25"
           >
