@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService, ChatMessage } from '../../services/chat.service';
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './chat.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Chat implements OnInit, OnDestroy {
+export class Chat {
   chatService = inject(ChatService);
   userService = inject(UserService);
   authService = inject(AuthService);
@@ -54,15 +54,6 @@ export class Chat implements OnInit, OnDestroy {
   });
 
   currentUser = this.authService.currentUser;
-
-  ngOnInit() {
-    this.chatService.connect();
-    this.chatService.fetchRooms();
-  }
-
-  ngOnDestroy() {
-    this.chatService.disconnect();
-  }
 
   selectRoom(roomId: string) {
     this.chatService.selectRoom(roomId);

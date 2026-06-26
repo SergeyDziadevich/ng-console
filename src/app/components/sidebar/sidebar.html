@@ -35,7 +35,14 @@
           <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon" />
         </svg>
         @if (!collapsed()) {
-          <span class="text-sm font-medium whitespace-nowrap flex-1">{{ item.label }}</span>
+          <span class="text-sm font-medium whitespace-nowrap flex-1 flex items-center gap-2">
+            {{ item.label }}
+            @if (item.label === 'Chats' && chatService.hasUnreadChats()) {
+              <span class="relative flex h-2 w-2 shrink-0">
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500 shadow-sm"></span>
+              </span>
+            }
+          </span>
           @if (item.label === 'Tickets') {
             <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-100 bg-purple-600 rounded-full shadow-sm">Preview</span>
           } @else if (item.label === 'AI Assistant') {

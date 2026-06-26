@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, NgZone } from '@angular/core';
+import { inject, Injectable, signal, NgZone, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
@@ -18,6 +18,7 @@ export interface ChatRoom {
     avatarUrl?: string;
     lastReadAt?: string;
   }[];
+  hasUnread?: boolean;
 }
 
 export interface ChatMessage {
@@ -42,6 +43,7 @@ export class ChatService {
   readonly activeRoomMessages = signal<ChatMessage[]>([]);
   readonly activeRoomId = signal<string | null>(null);
   readonly isOnline = signal(false);
+  readonly hasUnreadChats = computed(() => this.rooms().some(r => r.hasUnread));
 
   connect(): void {
     if (this.socket) {
@@ -77,6 +79,10 @@ export class ChatService {
         if (this.activeRoomId() === message.roomId) {
           this.activeRoomMessages.update((msgs) => [...msgs, message]);
           this.markAsRead(message.roomId);
+        } else {
+          this.rooms.update(rooms => rooms.map(room => 
+            room.id === message.roomId ? { ...room, hasUnread: true } : room
+          ));
         }
       });
     });
@@ -121,6 +127,10 @@ export class ChatService {
   markAsRead(roomId: string): void {
     if (this.socket && this.isOnline()) {
       this.socket.emit('markAsRead', { roomId });
+      // Update locally
+      this.rooms.update(rooms => rooms.map(room => 
+        room.id === roomId ? { ...room, hasUnread: false } : room
+      ));
     }
   }
 
