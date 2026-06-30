@@ -48,7 +48,7 @@ jobs:
         username: ${{ secrets.GCE_USERNAME }}
         key: ${{ secrets.GCE_SSH_KEY }}
         source: "docker-compose.yml"
-        target: "/opt/frontend"
+        target: "/tmp/frontend-compose"
 
     - name: Deploy to Compute Engine
       uses: appleboy/ssh-action@master
@@ -57,7 +57,9 @@ jobs:
         username: ${{ secrets.GCE_USERNAME }}
         key: ${{ secrets.GCE_SSH_KEY }}
         script: |
-          # Make sure to update this path to where your frontend docker-compose.yml lives on the VM
+          # Move the copied docker-compose.yml to the final directory
+          sudo mkdir -p /opt/frontend
+          sudo mv /tmp/frontend-compose/docker-compose.yml /opt/frontend/docker-compose.yml
           cd /opt/frontend
           
           # Authenticate docker with GCP (if not already authenticated)
