@@ -22,7 +22,7 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy compiled output from build stage
 # Note: Angular 17+ outputs to dist/<project-name>/browser
-COPY --from=build /app/dist/user-management/browser /usr/share/nginx/html/
+COPY --from=build /app/dist/ng-console/browser /usr/share/nginx/html/
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
