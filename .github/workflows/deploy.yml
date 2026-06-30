@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  GAR_LOCATION: us-central1
+  GAR_LOCATION: europe-central2
   REPOSITORY: my-docker-repo
   IMAGE: ng-console
 
