@@ -95,9 +95,9 @@ export class TicketDetailComponent implements OnInit {
         };
 
         if (epicObj) {
-          payload.epic = epicObj;
+          payload['epic'] = epicObj;
         } else {
-          payload.epic = null;
+          payload['epic'] = null;
         }
 
         try {
