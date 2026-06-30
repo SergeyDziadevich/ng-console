@@ -70,5 +70,5 @@ jobs:
           
           # Export variables and restart docker-compose for frontend
           export DOCKER_IMAGE_FRONTEND="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:latest"
-          sudo docker compose pull frontend
-          sudo docker compose up -d frontend
+          sudo -E docker compose pull frontend
+          sudo -E docker compose up -d frontend
