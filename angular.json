@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "user-management": {
+    "ng-console": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -69,10 +69,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "user-management:build:production"
+              "buildTarget": "ng-console:build:production"
             },
             "development": {
-              "buildTarget": "user-management:build:development"
+              "buildTarget": "ng-console:build:development"
             }
           },
           "defaultConfiguration": "development"
