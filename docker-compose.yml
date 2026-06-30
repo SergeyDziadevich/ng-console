@@ -1,0 +1,11 @@
+services:
+  frontend:
+    image: ${DOCKER_IMAGE_FRONTEND:-frontend-local:latest}
+    container_name: ng-console
+    ports:
+      - "80:80"
+
+networks:
+  default:
+    name: app-network
+    external: true
