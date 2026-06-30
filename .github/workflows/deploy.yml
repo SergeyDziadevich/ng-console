@@ -65,7 +65,10 @@ jobs:
           # Authenticate docker with GCP (if not already authenticated)
           gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev --quiet
           
+          # Ensure the shared network exists
+          sudo docker network create app-network || true
+          
           # Export variables and restart docker-compose for frontend
           export DOCKER_IMAGE_FRONTEND="${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:latest"
-          docker compose pull frontend
-          docker compose up -d frontend
+          sudo docker compose pull frontend
+          sudo docker compose up -d frontend
