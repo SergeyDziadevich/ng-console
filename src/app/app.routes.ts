@@ -9,7 +9,7 @@ export const routes: Routes = [
     path: 'login',
     // canMatch prevents loading the login chunk when the user is already authenticated
     canMatch: [noAuthGuard],
-    loadComponent: () => import('./components/login/login').then((m) => m.Login),
+    loadComponent: () => import('./features/login/login').then((m) => m.Login),
   },
   {
     path: '',
@@ -21,27 +21,27 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./components/dashboard/dashboard').then((m) => m.Dashboard),
+        loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'ai-assistant',
         loadComponent: () =>
-          import('./components/ai-assistant/ai-assistant').then((m) => m.AiAssistant),
+          import('./features/ai-assistant/ai-assistant').then((m) => m.AiAssistant),
       },
       {
         path: 'user-management',
         loadComponent: () =>
-          import('./components/user-management/user-management').then((m) => m.UserManagement),
+          import('./features/user-management/user-management').then((m) => m.UserManagement),
         children: [
           {
             path: 'add-user',
             loadComponent: () =>
-              import('./components/user-management/add-user/add-user').then((m) => m.AddUser),
+              import('./features/user-management/add-user/add-user').then((m) => m.AddUser),
           },
           {
             path: 'edit-user/:id',
             loadComponent: () =>
-              import('./components/user-management/edit-user/edit-user').then((m) => m.EditUser),
+              import('./features/user-management/edit-user/edit-user').then((m) => m.EditUser),
           },
         ],
       },
@@ -63,15 +63,15 @@ export const routes: Routes = [
       {
         path: 'notifications',
         loadComponent: () =>
-          import('./components/notifications/notifications').then((m) => m.Notifications),
+          import('./features/notifications/notifications').then((m) => m.Notifications),
       },
       {
         path: 'settings',
-        loadComponent: () => import('./components/settings/settings').then((m) => m.Settings),
+        loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
       },
       {
         path: 'chats',
-        loadComponent: () => import('./components/chat/chat').then((m) => m.Chat),
+        loadComponent: () => import('./features/chat/chat').then((m) => m.Chat),
       },
       {
         path: '',
@@ -81,7 +81,7 @@ export const routes: Routes = [
       {
         path: 'edit-user/:id',
         loadComponent: () =>
-          import('./components/user-management/edit-user/edit-user').then((m) => m.EditUser),
+          import('./features/user-management/edit-user/edit-user').then((m) => m.EditUser),
       },
     ],
   },
