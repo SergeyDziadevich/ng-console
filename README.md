@@ -3,7 +3,6 @@
 </p>
 
 # NgConsole
-git
 NgConsole is the frontend Angular application that serves as the administrative interface for the Cloud Console ecosystem.
 
 **Backend API:** [ng-console-api](https://github.com/SergeyDziadevich/ng-console-api/)
