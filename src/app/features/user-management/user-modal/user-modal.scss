@@ -1,0 +1,10 @@
+@reference "../../../../styles.scss";
+
+.error-message {
+  @apply text-sm text-red-600;
+}
+
+.btn-primary[disabled] {
+  @apply bg-gray-400 cursor-not-allowed;
+}
+
