@@ -1,0 +1,72 @@
+<app-user-modal
+  title="Add New User"
+  submitLabel="Add User"
+  [submitDisabled]="userForm().invalid()"
+  [error]="error()"
+  (closeModal)="close()"
+  (submitted)="onSubmit()">
+
+  <svg modal-icon xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+  </svg>
+
+  <div class="form-field">
+    <label for="add-name" class="text-sm font-medium text-gray-700">Full Name</label>
+    <input id="add-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="userForm.username" />
+    @if (userForm.username().touched() && userForm.username().invalid()) {
+      <div class="error-message">
+        @for (err of userForm.username().errors(); track err) { <p>{{ err.message }}</p> }
+      </div>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="add-email" class="text-sm font-medium text-gray-700">Email Address</label>
+    <input id="add-email" type="email" placeholder="john@example.com" class="px-4 py-2 form-input transition-all" [formField]="userForm.email" />
+    @if (userForm.email().touched() && userForm.email().invalid()) {
+      <div class="error-message">
+        @for (err of userForm.email().errors(); track err) { <p>{{ err.message }}</p> }
+      </div>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="add-password" class="text-sm font-medium text-gray-700">Password</label>
+    <input id="add-password" type="password" placeholder="Min. 8 characters" class="px-4 py-2 form-input transition-all" [formField]="userForm.password" />
+    @if (userForm.password().touched() && userForm.password().invalid()) {
+      <div class="error-message">
+        @for (err of userForm.password().errors(); track err) { <p>{{ err.message }}</p> }
+      </div>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="add-role" class="text-sm font-medium text-gray-700">Role</label>
+    <select id="add-role" [formField]="userForm.role" class="px-4 py-2 form-input border-gray-300 bg-white">
+      @for (role of userRoles; track role) { <option [value]="role">{{ role }}</option> }
+    </select>
+  </div>
+
+  <div class="form-field">
+    <label for="avatar" class="text-sm font-medium text-gray-700">Avatar</label>
+    <div class="flex items-center gap-4 mt-1">
+      @if (avatarPreview()) {
+        <img [src]="avatarPreview()" alt="Avatar preview" class="w-12 h-12 rounded-full object-cover border border-gray-200" />
+      } @else {
+        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+      }
+      <input id="avatar" type="file" accept="image/*" (change)="onAvatarChange($event)"
+        class="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+    </div>
+  </div>
+
+</app-user-modal>
+
+@if (showToast()) {
+  <app-toast message="User added successfully!"></app-toast>
+}
+
