@@ -1,0 +1,202 @@
+<div class="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <!-- Logo & Title -->
+    <div class="flex flex-col items-center mb-8">
+      <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 16.2A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25" />
+          <path d="m8 14 3 3-3 3" />
+          <path d="M14 20h3" />
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-white">ng console</h1>
+      <p class="text-sm text-gray-400 mt-1">Sign in to your account</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-8">
+      @if (step() === 1) {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Error Alert -->
+        @if (errorMessage()) {
+          <div role="alert"
+            class="mb-5 flex items-start gap-2 rounded-lg bg-red-900/40 border border-red-700 px-4 py-3 text-sm text-red-300">
+            <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- Email
+        <div class="mb-5">
+          <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">
+            Email address
+          </label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            aria-required="true"
+            [attr.aria-describedby]="form.controls.email.invalid && form.controls.email.touched ? 'email-error' : null"
+            class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            [class.border-red-500]="form.controls.email.invalid && form.controls.email.touched"
+            [class.border-gray-600]="!(form.controls.email.invalid && form.controls.email.touched)" />
+          @if (form.controls.email.invalid && form.controls.email.touched) {
+            <p id="email-error" class="mt-1.5 text-xs text-red-400" role="alert">
+              @if (form.controls.email.errors?.['required']) {
+                Email is required.
+              } @else {
+                Enter a valid email address.
+              }
+            </p>
+          }
+        </div>
+        -->
+        <!-- name -->
+        <div class="mb-5">
+          <label for="name" class="block text-sm font-medium text-gray-300 mb-1.5">
+            Name
+          </label>
+          <input
+            id="name"
+            formControlName="name"
+            placeholder="name"
+            aria-required="true"
+            [attr.aria-describedby]="form.controls.name.invalid && form.controls.name.touched ? 'email-error' : null"
+            class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            [class.border-red-500]="form.controls.name.invalid && form.controls.name.touched"
+            [class.border-gray-600]="!(form.controls.name.invalid && form.controls.name.touched)" />
+          @if (form.controls.name.invalid && form.controls.name.touched && form.controls.name.errors?.['required']) {
+            <p id="email-error" class="mt-1.5 text-xs text-red-400" role="alert">
+              Name is required.
+            </p>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="mb-6">
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-1.5">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            aria-required="true"
+            [attr.aria-describedby]="form.controls.password.invalid && form.controls.password.touched ? 'password-error' : null"
+            class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            [class.border-red-500]="form.controls.password.invalid && form.controls.password.touched"
+            [class.border-gray-600]="!(form.controls.password.invalid && form.controls.password.touched)" />
+          @if (form.controls.password.invalid && form.controls.password.touched) {
+            <p id="password-error" class="mt-1.5 text-xs text-red-400" role="alert">
+              @if (form.controls.password.errors?.['required']) {
+                Password is required.
+              } @else {
+                Password must be at least 6 characters.
+              }
+            </p>
+          }
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800">
+          @if (loading()) {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              Signing in…
+            </span>
+          } @else {
+            Sign in
+          }
+        </button>
+
+        <div class="mt-6">
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-600"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-gray-800 text-gray-400">Or continue with</span>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-center">
+            <div #googleBtn></div>
+          </div>
+        </div>
+
+      </form>
+      } @else {
+      <form [formGroup]="codeForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- Error Alert -->
+        @if (errorMessage()) {
+          <div role="alert"
+            class="mb-5 flex items-start gap-2 rounded-lg bg-red-900/40 border border-red-700 px-4 py-3 text-sm text-red-300">
+            <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- 2FA Code -->
+        <div class="mb-6">
+          <label for="twoFactorCode" class="block text-sm font-medium text-gray-300 mb-1.5">
+            2FA Code
+          </label>
+          <input
+            id="twoFactorCode"
+            type="text"
+            formControlName="twoFactorCode"
+            placeholder="6-digit code"
+            aria-required="true"
+            [attr.aria-describedby]="codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched ? 'code-error' : null"
+            class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            [class.border-red-500]="codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched"
+            [class.border-gray-600]="!(codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched)" />
+          @if (codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched) {
+            <p id="code-error" class="mt-1.5 text-xs text-red-400" role="alert">
+              Code is required.
+            </p>
+          }
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800">
+          @if (loading()) {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              Verifying…
+            </span>
+          } @else {
+            Verify Code
+          }
+        </button>
+      </form>
+      }
+    </div>
+  </div>
+</div>
+
