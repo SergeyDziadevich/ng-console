@@ -14,7 +14,7 @@ const envConfigFile = `export const environment = {
 
 const envConfigProdFile = `export const environment = {
   production: true,
-  apiUrl: '${process.env.API_URL || 'http://localhost:3000'}',
+  apiUrl: '${process.env.API_URL || ''}',
   googleClientId: '${process.env.GOOGLE_CLIENT_ID}',
 };
 `;
