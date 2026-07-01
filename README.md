@@ -3,7 +3,7 @@
 </p>
 
 # NgConsole
-
+git
 NgConsole is the frontend Angular application that serves as the administrative interface for the Cloud Console ecosystem.
 
 **Backend API:** [ng-console-api](https://github.com/SergeyDziadevich/ng-console-api/)
@@ -18,12 +18,10 @@ NgConsole is the frontend Angular application that serves as the administrative 
 - **Support Ticketing:** Integrated ticketing system for users to submit requests and for administrators to manage and resolve support issues.
 - **Profile & Settings:** Personalized user settings allowing for account configuration and security management.
 
-
 ## Main Functionality
 
 - **Modern UI Framework:** Built with Angular 22 and styled with TailwindCSS 4 for a responsive and sleek user experience.
 - **Real-Time Interactions:** Integrated with Socket.IO client for live chat, notifications, and instant updates.
-- **Rich Text Editing:** Features a powerful WYSIWYG editor using Quill (`ngx-quill`).
 - **AI Integration:** Leverages Firebase Genkit AI (`@genkit-ai/google-genai`) for intelligent assistant features directly in the browser.
 - **Robust Testing:** Configured with Vitest for fast unit testing and Playwright for reliable end-to-end (e2e) tests.
 
