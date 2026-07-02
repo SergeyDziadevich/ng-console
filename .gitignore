@@ -51,3 +51,9 @@ tasks.json
 
 AGENTS.md
 .github/copilot-instructions.md
+
+
+
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs
