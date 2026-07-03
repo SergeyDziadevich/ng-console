@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { UserService } from './user-service';
 import { environment } from '../../environments/environment';
-import { CreateUser, UpdateUser, User } from '../models/user.model';
+import { CreateUser, UpdateUser } from '../models/user.model';
 import { UserRole } from '../enums/user-role.enum';
 
 describe('UserService', () => {
