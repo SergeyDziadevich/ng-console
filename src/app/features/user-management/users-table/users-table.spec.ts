@@ -5,7 +5,6 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UsersTable } from './users-table';
 import { User } from '../../../models/user.model';
 import { UserRole } from '../../../enums/user-role.enum';
-import { By } from '@angular/platform-browser';
 import { vi } from 'vitest';
 
 describe('UsersTable', () => {
