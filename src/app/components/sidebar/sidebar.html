@@ -13,13 +13,11 @@
       (click)="toggle()"
       class="p-1.5 rounded-md hover:bg-gray-700 transition-colors ml-auto"
       [title]="collapsed() ? 'Expand' : 'Collapse'">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        @if (collapsed()) {
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-        } @else {
-          <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7M19 19l-7-7 7-7" />
-        }
-      </svg>
+      @if (collapsed()) {
+        <img src="/assets/icons/icon-expand.svg" class="h-5 w-5   shrink-0" alt="icon" />
+      } @else {
+        <img src="/assets/icons/icon-collapse.svg" class="h-5 w-5   shrink-0" alt="icon" />
+      }
     </button>
   </div>
 
@@ -31,9 +29,7 @@
         routerLinkActive="bg-indigo-600 text-white"
         [routerLinkActiveOptions]="{ exact: item.route === '/' }"
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon" />
-        </svg>
+        <img [src]="'/assets/icons/' + item.icon" class="h-5 w-5 shrink-0" alt="icon" />
         @if (!collapsed()) {
           <span class="text-sm font-medium whitespace-nowrap flex-1 flex items-center gap-2">
             {{ item.label }}
