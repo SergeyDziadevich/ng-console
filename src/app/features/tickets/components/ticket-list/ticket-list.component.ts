@@ -5,6 +5,7 @@ import { TicketService } from '../../services/ticket.service';
 import { UserService } from '../../../../services/user-service';
 import { AuthService } from '../../../../services/auth.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TicketStatus } from '../../models/ticket.model';
 
 @Component({
   selector: 'app-ticket-list',
@@ -13,6 +14,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './ticket-list.component.html',
 })
 export class TicketListComponent implements OnInit {
+  TicketStatus = TicketStatus;
+
   ticketService = inject(TicketService);
   userService = inject(UserService);
   authService = inject(AuthService);
@@ -26,6 +29,7 @@ export class TicketListComponent implements OnInit {
 
   showAssignedToMeOnly = signal(false);
   selectedEpicId = signal<string>('');
+  selectedStatuses = signal<Set<TicketStatus>>(new Set());
 
   filteredTickets = computed(() => {
     const tickets = this.ticketsResource.value();
@@ -43,6 +47,10 @@ export class TicketListComponent implements OnInit {
       filtered = filtered.filter(t => t.epic?.id.toString() === this.selectedEpicId());
     }
     
+    if (this.selectedStatuses().size > 0) {
+      filtered = filtered.filter(t => this.selectedStatuses().has(t.status));
+    }
+    
     return filtered;
   });
 
@@ -56,6 +64,14 @@ export class TicketListComponent implements OnInit {
       .subscribe(params => {
         this.showAssignedToMeOnly.set(params['assignedToMe'] === 'true');
         this.selectedEpicId.set(params['epicId'] || '');
+        
+        const statuses = params['status'];
+        if (statuses) {
+          const statusArray = Array.isArray(statuses) ? statuses : statuses.split(',');
+          this.selectedStatuses.set(new Set(statusArray as TicketStatus[]));
+        } else {
+          this.selectedStatuses.set(new Set());
+        }
       });
   }
 
@@ -74,6 +90,27 @@ export class TicketListComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { epicId: value || undefined },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  hasStatusFilter(status: TicketStatus): boolean {
+    return this.selectedStatuses().has(status);
+  }
+
+  toggleStatusFilter(status: TicketStatus) {
+    const current = new Set(this.selectedStatuses());
+    if (current.has(status)) {
+      current.delete(status);
+    } else {
+      current.add(status);
+    }
+    
+    const statusArray = Array.from(current);
+    
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { status: statusArray.length > 0 ? statusArray.join(',') : undefined },
       queryParamsHandling: 'merge'
     });
   }
