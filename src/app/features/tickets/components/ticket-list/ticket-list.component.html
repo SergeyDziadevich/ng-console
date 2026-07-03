@@ -33,9 +33,7 @@
       </select>
     </div>
     <button routerLink="/tickets/new" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-      </svg>
+      <img src="/assets/icons/icon-31b37eda.svg" class="w-4 h-4   shrink-0" alt="icon" />
       Add Ticket
     </button>
   </div>
@@ -90,16 +88,12 @@
           <p class="text-sm text-gray-600 mb-5 line-clamp-3">{{ ticket.about || 'No additional information.' }}</p>
           <div class="flex justify-between items-center pt-3 border-t border-gray-100 text-xs font-medium text-gray-500">
             <span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+              <img src="/assets/icons/icon-c4287b80.svg" class="h-4 w-4 inline mr-1 text-gray-400   shrink-0" alt="icon" />
               {{ getAssignedPersonName(ticket.assignedPersonId) }}
             </span>
             @if (ticket.estimations) {
               <span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <img src="/assets/icons/icon-d0f846d4.svg" class="h-4 w-4 inline mr-1 text-gray-400   shrink-0" alt="icon" />
                 {{ ticket.estimations }}h
               </span>
             }
@@ -107,9 +101,7 @@
         </div>
       } @empty {
         <div class="col-span-full text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-100">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
+          <img src="/assets/icons/icon-31bd8793.svg" class="h-12 w-12 mx-auto text-gray-300 mb-3   shrink-0" alt="icon" />
           <p class="text-lg">No tickets found.</p>
           <p class="text-sm mt-1">Create a new ticket to get started.</p>
         </div>
@@ -119,9 +111,7 @@
 
   @if (ticketsResource.error()) {
     <div class="flex flex-1 flex-col items-center justify-center gap-4 text-center px-4 bg-white rounded-lg shadow-sm border border-gray-100 py-12">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-      </svg>
+      <img src="/assets/icons/icon-f83bba3f.svg" class="w-16 h-16 text-red-400   shrink-0" alt="icon" />
       <div>
         <h2 class="text-xl font-semibold text-gray-800">Something went wrong</h2>
         <p class="mt-1 text-sm text-gray-500">We couldn't load the tickets. Please try again.</p>
