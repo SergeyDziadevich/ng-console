@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
 import { TicketService } from '../../services/ticket.service';
@@ -9,6 +9,7 @@ import { UserService } from '../../../../services/user-service';
 import { SvgIconComponent } from '../../../../components/icons/svg-icon.component';
 import { firstValueFrom } from 'rxjs';
 import { form, FormField, FormRoot, required, min } from '@angular/forms/signals';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -20,6 +21,8 @@ export class TicketDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private ticketService = inject(TicketService);
   private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   ticket = signal<Ticket | null>(null);
   isLoading = signal(true);
@@ -29,7 +32,13 @@ export class TicketDetailComponent implements OnInit {
   usersResource = this.userService.usersResource;
   epicsResource = this.ticketService.epicsResource;
 
+  canDeleteTicket = computed(() => {
+    const user = this.authService.currentUser();
+    return user?.role === 'admin' || user?.role === 'moderator';
+  });
+
   isEditing = signal(false);
+  showDeleteConfirm = signal(false);
 
   ngOnInit() {
     this.usersResource.reload();
@@ -159,5 +168,28 @@ export class TicketDetailComponent implements OnInit {
 
   cancelEdit() {
     this.isEditing.set(false);
+  }
+
+  deleteTicket() {
+    const t = this.ticket();
+    if (!t) return;
+    this.ticketService.deleteTicket(t.id).subscribe({
+      next: () => {
+        this.router.navigate(['/tickets']);
+      },
+      error: (err) => {
+        console.error('Failed to delete ticket', err);
+        alert('Failed to delete ticket.');
+        this.showDeleteConfirm.set(false);
+      }
+    });
+  }
+
+  confirmDelete() {
+    this.showDeleteConfirm.set(true);
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirm.set(false);
   }
 }
