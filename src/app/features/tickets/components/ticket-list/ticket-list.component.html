@@ -7,6 +7,23 @@
         <input type="checkbox" [checked]="showAssignedToMeOnly()" (change)="toggleAssignedToMeFilter()" class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer">
         <span class="text-sm font-medium text-gray-700">Assigned to me</span>
       </label>
+
+      <div class="flex items-center gap-2 bg-white px-2 py-1.5 rounded-md border border-gray-200 shadow-sm">
+        <span class="text-sm font-medium text-gray-500 px-1 border-r border-gray-200 mr-1">Status</span>
+        <label class="flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors">
+          <input type="checkbox" [checked]="hasStatusFilter(TicketStatus.TODO)" (change)="toggleStatusFilter(TicketStatus.TODO)" class="rounded text-gray-500 focus:ring-gray-500 w-3.5 h-3.5 cursor-pointer">
+          <span class="text-sm font-medium text-gray-700">To Do</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors">
+          <input type="checkbox" [checked]="hasStatusFilter(TicketStatus.IN_PROGRESS)" (change)="toggleStatusFilter(TicketStatus.IN_PROGRESS)" class="rounded text-blue-500 focus:ring-blue-500 w-3.5 h-3.5 cursor-pointer">
+          <span class="text-sm font-medium text-blue-700">In Progress</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors">
+          <input type="checkbox" [checked]="hasStatusFilter(TicketStatus.DONE)" (change)="toggleStatusFilter(TicketStatus.DONE)" class="rounded text-green-500 focus:ring-green-500 w-3.5 h-3.5 cursor-pointer">
+          <span class="text-sm font-medium text-green-700">Done</span>
+        </label>
+      </div>
+
       <select class="bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               (change)="onEpicChange($event)">
         <option value="">All Epics</option>
