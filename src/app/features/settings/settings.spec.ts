@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { signal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 import { of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach, Mock } from 'vitest';
 
 import { Settings } from './settings';
 import { AuthService } from '../../services/auth.service';
@@ -11,8 +11,15 @@ import { UserService } from '../../services/user-service';
 describe('Settings', () => {
   let component: Settings;
   let fixture: ComponentFixture<Settings>;
-  let mockAuthService: any;
-  let mockUserService: any;
+  let mockAuthService: {
+    currentUser: WritableSignal<{ id: string; name: string; email: string; role: string; } | null>;
+    generate2FA: Mock;
+    turnOn2FA: Mock;
+  };
+  let mockUserService: {
+    getUserById: Mock;
+    updateUser: Mock;
+  };
 
   beforeEach(async () => {
     mockAuthService = {
