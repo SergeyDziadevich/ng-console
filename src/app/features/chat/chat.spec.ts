@@ -10,6 +10,7 @@ import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import { provideRouter } from '@angular/router';
 import { ChatRoom, ChatMessage } from '../../models/chat.model';
+import { User } from '../../models/user.model';
 
 describe('Chat Component', () => {
   let component: Chat;
@@ -172,9 +173,9 @@ describe('Chat Component', () => {
       vi.spyOn(chatService, 'rooms').mockReturnValue([room]);
       
       const mockUsers = [{ _id: 'u1', username: 'user1' }, { _id: 'u2', username: 'user2' }];
-      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as any);
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as unknown as User[]);
       
-      expect(component.availableUsersToAdd()).toEqual([mockUsers[1]] as any);
+      expect(component.availableUsersToAdd()).toEqual([mockUsers[1]] as unknown as User[]);
     });
 
     it('should filter by search query', () => {
@@ -187,10 +188,10 @@ describe('Chat Component', () => {
         { _id: 'u2', username: 'banana', displayName: 'Banana Split' },
         { _id: 'u3', username: 'cherry' }
       ];
-      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as any);
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as unknown as User[]);
       
       component.userSearchQuery.set('BANANA');
-      expect(component.availableUsersToAdd()).toEqual([mockUsers[1]] as any);
+      expect(component.availableUsersToAdd()).toEqual([mockUsers[1]] as unknown as User[]);
     });
   });
 
