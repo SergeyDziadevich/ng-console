@@ -11,25 +11,15 @@ import { ChatRoom, ChatMessage } from '../models/chat.model';
 
 
 
-// Mock socket.io-client
-const { mockSocket, mockIo } = vi.hoisted(() => {
-  const mockSocketObj = {
-    on: vi.fn(),
-    emit: vi.fn(),
-    disconnect: vi.fn()
-  };
-  return {
-    mockSocket: mockSocketObj,
-    mockIo: vi.fn(() => mockSocketObj)
-  };
-});
+import { io } from 'socket.io-client';
 
-vi.mock('socket.io-client', () => {
-  return {
-    io: mockIo,
-    Socket: vi.fn()
-  };
-});
+vi.mock('socket.io-client');
+
+const mockSocket = {
+  on: vi.fn(),
+  emit: vi.fn(),
+  disconnect: vi.fn()
+};
 
 describe('ChatService', () => {
   let service: ChatService;
@@ -40,6 +30,9 @@ describe('ChatService', () => {
   };
 
   beforeEach(() => {
+    vi.mocked(io).mockClear();
+    vi.mocked(io).mockReturnValue(mockSocket as any);
+
     authServiceMock = {
       isAuthenticated: signal(false),
       getToken: vi.fn().mockReturnValue('fake-token')
@@ -73,7 +66,7 @@ describe('ChatService', () => {
       service.connect();
       expect(authServiceMock.getToken).toHaveBeenCalled();
       
-      expect(mockIo).toHaveBeenCalledWith(`${environment.apiUrl}/chat`, expect.any(Object));
+      expect(io).toHaveBeenCalledWith(`${environment.apiUrl}/chat`, expect.any(Object));
       
       // verify listeners are set
       expect(mockSocket.on).toHaveBeenCalledWith('connect', expect.any(Function));
