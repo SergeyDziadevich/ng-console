@@ -14,7 +14,7 @@ describe('AddUser', () => {
   beforeEach(async () => {
     mockUserService = {
       createUser: vi.fn().mockReturnValue(of({})),
-      usersResource: { reload: vi.fn() } as any
+      usersResource: { reload: vi.fn() } as unknown as UserService['usersResource']
     };
 
     mockRouter = {

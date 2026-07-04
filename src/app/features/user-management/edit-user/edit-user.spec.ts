@@ -18,7 +18,7 @@ describe('EditUser', () => {
   beforeEach(async () => {
     mockUserService = {
       updateUser: vi.fn().mockReturnValue(of({})),
-      usersResource: { reload: vi.fn() } as any
+      usersResource: { reload: vi.fn() } as unknown as UserService['usersResource']
     };
 
     mockRouter = {
