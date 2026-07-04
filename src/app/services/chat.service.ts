@@ -120,7 +120,7 @@ export class ChatService {
   }
 
   fetchRooms(): void {
-    this.http.get<ChatRoom[]>(`${environment.apiUrl}/api/chats/rooms`).subscribe({
+    this.http.get<ChatRoom[]>(`${environment.apiUrl}/api/chats/rooms?_t=${Date.now()}`).subscribe({
       next: (rooms) => {
         this.rooms.set(rooms);
       },
@@ -151,7 +151,7 @@ export class ChatService {
   }
 
   private fetchRoomMessages(roomId: string): void {
-    this.http.get<ChatMessage[]>(`${environment.apiUrl}/api/chats/rooms/${roomId}/messages`).subscribe({
+    this.http.get<ChatMessage[]>(`${environment.apiUrl}/api/chats/rooms/${roomId}/messages?_t=${Date.now()}`).subscribe({
       next: (messages) => {
         this.activeRoomMessages.set(messages);
       },
