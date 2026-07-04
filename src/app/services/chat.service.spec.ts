@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { ChatRoom, ChatMessage } from '../models/chat.model';
 
-import { io } from 'socket.io-client';
+
 
 // Mock socket.io-client
 const { mockSocket, mockIo } = vi.hoisted(() => {
