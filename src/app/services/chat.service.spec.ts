@@ -31,7 +31,7 @@ describe('ChatService', () => {
 
   beforeEach(() => {
     vi.mocked(io).mockClear();
-    vi.mocked(io).mockReturnValue(mockSocket as any);
+    vi.mocked(io).mockReturnValue(mockSocket as unknown as ReturnType<typeof io>);
 
     authServiceMock = {
       isAuthenticated: signal(false),
