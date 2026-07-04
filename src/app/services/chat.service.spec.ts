@@ -12,11 +12,15 @@ import { ChatRoom, ChatMessage } from '../models/chat.model';
 import { io } from 'socket.io-client';
 
 // Mock socket.io-client
-const mockSocket = {
-  on: vi.fn(),
-  emit: vi.fn(),
-  disconnect: vi.fn()
-};
+const { mockSocket } = vi.hoisted(() => {
+  return {
+    mockSocket: {
+      on: vi.fn(),
+      emit: vi.fn(),
+      disconnect: vi.fn()
+    }
+  };
+});
 
 vi.mock('socket.io-client', () => {
   return {
