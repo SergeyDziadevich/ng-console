@@ -11,7 +11,8 @@
     "test": "nx test",
     "e2e": "playwright test",
     "lint": "nx lint",
-    "lint-fix": "nx lint --fix"
+    "lint-fix": "nx lint --fix",
+    "clear-cache": "nx reset"
   },
   "private": true,
   "packageManager": "npm@10.8.2",
