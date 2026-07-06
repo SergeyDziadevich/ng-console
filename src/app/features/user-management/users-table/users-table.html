@@ -1,18 +1,21 @@
-<table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
+<div class="overflow-auto flex-1 min-h-0">
+  <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
   <thead class="bg-gray-50">
   <tr>
-    <th class="table-th">ID</th>
+    <th class="table-th w-[1%] whitespace-nowrap">ID</th>
     <th class="table-th">Name</th>
     <th class="table-th">Email</th>
     <th class="table-th">Role</th>
     <th class="table-th text-center">2FA</th>
-    <th class="table-th">Actions</th>
+    <th class="table-th text-right">Actions</th>
   </tr>
   </thead>
   <tbody class="divide-y divide-gray-100">
-    @for (user of users(); track user._id) {
+    @for (user of paginatedUsers(); track user._id) {
       <tr class="hover:bg-gray-50 transition-colors">
-        <td class="table-td text-gray-500">{{ user._id }}</td>
+        <td class="table-td text-gray-500 font-mono text-xs whitespace-nowrap">
+          {{ user._id }}
+        </td>
         <td class="table-td font-medium text-gray-900">
           <div class="flex items-center gap-2">
             @if (user.avatarUrl) {
@@ -42,7 +45,7 @@
             </span>
           }
         </td>
-        <td class="table-td space-x-2">
+        <td class="table-td space-x-2 text-right">
           <button
             *appHasPermission="'edit-user'"
             (click)="editUser(user)"
@@ -62,8 +65,41 @@
         <td colspan="5" class="px-6 py-10 text-center text-gray-400">No users found.</td>
       </tr>
     }
-  </tbody>
-</table>
+  </table>
+</div>
+
+<div class="px-6 py-4 flex flex-wrap items-center justify-between border-t border-gray-200 bg-gray-50 gap-4 shrink-0">
+  <div class="flex items-center gap-2 text-sm text-gray-700">
+    <span>Users per page:</span>
+    <select class="border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            (change)="onPageSizeChange($event)">
+      <option value="25" [selected]="pageSize() === 25">25</option>
+      <option value="50" [selected]="pageSize() === 50">50</option>
+      <option value="75" [selected]="pageSize() === 75">75</option>
+      <option value="100" [selected]="pageSize() === 100">100</option>
+      <option value="all" [selected]="pageSize() === 'all'">All</option>
+    </select>
+  </div>
+  
+  <div class="flex items-center gap-4 text-sm text-gray-700">
+    <span>Total: {{ users().length }}</span>
+    <div class="flex items-center gap-2">
+      <button 
+        class="p-1 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="prevPage()"
+        [disabled]="currentPage() === 1 || pageSize() === 'all'">
+        &larr; Prev
+      </button>
+      <span class="px-2">Page {{ pageSize() === 'all' ? 1 : currentPage() }} of {{ totalPages() }}</span>
+      <button 
+        class="p-1 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages() || pageSize() === 'all'">
+        Next &rarr;
+      </button>
+    </div>
+  </div>
+</div>
 
 @if (userToDelete()) {
   <div class="modal-overlay z-50">

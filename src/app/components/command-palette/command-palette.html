@@ -1,0 +1,51 @@
+@if (isCommandPaletteOpen()) {
+  <div class="palette-container" 
+       [style.transform]="currentX || currentY ? 'translate(' + currentX + 'px, ' + currentY + 'px)' : null"
+       (mousedown)="onDragStart($event)">
+    <div class="palette-header">
+      <span>AI Assistant</span>
+      <button class="close-btn" (click)="close()">
+        <img src="/assets/icons/icon-close.svg" class="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity" alt="close icon" />
+      </button>
+    </div>
+    
+    <div class="palette-messages">
+      @if (messages().length === 0) {
+        <div class="empty-state">
+          <p>Not sure what to ask? Try these examples:</p>
+          <div class="examples-list">
+            @for (cmd of examples; track $index) {
+              <button class="example-btn" (click)="useExample(cmd)">
+                {{ cmd }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      @for (msg of messages(); track $index) {
+        <div class="message" [class.user]="msg.role === 'user'">
+          <div class="message-content" [innerHTML]="msg.content"></div>
+        </div>
+      }
+      @if (isGenerating()) {
+        <div class="message loading">
+          <div class="dot-flashing"></div>
+        </div>
+      }
+    </div>
+
+    <div class="palette-input-area">
+      <input 
+        #searchInput
+        type="text" 
+        class="command-input" 
+        [ngModel]="prompt()" 
+        (ngModelChange)="prompt.set($event)"
+        (keydown.enter)="submitCommand()"
+        placeholder="Ask anything or use commands... (Cmd+K to close)"
+        [disabled]="isGenerating()"
+      />
+    </div>
+  </div>
+}

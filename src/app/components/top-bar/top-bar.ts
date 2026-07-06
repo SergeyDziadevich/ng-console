@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AiService } from '../../services/ai.service';
 
 @Component({
   selector: 'app-top-bar',
@@ -11,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class TopBar {
   private readonly authService = inject(AuthService);
+  private readonly aiService = inject(AiService);
 
   protected dropdownOpen = signal(false);
 
@@ -60,5 +62,9 @@ export class TopBar {
     if (label === 'Sign Out') {
       this.authService.logout();
     }
+  }
+
+  protected toggleAiAssistant(): void {
+    this.aiService.toggleCommandPalette();
   }
 }
