@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router, UrlTree } from '@angular/router';
 import { PermissionsService } from '../services/permissions.service';
-import { canUserEdit } from './role.guard';
+import { canUserEdit } from './can-user-edit.guard';
 import { computed } from '@angular/core';
 import { Mock, vi, describe, it, expect, beforeEach } from 'vitest';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
