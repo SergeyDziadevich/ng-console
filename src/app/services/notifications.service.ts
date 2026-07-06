@@ -49,16 +49,19 @@ export class NotificationsService {
   }
 
   private init() {
-    this.http.get<NotificationPayload[]>(`${environment.apiUrl}/api/notifications`).subscribe((history) => {
-      this.messages.set((history || []).map(n => ({
-        id: n.id,
-        title: n.title,
-        body: n.body,
-        replayed: false,
-        isSystem: n.isSystem,
-        timestamp: n.ts,
-        isRead: n.isRead,
-      })));
+    this.http.get<NotificationPayload[]>(`${environment.apiUrl}/api/notifications`).subscribe({
+      next: (history) => {
+        this.messages.set((history || []).map(n => ({
+          id: n.id,
+          title: n.title,
+          body: n.body,
+          replayed: false,
+          isSystem: n.isSystem,
+          timestamp: n.ts,
+          isRead: n.isRead,
+        })));
+      },
+      error: () => { /* empty */ }
     });
 
     this.zone.runOutsideAngular(() => {
@@ -102,18 +105,21 @@ export class NotificationsService {
   sendNotification(title: string): void {
     const user = this.authService.currentUser();
     if (user) {
-      this.http.post(`${environment.apiUrl}/api/notifications/notify`, { 
-        title, 
-        type: 'info', 
-        userId: user.id 
-      }).subscribe();
+      this.http.post(`${environment.apiUrl}/api/notifications/notify`, {
+        title,
+        type: 'info',
+        userId: user.id
+      }).subscribe({ error: () => void 0 });
     }
   }
 
   markAsRead(id: string): void {
     if (!id || id.startsWith('sys-')) return;
-    this.http.post(`${environment.apiUrl}/api/notifications/${id}/read`, {}).subscribe(() => {
-      this.messages.update((msgs) => msgs.map(m => m.id === id ? { ...m, isRead: true } : m));
+    this.http.post(`${environment.apiUrl}/api/notifications/${id}/read`, {}).subscribe({
+      next: () => {
+        this.messages.update((msgs) => msgs.map(m => m.id === id ? { ...m, isRead: true } : m));
+      },
+      error: () => void 0
     });
   }
 
