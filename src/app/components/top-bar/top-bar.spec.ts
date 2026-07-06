@@ -67,5 +67,10 @@ describe('TopBar', () => {
     expect(component['dropdownOpen']()).toBe(false);
     expect(authServiceSpy.logout).not.toHaveBeenCalled();
   });
-});
 
+  it('should display the app title "Ng Console Platform"', () => {
+    const titleElement = fixture.nativeElement.querySelector('span.tracking-tight');
+    expect(titleElement).toBeTruthy();
+    expect(titleElement.textContent.trim()).toContain('Console Platform');
+  });
+});
