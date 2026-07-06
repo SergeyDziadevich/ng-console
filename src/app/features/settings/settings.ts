@@ -73,6 +73,8 @@ export class Settings implements OnInit, OnDestroy {
   toggleSetting(settingKey: 'receiveNotifications' | 'receiveEmails' | 'receiveSMS', event: Event) {
     const input = event.target as HTMLInputElement;
     const user = this.authService.currentUser();
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
     if (user?.id) {
       if (settingKey === 'receiveNotifications') this.receiveNotifications.set(input.checked);
       if (settingKey === 'receiveEmails') this.receiveEmails.set(input.checked);

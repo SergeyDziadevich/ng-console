@@ -14,20 +14,68 @@
       (click)="toggleAiAssistant()"
       title="AI Assistant (Cmd+K)"
       class="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-        <path d="M5 3v4" />
-        <path d="M7 5H3" />
-      </svg>
+      <img src="/assets/icons/icon-ai-stars.svg" class="w-5 h-5 shrink-0" alt="icon" />
     </button>
-    <a
-      routerLink="/notifications"
+    <button
+      (click)="toggleNotifications()"
       title="Notifications"
       class="relative w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
-      <img src="/assets/icons/icon-2c9fcb7e.svg" class="w-5 h-5   shrink-0" alt="icon" />
+      <img src="/assets/icons/icon-2c9fcb7e.svg" class="w-5 h-5 shrink-0" alt="icon" />
       <!-- Unread notification badge -->
-      <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-gray-900 animate-pulse"></span>
-    </a>
+      @if (unreadCount() > 0) {
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-gray-900 animate-pulse"></span>
+      }
+    </button>
+
+    @if (notificationsOpen()) {
+      <div class="fixed inset-0 z-40" role="button" tabindex="0" aria-label="Close notifications" (click)="closeNotifications()" (keydown)="closeNotifications()"></div>
+
+      <div class="absolute right-0 top-12 w-80 sm:w-96 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden flex flex-col max-h-[85vh]">
+        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-gray-800">Notifications</h3>
+          @if (unreadCount() > 0) {
+            <span class="text-xs font-medium bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{{ unreadCount() }} new</span>
+          }
+        </div>
+
+        <div class="overflow-y-auto flex-1">
+          <ul class="py-1">
+            @for (msg of unreadMessages().slice(0, 5); track msg.id) {
+              <li class="px-4 py-3 hover:bg-indigo-50 border-b border-gray-50 last:border-0 transition-colors cursor-pointer group flex gap-3 relative" 
+                  tabindex="0"
+                  (click)="markAsRead(msg.id)"
+                  (keydown.enter)="markAsRead(msg.id)"
+                  (keydown.space)="markAsRead(msg.id); $event.preventDefault()">
+                <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
+                <div class="flex-1 min-w-0 pr-6">
+                  <p class="text-sm font-medium text-gray-800 truncate" [class.font-semibold]="!msg.isRead">{{ msg.title }}</p>
+                  @if (msg.body) {
+                    <p class="text-xs text-gray-600 line-clamp-2 mt-0.5">{{ msg.body }}</p>
+                  }
+                  <p class="text-[10px] text-gray-400 mt-1 uppercase">{{ msg.timestamp | date:'short' }}</p>
+                </div>
+                <button 
+                  class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-700 p-1 focus:outline-none" 
+                  title="Mark as read"
+                  (click)="markAsRead(msg.id); $event.stopPropagation()">
+                  <img src="/assets/icons/icon-close-small.svg" class="h-4 w-4" alt="close" />
+                </button>
+              </li>
+            } @empty {
+              <li class="px-4 py-8 text-center">
+                <img src="/assets/icons/icon-2c9fcb7e.svg" class="w-8 h-8 opacity-20 mx-auto mb-2" alt="icon" />
+                <p class="text-sm text-gray-500 font-medium">No new notifications</p>
+                <p class="text-xs text-gray-400 mt-1">You're all caught up!</p>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <div class="px-4 py-2 border-t border-gray-100 bg-gray-50 text-center hover:bg-gray-100 transition-colors">
+          <a routerLink="/notifications" (click)="closeNotifications()" class="text-sm font-medium text-indigo-600 hover:text-indigo-700 w-full inline-block py-1">See all notifications</a>
+        </div>
+      </div>
+    }
 
     <!-- Settings icon link
     <a

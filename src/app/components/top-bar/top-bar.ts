@@ -1,28 +1,27 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AiService } from '../../services/ai.service';
+import { NotificationsService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-top-bar',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, DatePipe],
   templateUrl: './top-bar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopBar {
   private readonly authService = inject(AuthService);
   private readonly aiService = inject(AiService);
+  private readonly notificationsService = inject(NotificationsService);
 
   protected dropdownOpen = signal(false);
-
-  // protected currentUser = signal({
-  //   name: 'Jane Doe',
-  //   email: 'jane.doe@example.com',
-  //   avatarInitials: 'JD',
-  // });
+  protected notificationsOpen = signal(false);
 
   protected currentUser = this.authService.currentUser;
+  protected unreadCount = this.notificationsService.unreadCount;
+  protected unreadMessages = this.notificationsService.unreadMessages;
 
   protected userAvatar = computed(() => this.currentUser()?.name.slice(0, 2).toUpperCase() || 'NA');
 
@@ -50,11 +49,21 @@ export class TopBar {
   ];
 
   protected toggleDropdown(): void {
+    if (this.notificationsOpen()) this.notificationsOpen.set(false);
     this.dropdownOpen.update((v) => !v);
   }
 
   protected closeDropdown(): void {
     this.dropdownOpen.set(false);
+  }
+
+  protected toggleNotifications(): void {
+    if (this.dropdownOpen()) this.dropdownOpen.set(false);
+    this.notificationsOpen.update((v) => !v);
+  }
+
+  protected closeNotifications(): void {
+    this.notificationsOpen.set(false);
   }
 
   protected onMenuItemClick(label: string): void {
@@ -66,5 +75,9 @@ export class TopBar {
 
   protected toggleAiAssistant(): void {
     this.aiService.toggleCommandPalette();
+  }
+
+  protected markAsRead(id: string): void {
+    this.notificationsService.markAsRead(id);
   }
 }
