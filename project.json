@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/nx/schemas/project-schema.json",
-  "name": "ng-console",
+  "name": "ng-console-platform",
   "projectType": "application",
   "generators": {
     "@schematics/angular:component": {

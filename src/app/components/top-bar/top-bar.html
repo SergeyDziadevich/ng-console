@@ -5,11 +5,21 @@
       <img src="/assets/icons/icon-043b52b2.svg" class="w-5 h-5 text-white   shrink-0" alt="icon" />
     </div>
     <span class="text-xl font-bold text-white tracking-tight">
-      Ng console
+      Ng Console Platform
     </span>
   </div>
 
   <div class="relative flex items-center gap-2">
+    <button
+      (click)="toggleAiAssistant()"
+      title="AI Assistant (Cmd+K)"
+      class="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+        <path d="M5 3v4" />
+        <path d="M7 5H3" />
+      </svg>
+    </button>
     <a
       routerLink="/notifications"
       title="Notifications"

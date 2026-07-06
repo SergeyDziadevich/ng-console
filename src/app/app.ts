@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommandPaletteComponent } from './components/command-palette/command-palette';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommandPaletteComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
