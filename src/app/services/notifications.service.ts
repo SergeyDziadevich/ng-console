@@ -50,7 +50,7 @@ export class NotificationsService {
 
   private init() {
     this.http.get<NotificationPayload[]>(`${environment.apiUrl}/api/notifications`).subscribe((history) => {
-      this.messages.set(history.map(n => ({
+      this.messages.set((history || []).map(n => ({
         id: n.id,
         title: n.title,
         body: n.body,
