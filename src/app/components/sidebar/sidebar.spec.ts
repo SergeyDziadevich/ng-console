@@ -4,6 +4,8 @@ import { ChatService } from '../../services/chat.service';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { signal } from '@angular/core';
+
 
 describe('Sidebar Component', () => {
   let component: Sidebar;
