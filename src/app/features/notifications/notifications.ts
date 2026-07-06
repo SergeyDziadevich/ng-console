@@ -1,22 +1,7 @@
-import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { io, Socket } from 'socket.io-client';
-import { environment } from '../../../environments/environment';
-
-interface NotificationMessage {
-  title: string;
-  replayed: boolean;
-  isSystem?: boolean;
-  timestamp?: number;
-}
-
-interface NotificationPayload {
-  id: string;
-  title: string;
-  body: string;
-  ts: number;
-}
+import { AuthService } from '../../services/auth.service';
+import { NotificationsService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-notifications',
@@ -25,64 +10,31 @@ interface NotificationPayload {
   styleUrl: './notifications.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Notifications implements OnInit, OnDestroy {
-  messages = signal<NotificationMessage[]>([]);
-  isOnline = signal(false);
-  private socket!: Socket;
-  private http = inject(HttpClient);
+export class Notifications {
+  private authService = inject(AuthService);
+  private notificationsService = inject(NotificationsService);
 
-  ngOnInit(): void {
-    this.socket = io(environment.apiUrl, {
-      transports: ['websocket'], // skip polling -> no sticky-session requirement
-      reconnection: false, // we reconnect manually, with the button
-    });
+  messages = this.notificationsService.messages;
+  isOnline = this.notificationsService.isOnline;
 
-    this.socket.on('connect', () => {
-      this.isOnline.set(true);
-    });
-
-    this.socket.on('disconnect', () => {
-      this.isOnline.set(false);
-    });
-
-    this.socket.on('notification', (n: NotificationPayload) => {
-      console.log('Notification', n);
-      const replayed = this.socket.recovered;
-
-      this.messages.update((msgs) => [
-        {
-          title: n.title,
-          replayed: !!replayed,
-          timestamp: n.ts,
-        },
-        ...msgs,
-      ]);
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
-  }
+  isAdminOrModerator = computed(() => {
+    const role = this.authService.currentUser()?.role;
+    return role === 'admin' || role === 'moderator';
+  });
 
   sendNotification(title: string): void {
-    this.http.post(`${environment.apiUrl}/api/notifications/notify`, { title }).subscribe();
+    this.notificationsService.sendNotification(title);
+  }
+
+  markAsRead(id: string): void {
+    this.notificationsService.markAsRead(id);
   }
 
   dropConnection(): void {
-    this.socket.io.engine.close();
-    this.messages.update((msgs) => [
-      {
-        title: '⚡ dropped — staying offline until you click Reconnect',
-        isSystem: true,
-        replayed: false,
-      },
-      ...msgs,
-    ]);
+    this.notificationsService.dropConnection();
   }
 
   reconnect(): void {
-    this.socket.connect();
+    this.notificationsService.reconnect();
   }
 }

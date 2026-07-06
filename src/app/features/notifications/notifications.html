@@ -8,8 +8,10 @@
   </h1>
   
   <div class="flex gap-2 flex-wrap mb-6">
-    <input #titleInput value="Deploy finished" class="px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 min-w-[200px]" />
-    <button (click)="sendNotification(titleInput.value)" class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm">Send</button>
+    @if (isAdminOrModerator()) {
+      <input #titleInput value="Deploy finished" class="px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 min-w-[200px]" />
+      <button (click)="sendNotification(titleInput.value)" class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm">Send</button>
+    }
     <button (click)="dropConnection()" class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm">⚡ Drop connection</button>
     <button (click)="reconnect()" class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm">🔌 Reconnect</button>
   </div>
@@ -35,19 +37,32 @@
         [class.text-sm]="msg.isSystem"
       >
         <div class="flex justify-between items-center gap-4">
-          <div>
-            @if (msg.isSystem) {
-              {{ msg.title }}
-            } @else {
-              <b class="font-semibold">{{ msg.title }}</b>
-              @if (msg.replayed) {
-                <small class="text-yellow-700 font-medium ml-2 text-xs">🔁 REPLAYED</small>
+          <div class="flex items-center gap-2">
+            @if (!msg.isRead) {
+              <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+            }
+            <div>
+              @if (msg.isSystem) {
+                <span [class.font-medium]="!msg.isRead">{{ msg.title }}</span>
+              } @else {
+                <b class="font-semibold">{{ msg.title }}</b>
+                @if (msg.replayed) {
+                  <small class="text-yellow-700 font-medium ml-2 text-xs">🔁 REPLAYED</small>
+                }
+                @if (msg.body) {
+                  <div class="text-sm text-gray-600 mt-0.5">{{ msg.body }}</div>
+                }
               }
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            @if (!msg.isRead) {
+              <button (click)="markAsRead(msg.id)" class="text-xs bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-md text-blue-700 transition-colors cursor-pointer shadow-sm">Mark as read</button>
+            }
+            @if (msg.timestamp) {
+              <span class="text-xs text-gray-500 whitespace-nowrap">{{ msg.timestamp | date:'short' }}</span>
             }
           </div>
-          @if (msg.timestamp) {
-            <span class="text-xs text-gray-500 whitespace-nowrap">{{ msg.timestamp | date:'short' }}</span>
-          }
         </div>
       </li>
     }
