@@ -7,14 +7,13 @@ import { Observable } from 'rxjs';
 export class SseService {
   private zone: NgZone = inject(NgZone);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getServerSentEvent(url: string): Observable<any> {
+  getServerSentEvent<T = unknown>(url: string): Observable<T> {
     return new Observable((observer) => {
       const eventSource = new EventSource(url);
 
       eventSource.onmessage = (event) => {
         this.zone.run(() => {
-          observer.next(JSON.parse(event.data));
+          observer.next(JSON.parse(event.data) as T);
         });
       };
 
