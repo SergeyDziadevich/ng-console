@@ -41,7 +41,11 @@
         <div class="overflow-y-auto flex-1">
           <ul class="py-1">
             @for (msg of unreadMessages().slice(0, 5); track msg.id) {
-              <li class="px-4 py-3 hover:bg-indigo-50 border-b border-gray-50 last:border-0 transition-colors cursor-pointer group flex gap-3 relative" (click)="markAsRead(msg.id)">
+              <li class="px-4 py-3 hover:bg-indigo-50 border-b border-gray-50 last:border-0 transition-colors cursor-pointer group flex gap-3 relative" 
+                  tabindex="0"
+                  (click)="markAsRead(msg.id)"
+                  (keydown.enter)="markAsRead(msg.id)"
+                  (keydown.space)="markAsRead(msg.id); $event.preventDefault()">
                 <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
                 <div class="flex-1 min-w-0 pr-6">
                   <p class="text-sm font-medium text-gray-800 truncate" [class.font-semibold]="!msg.isRead">{{ msg.title }}</p>
