@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditLogsService } from './audit-logs.service';
@@ -7,7 +7,8 @@ import { AuditLogsService } from './audit-logs.service';
   selector: 'app-audit-logs',
   imports: [CommonModule, FormsModule],
   templateUrl: './audit-logs.component.html',
-  styleUrls: ['./audit-logs.component.scss']
+  styleUrls: ['./audit-logs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuditLogsComponent implements OnInit {
   auditService = inject(AuditLogsService);
