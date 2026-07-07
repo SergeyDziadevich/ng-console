@@ -1,11 +1,13 @@
-<div class="flex flex-col h-full max-w-2xl mx-auto gap-4">
-  <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+<div class="page-header">
+  <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 shrink-0">
     <img src="/assets/icons/icon-ai-assistant.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
     AI Assistant
   </h1>
-
+</div>
+<div class="flex flex-col items-center justify-center h-full min-h-0 w-full p-4">
+  <div class="flex flex-col w-full max-w-2xl gap-4 h-[650px] max-h-[85vh] min-h-0">
   <!-- Message list -->
-  <div class="flex-1 overflow-y-auto flex flex-col gap-3 bg-white rounded-xl p-4 shadow-sm min-h-0" role="log" aria-label="Chat messages" aria-live="polite">
+  <div class="flex-1 overflow-y-auto flex flex-col gap-3 bg-white rounded-xl p-4 shadow-sm min-h-[450px]" role="log" aria-label="Chat messages" aria-live="polite">
     @if (messages().length === 0) {
       <p class="text-gray-400 text-sm text-center mt-8">Ask me anything to get started ✨</p>
     }
@@ -37,13 +39,13 @@
 
   <!-- Error -->
   @if (error()) {
-    <p class="text-red-500 text-sm" role="alert">{{ error() }}</p>
+    <p class="text-red-500 text-sm shrink-0" role="alert">{{ error() }}</p>
   }
 
   <!-- Input -->
-  <div class="flex gap-2">
+  <div class="flex gap-2 shrink-0">
     <textarea
-      class="flex-1 resize-none rounded-xl border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      class="flex-1 resize-none rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
       rows="2"
       placeholder="Type a message… (Enter to send)"
       [value]="prompt()"
@@ -57,5 +59,6 @@
       [disabled]="loading() || !prompt().trim()"
       aria-label="Send message"
     >Send</button>
+  </div>
   </div>
 </div>
