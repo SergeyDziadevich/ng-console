@@ -41,8 +41,6 @@ export class AuditLogsService {
   }
 
   private initSocket() {
-    // Connect to WebSocket using same URL as API but potentially different path if needed
-    // Assuming backend is at apiUrl and socket server is at same origin
     const url = new URL(environment.apiUrl);
     this.socket = io(`${url.protocol}//${url.host}`, { transports: ['websocket'] });
 
