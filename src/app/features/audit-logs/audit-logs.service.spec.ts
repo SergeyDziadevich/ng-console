@@ -6,11 +6,20 @@ import { environment } from '../../../environments/environment';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 vi.mock('socket.io-client', () => {
+  const mockSocket = {
+    on: vi.fn(),
+    io: {
+      engine: {
+        close: vi.fn(),
+      },
+    },
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    recovered: false,
+  };
   return {
-    io: vi.fn(() => ({
-      on: vi.fn(),
-      disconnect: vi.fn(),
-    })),
+    io: vi.fn(() => mockSocket),
+    Socket: vi.fn(),
   };
 });
 
@@ -26,8 +35,12 @@ describe('AuditLogsService', () => {
         AuditLogsService
       ]
     });
-    service = TestBed.inject(AuditLogsService);
     httpMock = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(AuditLogsService);
+
+    // Handle the initial fetchRetentionDays() request triggered in constructor
+    const req = httpMock.expectOne(`${environment.apiUrl}/api/audit-logs/settings/retention`);
+    req.flush({ retentionDays: 30 });
   });
 
   afterEach(() => {
@@ -36,14 +49,7 @@ describe('AuditLogsService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-  });
-
-  it('should fetch retention days on init', () => {
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/audit-logs/settings/retention`);
-    expect(req.request.method).toBe('GET');
-    req.flush({ retentionDays: 45 });
-
-    expect(service.retentionDays()).toBe(45);
+    expect(service.retentionDays()).toBe(30);
   });
 
   it('should fetch available actions', () => {
@@ -54,9 +60,6 @@ describe('AuditLogsService', () => {
     req.flush(['CREATE', 'UPDATE', 'DELETE']);
 
     expect(service.availableActions()).toEqual(['CREATE', 'UPDATE', 'DELETE']);
-
-    const initReq = httpMock.expectOne(`${environment.apiUrl}/api/audit-logs/settings/retention`);
-    initReq.flush({ retentionDays: 30 });
   });
 
   it('should fetch logs and update state (page 1)', () => {
@@ -77,12 +80,10 @@ describe('AuditLogsService', () => {
 
     expect(service.logs().length).toBe(1);
     expect(service.totalLogs()).toBe(100);
-
-    const initReq = httpMock.expectOne(`${environment.apiUrl}/api/audit-logs/settings/retention`);
-    initReq.flush({ retentionDays: 30 });
   });
 
   it('should append logs when fetching page > 1', () => {
+    // Initial setup with page 1
     service.logs.set([{ _id: '1', action: 'CREATE', entityType: 'User', entityId: 'u1', authorId: 'a1', createdAt: 'date', expiresAt: 'date' }]);
 
     service.fetchLogs(2, 50);
@@ -98,9 +99,6 @@ describe('AuditLogsService', () => {
     req.flush(mockResponse);
 
     expect(service.logs().length).toBe(2); // Should have appended
-
-    const initReq = httpMock.expectOne(`${environment.apiUrl}/api/audit-logs/settings/retention`);
-    initReq.flush({ retentionDays: 30 });
   });
 
   it('should set retention days', () => {
@@ -112,8 +110,5 @@ describe('AuditLogsService', () => {
     req.flush({ success: true, retentionDays: 90 });
 
     expect(service.retentionDays()).toBe(90);
-
-    const initReq = httpMock.expectOne(`${environment.apiUrl}/api/audit-logs/settings/retention`);
-    initReq.flush({ retentionDays: 30 });
   });
 });
