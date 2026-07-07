@@ -1,7 +1,10 @@
 <div class="h-full flex flex-col">
   <!-- Toolbar -->
   <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
-    <h1 class="text-2xl font-semibold text-gray-800">User Management</h1>
+    <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+      <img src="/assets/icons/icon-users.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
+      User Management
+    </h1>
     <a
       *appHasPermission="'create-user'"
       routerLink="add-user"

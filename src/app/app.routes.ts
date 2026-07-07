@@ -3,6 +3,7 @@ import { provideExperimentalWebMcpTools } from '@angular/core';
 
 import { authGuard, canMatchAuthGuard, noAuthGuard } from './guards/auth.guard';
 import { canUserEdit } from './guards/can-user-edit.guard';
+import { isAdminGuard } from './guards/is-admin.guard';
 import { addUserTool } from './web-mcp-tools/add-user.tool';
 
 export const routes: Routes = [
@@ -85,6 +86,12 @@ export const routes: Routes = [
         canActivate: [canUserEdit],
         loadComponent: () =>
           import('./features/user-management/edit-user/edit-user').then((m) => m.EditUser),
+      },
+      {
+        path: 'audit-logs',
+        canActivate: [isAdminGuard],
+        loadComponent: () =>
+          import('./features/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),
       },
     ],
   },
