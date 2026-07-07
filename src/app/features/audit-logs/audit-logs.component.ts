@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditLogsService } from './audit-logs.service';
@@ -14,6 +14,18 @@ export class AuditLogsComponent implements OnInit {
   searchQuery = signal<string>('');
   startDate = signal<string>('');
   endDate = signal<string>('');
+  showDetails = signal<boolean>(false);
+  selectedActions = signal<string[]>([]);
+  dropdownOpen = signal<boolean>(false);
+  actionSearchQuery = signal<string>('');
+
+  filteredAvailableActions = computed(() => {
+    const query = this.actionSearchQuery().toLowerCase();
+    const selected = new Set(this.selectedActions());
+    return this.auditService.availableActions().filter(a => 
+      !selected.has(a) && a.toLowerCase().includes(query)
+    );
+  });
 
   retentionOptions = [
     { value: 30, label: '30 Days' },
@@ -24,15 +36,27 @@ export class AuditLogsComponent implements OnInit {
 
   ngOnInit() {
     this.auditService.fetchLogs();
+    this.auditService.fetchAvailableActions();
   }
 
   onSearchChange(query: string) {
     this.searchQuery.set(query);
-    this.auditService.fetchLogs(1, 50, query, this.startDate(), this.endDate());
+    this.fetchLogs();
   }
 
   onDateChange() {
-    this.auditService.fetchLogs(1, 50, this.searchQuery(), this.startDate(), this.endDate());
+    this.fetchLogs();
+  }
+
+  toggleActionFilter(action: string) {
+    this.selectedActions.update(current => 
+      current.includes(action) ? current.filter(a => a !== action) : [...current, action]
+    );
+    this.fetchLogs();
+  }
+
+  private fetchLogs() {
+    this.auditService.fetchLogs(1, 50, this.searchQuery(), this.startDate(), this.endDate(), this.selectedActions());
   }
 
   showRetentionModal = signal<boolean>(false);
