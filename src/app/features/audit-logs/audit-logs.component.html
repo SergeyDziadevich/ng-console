@@ -1,0 +1,103 @@
+<div class="audit-logs-container">
+  <header>
+    <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+      <img src="/assets/icons/icon-activity-log.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
+      Audit Logs
+    </h1>
+    <div class="settings">
+      <div class="retention-group">
+        <label for="retention">Data Retention</label>
+        <div class="info-tooltip">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="info-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+          </svg>
+          <div class="tooltip-text">Specifies how long audit logs are kept before being automatically deleted.</div>
+        </div>
+        <select id="retention" [ngModel]="auditService.retentionDays()" (ngModelChange)="onRetentionChange($event)">
+          @for (option of retentionOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="separator"></div>
+      <button (click)="exportLogs()" class="export-btn" title="Export to JSON">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Export
+      </button>
+    </div>
+  </header>
+
+  <div class="controls">
+    <input type="text" class="search-input" placeholder="Search by action, entity type, or actor..." [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)" />
+
+    <div class="date-filter-group">
+      <div class="date-input">
+        <label for="startDate">From:</label>
+        <input id="startDate" type="date" class="date-picker" [ngModel]="startDate()" (ngModelChange)="startDate.set($event); onDateChange()" title="Start Date" />
+      </div>
+      <div class="date-input">
+        <label for="endDate">To:</label>
+        <input id="endDate" type="date" class="date-picker" [ngModel]="endDate()" (ngModelChange)="endDate.set($event); onDateChange()" title="End Date" />
+      </div>
+    </div>
+  </div>
+
+  <div class="logs-list">
+    @for (log of auditService.logs(); track log._id) {
+      <div class="log-item">
+        <div class="log-header">
+          <span class="action">{{ log.action }}</span>
+          <span class="time">{{ log.createdAt | date:'medium' }}</span>
+        </div>
+        <div class="log-body">
+          <div><span class="label">Entity Type:</span> {{ log.entityType }}</div>
+          <div><span class="label">Author:</span> {{ log.authorId }}</div>
+          @if (log.entityId) {
+            <div><span class="label">Entity ID:</span> {{ log.entityId }}</div>
+          }
+        </div>
+        @if (log.metadata) {
+          <div class="log-meta">
+            {{ log.metadata | json }}
+          </div>
+        }
+      </div>
+    } @empty {
+      <div class="no-logs">No audit logs found.</div>
+    }
+  </div>
+</div>
+
+@if (showRetentionModal()) {
+  <div class="modal-overlay z-50">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-semibold text-gray-800">Change Data Retention</h3>
+          <p class="text-sm text-gray-500 mt-0.5">
+            Are you sure you want to change the data retention period to <span class="font-medium text-gray-700">{{ pendingRetentionDays() }} days</span>? Audit logs older than this new period will be automatically permanently deleted.
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button
+          (click)="cancelRetentionChange()"
+          class="px-4 py-2 btn-secondary">
+          Cancel
+        </button>
+        <button
+          (click)="confirmRetentionChange()"
+          class="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+}

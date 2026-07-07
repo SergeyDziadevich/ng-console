@@ -2,7 +2,10 @@
   <!-- Toolbar -->
   <div class="flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-4">
-      <h1 class="text-2xl font-semibold text-gray-800">Tickets</h1>
+      <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+        <img src="/assets/icons/icon-tickets.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
+        Tickets
+      </h1>
       <label class="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
         <input type="checkbox" [checked]="showAssignedToMeOnly()" (change)="toggleAssignedToMeFilter()" class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer">
         <span class="text-sm font-medium text-gray-700">Assigned to me</span>
@@ -32,8 +35,8 @@
         }
       </select>
     </div>
-    <button routerLink="/tickets/new" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-sm">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <button routerLink="/tickets/new" class="flex items-center gap-2 px-3 py-2 bg-[#007bff] text-white rounded-[6px] font-medium text-[0.9rem] hover:bg-[#0056b3] transition-colors border-none cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M5 12h14"/>
         <path d="M12 5v14"/>
       </svg>

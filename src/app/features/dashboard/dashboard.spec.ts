@@ -7,7 +7,7 @@ import { signal } from '@angular/core';
 import { Dashboard } from './dashboard';
 import { AuthService } from '../../services/auth.service';
 import { TicketService } from '../../features/tickets/services/ticket.service';
-import { Ticket, TicketStatus } from '../../features/tickets/models/ticket.model';
+import { Ticket, TicketStatus } from '../tickets/models/ticket.model';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 describe('Dashboard', () => {
@@ -20,7 +20,7 @@ describe('Dashboard', () => {
     authServiceMock = {
       currentUser: signal(null)
     };
-    
+
     ticketServiceMock = {
       ticketsResource: {
         value: signal(undefined),
@@ -91,18 +91,18 @@ describe('Dashboard', () => {
 
       authServiceMock.currentUser.set({ id: 'user2' });
       expect(component.assignedTicketsCount()).toBe(2);
-      
+
       authServiceMock.currentUser.set({ id: 'user3' });
       expect(component.assignedTicketsCount()).toBe(0);
     });
-    
+
     it('should handle undefined ticketsResource for counting', () => {
       ticketServiceMock.ticketsResource.value.set(undefined);
       expect(component.totalTickets()).toBe(0);
       expect(component.inProgressTicketsCount()).toBe(0);
       expect(component.doneTicketsCount()).toBe(0);
       expect(component.todoTicketsCount()).toBe(0);
-      
+
       authServiceMock.currentUser.set({ id: 'user1' });
       expect(component.assignedTicketsCount()).toBe(0);
     });
