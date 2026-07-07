@@ -93,11 +93,14 @@ describe('AuditLogsComponent', () => {
       remove: vi.fn()
     } as unknown as HTMLAnchorElement;
     createElementSpy.mockReturnValue(mockAnchor);
+    
+    const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => node);
 
     component.exportLogs();
 
     expect(createElementSpy).toHaveBeenCalledWith('a');
     expect(mockAnchor.setAttribute).toHaveBeenCalledWith('download', 'audit_logs.json');
+    expect(appendChildSpy).toHaveBeenCalledWith(mockAnchor);
     expect(mockAnchor.click).toHaveBeenCalled();
     expect(mockAnchor.remove).toHaveBeenCalled();
   });
