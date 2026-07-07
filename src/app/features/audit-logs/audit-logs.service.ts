@@ -34,6 +34,7 @@ export class AuditLogsService {
   logs = signal<AuditLog[]>([]);
   totalLogs = signal<number>(0);
   retentionDays = signal<number>(30);
+  availableActions = signal<string[]>([]);
 
   constructor() {
     this.initSocket();
@@ -50,10 +51,11 @@ export class AuditLogsService {
     });
   }
 
-  async fetchLogs(page = 1, limit = 50, search = '', startDate = '', endDate = '') {
+  async fetchLogs(page = 1, limit = 50, search = '', startDate = '', endDate = '', actions: string[] = []) {
     let queryParams = `?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`;
     if (startDate) queryParams += `&startDate=${encodeURIComponent(startDate)}`;
     if (endDate) queryParams += `&endDate=${encodeURIComponent(endDate)}`;
+    if (actions.length > 0) queryParams += `&actions=${encodeURIComponent(actions.join(','))}`;
 
     this.http.get<AuditLogResponse>(`${this.apiUrl}${queryParams}`)
       .subscribe(response => {
@@ -63,6 +65,13 @@ export class AuditLogsService {
           this.logs.update(current => [...current, ...response.items]);
         }
         this.totalLogs.set(response.total);
+      });
+  }
+
+  async fetchAvailableActions() {
+    this.http.get<string[]>(`${this.apiUrl}/actions`)
+      .subscribe(response => {
+        this.availableActions.set(response);
       });
   }
 
