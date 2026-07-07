@@ -21,7 +21,8 @@
         <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
           <div>
             @if (!isEditing()) {
-              <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+              <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+                <img src="/assets/icons/icon-tickets.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
                 {{ ticket()!.title }}
                 @if (ticket()!.epic) {
                   <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-700 border border-purple-200 uppercase tracking-wider">

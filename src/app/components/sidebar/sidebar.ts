@@ -7,6 +7,7 @@ interface NavItem {
   label: string;
   icon: string;
   route: string;
+  adminOnly?: boolean;
 }
 
 @Component({
@@ -56,6 +57,12 @@ export class Sidebar {
       label: 'Tickets',
       icon: 'icon-tickets.svg',
       route: '/tickets',
+    },
+    {
+      label: 'Activity Logs',
+      icon: 'icon-activity-log.svg',
+      route: '/audit-logs',
+      adminOnly: true,
     },
   ];
 

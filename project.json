@@ -65,10 +65,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "ng-console:build:production"
+          "buildTarget": "ng-console-platform:build:production"
         },
         "development": {
-          "buildTarget": "ng-console:build:development"
+          "buildTarget": "ng-console-platform:build:development"
         }
       },
       "defaultConfiguration": "development"
