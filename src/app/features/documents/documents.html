@@ -73,7 +73,7 @@
                 <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="downloadDocument(doc)" title="Download">
                   <ng-icon name="lucideDownload" class="w-4 h-4"></ng-icon>
                 </button>
-                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="deleteDocument(doc._id)" title="Delete">
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="confirmDelete(doc)" title="Delete">
                   <ng-icon name="lucideTrash2" class="w-4 h-4"></ng-icon>
                 </button>
               </td>
@@ -96,4 +96,34 @@
 
 @if (toast()) {
   <app-toast [message]="toast() ?? ''" [type]="'success'"></app-toast>
+}
+
+@if (documentToDelete()) {
+  <div class="modal-overlay z-50">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+          <img src="/assets/icons/icon-5855b332.svg" class="w-5 h-5 text-red-500 shrink-0" alt="icon" />
+        </div>
+        <div>
+          <h3 class="text-base font-semibold text-gray-800">Remove Document</h3>
+          <p class="text-sm text-gray-500 mt-0.5">
+            Are you sure you want to remove <span class="font-medium text-gray-700 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button
+          (click)="cancelDelete()"
+          class="px-4 py-2 btn-secondary">
+          Cancel
+        </button>
+        <button
+          (click)="executeDelete()"
+          class="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all">
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
 }

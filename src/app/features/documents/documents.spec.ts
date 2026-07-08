@@ -167,22 +167,37 @@ describe('DocumentsComponent', () => {
     });
   });
 
-  describe('deleteDocument', () => {
-    it('should call deleteDocument and reload list if confirmed', () => {
-      vi.spyOn(window, 'confirm').mockReturnValue(true);
+  describe('Delete Document Flow', () => {
+    it('should set documentToDelete on confirmDelete', () => {
+      const mockDoc = { _id: 'doc-1', filename: 'test.pdf' };
+      component.confirmDelete(mockDoc as unknown as UploadedDocument);
+      expect(component.documentToDelete()).toEqual(mockDoc);
+    });
+
+    it('should clear documentToDelete on cancelDelete', () => {
+      component.documentToDelete.set({ _id: 'doc-1', filename: 'test.pdf' } as unknown as UploadedDocument);
+      component.cancelDelete();
+      expect(component.documentToDelete()).toBeNull();
+    });
+
+    it('should call deleteDocument and reload list on executeDelete', () => {
+      const mockDoc = { _id: 'doc-1', filename: 'test.pdf' };
+      component.documentToDelete.set(mockDoc as unknown as UploadedDocument);
+      
       vi.spyOn(component, 'loadDocuments');
       documentServiceSpy.deleteDocument.mockReturnValue(of({}));
 
-      component.deleteDocument('doc-1');
+      component.executeDelete();
 
-      expect(window.confirm).toHaveBeenCalled();
       expect(documentServiceSpy.deleteDocument).toHaveBeenCalledWith('doc-1');
       expect(component.loadDocuments).toHaveBeenCalled();
+      expect(component.documentToDelete()).toBeNull();
+      expect(component.toast()).toContain('Document deleted');
     });
 
-    it('should not call deleteDocument if not confirmed', () => {
-      vi.spyOn(window, 'confirm').mockReturnValue(false);
-      component.deleteDocument('doc-1');
+    it('should do nothing if documentToDelete is null on executeDelete', () => {
+      component.documentToDelete.set(null);
+      component.executeDelete();
       expect(documentServiceSpy.deleteDocument).not.toHaveBeenCalled();
     });
   });
