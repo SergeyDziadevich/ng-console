@@ -88,6 +88,11 @@ export const routes: Routes = [
           import('./features/user-management/edit-user/edit-user').then((m) => m.EditUser),
       },
       {
+        path: 'documents',
+        loadComponent: () =>
+          import('./features/documents/documents').then((m) => m.DocumentsComponent),
+      },
+      {
         path: 'audit-logs',
         canActivate: [isAdminGuard],
         loadComponent: () =>

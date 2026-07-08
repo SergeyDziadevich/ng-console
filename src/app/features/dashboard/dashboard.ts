@@ -1,8 +1,9 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TicketService } from '../../features/tickets/services/ticket.service';
+import { DocumentService } from '../../services/document.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,9 +15,12 @@ import { TicketService } from '../../features/tickets/services/ticket.service';
 export class Dashboard implements OnInit {
   private authService = inject(AuthService);
   private ticketService = inject(TicketService);
+  private documentService = inject(DocumentService);
 
   currentUser = this.authService.currentUser;
   ticketsResource = this.ticketService.ticketsResource;
+  totalDocuments = signal<number>(0);
+  isLoadingDocuments = signal<boolean>(true);
 
   assignedTicketsCount = computed(() => {
     const user = this.currentUser();
@@ -72,5 +76,14 @@ export class Dashboard implements OnInit {
 
   ngOnInit() {
     this.ticketsResource.reload();
+    this.documentService.getDocuments(1, 1).subscribe({
+      next: (res) => {
+        this.totalDocuments.set(res.total);
+        this.isLoadingDocuments.set(false);
+      },
+      error: () => {
+        this.isLoadingDocuments.set(false);
+      }
+    });
   }
 }

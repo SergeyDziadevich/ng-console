@@ -39,6 +39,11 @@ export class Sidebar {
       route: '/user-management',
     },
     {
+      label: 'Documents',
+      icon: 'icon-documents.svg',
+      route: '/documents',
+    },
+    {
       label: 'Chats',
       icon: 'icon-chats.svg',
       route: '/chats',
