@@ -33,12 +33,10 @@ export class DocumentsComponent implements OnInit {
   documentToDelete = signal<UploadedDocument | null>(null);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Computed
   isAdmin = computed(() => {
     const user = this.authService.currentUser();
     return user?.role === UserRole.Admin || user?.role === UserRole.Moderator;
   });
-
   totalPages = computed(() => Math.ceil(this.totalDocuments() / this.pageSize()));
 
   ngOnInit() {
