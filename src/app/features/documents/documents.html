@@ -1,0 +1,99 @@
+<div class="documents-container">
+  <!-- Toolbar -->
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+    <div class="flex flex-col">
+      <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900">
+        <img src="/assets/icons/icon-documents.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
+        Documents
+      </h1>
+      <p class="text-gray-500 text-sm">Upload and manage your files safely.</p>
+    </div>
+  </div>
+
+  <div class="upload-zone" 
+       (dragover)="onDragOver($event)" 
+       (drop)="onDrop($event)"
+       [class.uploading]="uploadProgress() !== null">
+    <ng-icon name="lucideUploadCloud" class="upload-icon"></ng-icon>
+    <p>Drag & drop your file here, or click to browse</p>
+    <p class="restrictions">Allowed types: .doc, .docx, .pdf, .img, .png (Max 10MB)</p>
+    <input type="file" (change)="onFileSelected($event)" accept=".doc,.docx,.pdf,.img,.png,.jpg,.jpeg" />
+    
+    @if (uploadProgress() !== null) {
+      <div class="progress-container">
+        <div class="progress-bar" [style.width.%]="uploadProgress()"></div>
+      </div>
+      <p class="progress-text">Uploading: {{ uploadProgress() }}%</p>
+    }
+    
+    @if (uploadError()) {
+      <p class="error-text">{{ uploadError() }}</p>
+    }
+  </div>
+
+  <div class="documents-list">
+    @if (isLoading()) {
+      <div class="loading">Loading documents...</div>
+    } @else if (documents().length === 0) {
+      <div class="empty-state">
+        <ng-icon name="lucideFile"></ng-icon>
+        <p>No documents found.</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Uploaded On</th>
+            @if (isAdmin()) {
+              <th>Uploaded By</th>
+            }
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (doc of documents(); track doc._id) {
+            <tr>
+              <td class="filename-cell">
+                <ng-icon name="lucideFile" class="shrink-0"></ng-icon>
+                <span class="line-clamp-2 break-words" title="{{ doc.filename }}">{{ doc.filename }}</span>
+              </td>
+              <td>{{ doc.mimeType }}</td>
+              <td>{{ formatBytes(doc.size) }}</td>
+              <td>{{ doc.createdAt | date:'short' }}</td>
+              @if (isAdmin()) {
+                <td>{{ getUploaderName(doc) }}</td>
+              }
+              <td class="text-left whitespace-nowrap space-x-2">
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="shareDocument(doc)" title="Share link to the document">
+                  <ng-icon name="lucideShare2" class="w-4 h-4"></ng-icon>
+                </button>
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="downloadDocument(doc)" title="Download">
+                  <ng-icon name="lucideDownload" class="w-4 h-4"></ng-icon>
+                </button>
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="deleteDocument(doc._id)" title="Delete">
+                  <ng-icon name="lucideTrash2" class="w-4 h-4"></ng-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button (click)="prevPage()" [disabled]="currentPage() === 1">Previous</button>
+          <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+          <button (click)="nextPage()" [disabled]="currentPage() === totalPages()">Next</button>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+@if (toast()) {
+  <app-toast [message]="toast() ?? ''" [type]="'success'"></app-toast>
+}
