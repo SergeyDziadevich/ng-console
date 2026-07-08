@@ -12,7 +12,6 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-documents',
-  standalone: true,
   imports: [CommonModule, NgIconComponent, Toast],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
@@ -31,6 +30,7 @@ export class DocumentsComponent implements OnInit {
   uploadProgress = signal<number | null>(null);
   uploadError = signal<string | null>(null);
   toast = signal<string | null>(null);
+  documentToDelete = signal<UploadedDocument | null>(null);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Computed
@@ -133,10 +133,21 @@ export class DocumentsComponent implements OnInit {
     });
   }
 
-  deleteDocument(id: string) {
-    if (confirm('Are you sure you want to delete this document?')) {
-      this.documentService.deleteDocument(id).subscribe(() => {
+  confirmDelete(doc: UploadedDocument) {
+    this.documentToDelete.set(doc);
+  }
+
+  cancelDelete() {
+    this.documentToDelete.set(null);
+  }
+
+  executeDelete() {
+    const doc = this.documentToDelete();
+    if (doc) {
+      this.documentService.deleteDocument(doc._id).subscribe(() => {
         this.loadDocuments();
+        this.documentToDelete.set(null);
+        this.showToast('Document deleted successfully');
       });
     }
   }
