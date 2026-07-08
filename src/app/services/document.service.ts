@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpEvent, HttpRequest, HttpEventType, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpRequest, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
 import { PaginatedDocuments } from '../models/document.model';
 import { environment } from '../../environments/environment';
 
@@ -12,7 +11,7 @@ export class DocumentService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/api/documents`;
 
-  uploadDocument(file: File): Observable<HttpEvent<any>> {
+  uploadDocument(file: File): Observable<HttpEvent<unknown>> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -24,8 +23,8 @@ export class DocumentService {
     return this.http.request(req);
   }
 
-  getDocuments(page: number = 1, limit: number = 10): Observable<PaginatedDocuments> {
-    let params = new HttpParams()
+  getDocuments(page = 1, limit = 10): Observable<PaginatedDocuments> {
+    const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
 
@@ -38,7 +37,7 @@ export class DocumentService {
     });
   }
 
-  deleteDocument(id: string): Observable<any> {
+  deleteDocument(id: string): Observable<unknown> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
