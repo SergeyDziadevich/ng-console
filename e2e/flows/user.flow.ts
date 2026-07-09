@@ -55,4 +55,25 @@ export class UserFlow {
     const userRow = this.page.locator('table tbody tr', { hasText: data.email });
     await expect(userRow).toBeVisible({ timeout: 10000 });
   }
+
+  async removeUser(email: string) {
+    if (!this.page.url().includes('/user-management')) {
+      await this.userList.goto();
+      await this.page.waitForTimeout(600);
+    }
+
+    const userRow = this.page.locator('table tbody tr', { hasText: email });
+    await expect(userRow).toBeVisible({ timeout: 10000 });
+
+    const deleteButton = userRow.locator('button[title="Delete"]');
+    await deleteButton.click();
+
+    const confirmButton = this.page.locator('app-confirm-dialog button.btn-confirm');
+    await confirmButton.click();
+
+    const toast = this.page.locator('app-toast');
+    await expect(toast).toContainText('User deleted successfully');
+
+    await expect(userRow).toBeHidden({ timeout: 10000 });
+  }
 }

@@ -50,24 +50,30 @@ export const routes: Routes = [
       },
       {
         path: 'tickets',
-        loadComponent: () =>
-          import('./features/tickets/components/ticket-list/ticket-list.component').then(
-            (m) => m.TicketListComponent,
-          ),
-      },
-      {
-        path: 'tickets/new',
-        loadComponent: () =>
-          import('./features/tickets/components/create-ticket/create-ticket.component').then(
-            (m) => m.CreateTicketComponent,
-          ),
-      },
-      {
-        path: 'tickets/:id',
-        loadComponent: () =>
-          import('./features/tickets/components/ticket-detail/ticket-detail.component').then(
-            (m) => m.TicketDetailComponent,
-          ),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('./features/tickets/components/ticket-list/ticket-list.component').then(
+                (m) => m.TicketListComponent,
+              ),
+          },
+          {
+            path: 'new',
+            loadComponent: () =>
+              import('./features/tickets/components/create-ticket/create-ticket.component').then(
+                (m) => m.CreateTicketComponent,
+              ),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./features/tickets/components/ticket-detail/ticket-detail.component').then(
+                (m) => m.TicketDetailComponent,
+              ),
+          },
+        ],
       },
       {
         path: 'notifications',
@@ -82,17 +88,7 @@ export const routes: Routes = [
         path: 'chats',
         loadComponent: () => import('./features/chat/chat').then((m) => m.Chat),
       },
-      {
-        path: '',
-        redirectTo: 'user-management',
-        pathMatch: 'full',
-      },
-      {
-        path: 'edit-user/:id',
-        canActivate: [canUserEdit],
-        loadComponent: () =>
-          import('./features/user-management/edit-user/edit-user').then((m) => m.EditUser),
-      },
+
       {
         path: 'documents',
         loadComponent: () =>
@@ -112,6 +108,11 @@ export const routes: Routes = [
         canActivate: [isAdminGuard],
         loadComponent: () =>
           import('./features/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
       },
     ],
   },

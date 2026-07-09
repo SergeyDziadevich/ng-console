@@ -1,0 +1,84 @@
+<div class="modal-overlay z-50">
+  <div class="document-viewer-modal">
+    <!-- Header -->
+    <div class="document-viewer-header">
+      <div class="document-viewer-title-wrapper">
+        <h3 class="document-viewer-title">
+          {{ pageTitle() }}
+        </h3>
+        <p class="document-viewer-subtitle">{{ documentTitle() }}</p>
+      </div>
+      <button class="document-viewer-close-btn" (click)="close()">
+        <svg class="document-viewer-close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="document-viewer-content">
+      @if (isLoading()) {
+        <div class="document-viewer-loading">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading document...</p>
+        </div>
+      }
+
+      <!-- PDF Viewer -->
+      @if (documentPreviewUrl()) {
+        <div class="document-viewer-pdf-wrapper" [ngClass]="{ 'is-signing': previewMode() === 'sign' }">
+          <iframe class="document-viewer-iframe" [src]="documentPreviewUrl()"></iframe>
+        </div>
+      } @else if (!isLoading()) {
+        <div class="document-viewer-empty">
+          <p class="empty-text">No document available to preview.</p>
+        </div>
+      }
+
+      <!-- Signature Area -->
+      @if (previewMode() === 'sign') {
+        <div class="document-viewer-signature-area">
+          <div class="signature-header">
+            <span class="signature-title">Draw Your Signature</span>
+            <button class="signature-clear-btn" (click)="clearSignature()">
+              Clear
+            </button>
+          </div>
+          <div class="signature-canvas-wrapper group">
+            <canvas class="signature-canvas" #signatureCanvas></canvas>
+            <div class="signature-placeholder">
+              <span class="placeholder-text">Sign Here</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="document-viewer-footer">
+      <button class="document-viewer-btn document-viewer-btn-secondary" (click)="close()">
+        Close
+      </button>
+
+      @if (previewMode() === 'sign') {
+        <button
+          class="document-viewer-btn document-viewer-btn-primary"
+          [disabled]="isActionLoading() || isLoading()"
+          (click)="executeSign()"
+        >
+          @if (isActionLoading()) {
+            <div class="btn-spinner"></div>
+            Signing...
+          } @else {
+            <ng-icon class="btn-icon" name="lucideFileSignature"></ng-icon>
+            Confirm & Sign
+          }
+        </button>
+      }
+    </div>
+  </div>
+</div>
+
+@if (toast()) {
+  <app-toast [message]="toast() || ''"></app-toast>
+}

@@ -14,5 +14,8 @@ test.describe('User Management', () => {
       password: 'password123',
       role: 'admin'
     });
+
+    // Clean up the created user
+    await userFlow.removeUser(uniqueEmail);
   });
 });
