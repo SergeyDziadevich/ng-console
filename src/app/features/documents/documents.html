@@ -130,44 +130,4 @@
   </app-confirm-dialog>
 }
 
-@if (documentToPreview() && documentPreviewUrl()) {
-  <!-- TODO: refactor -->
-  <div class="modal-overlay z-50">
-    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-5xl h-[85vh] flex flex-col gap-5">
-      <div class="flex items-center justify-between">
-        <h3 class="text-xl font-semibold text-gray-800">
-          {{ previewMode() === 'sign' ? 'Preview & Sign Document' : 'Preview Document' }}
-        </h3>
-        <button (click)="cancelPreview()" class="text-gray-500 hover:text-gray-700 transition-colors">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-      </div>
-      <div class="flex-1 bg-gray-100 rounded-lg overflow-hidden border border-gray-200" [ngClass]="{'h-1/2': previewMode() === 'sign'}">
-        <iframe [src]="documentPreviewUrl()" class="w-full h-full border-0"></iframe>
-      </div>
-      @if (previewMode() === 'sign') {
-        <div class="shrink-0 flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-gray-700">Draw Your Signature</span>
-            <button (click)="clearSignature()" class="text-xs text-blue-600 hover:text-blue-800 font-medium">Clear</button>
-          </div>
-          <div class="border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center relative h-40">
-            <canvas #signatureCanvas class="w-full h-full cursor-crosshair rounded-lg"></canvas>
-            <div class="absolute inset-0 pointer-events-none flex items-center justify-center text-gray-400 opacity-50 select-none">
-              <span class="text-xl">Sign Here</span>
-            </div>
-          </div>
-        </div>
-      }
-      <div class="flex justify-end gap-3 shrink-0">
-        <button (click)="cancelPreview()" class="px-5 py-2.5 btn-secondary font-medium">Close</button>
-        @if (previewMode() === 'sign') {
-          <button (click)="executeSign()" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:scale-95 transition-all flex items-center gap-2">
-            <ng-icon name="lucideFileSignature" class="w-4 h-4"></ng-icon>
-            Confirm & Sign
-          </button>
-        }
-      </div>
-    </div>
-  </div>
-}
+<router-outlet></router-outlet>
