@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { ComponentRef } from '@angular/core';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('ConfirmationDialogComponent', () => {
   let component: ConfirmationDialogComponent;
@@ -33,11 +33,11 @@ describe('ConfirmationDialogComponent', () => {
     expect(component.confirm.emit).toHaveBeenCalled();
   });
 
-  it('should emit cancel event when cancel button is clicked', () => {
-    vi.spyOn(component.cancel, 'emit');
+  it('should emit canceled event when cancel button is clicked', () => {
+    vi.spyOn(component.canceled, 'emit');
     const cancelButton = fixture.nativeElement.querySelector('.btn-secondary');
     cancelButton.click();
-    expect(component.cancel.emit).toHaveBeenCalled();
+    expect(component.canceled.emit).toHaveBeenCalled();
   });
 
   it('should render correct class for danger type', () => {

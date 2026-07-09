@@ -9,10 +9,9 @@ export class ConfirmationDialogComponent {
   title = input.required<string>();
   text = input<string>();
   type = input<'warning' | 'danger'>('danger');
-  
   confirmText = input<string>('Confirm');
   cancelText = input<string>('Cancel');
 
   confirm = output<void>();
-  cancel = output<void>();
+  canceled = output<void>();
 }
