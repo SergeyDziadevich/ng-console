@@ -3,7 +3,9 @@ export interface UploadedDocument {
   filename: string;
   mimeType: string;
   size: number;
-  uploadedBy: string | { _id: string, username: string, email: string, displayName?: string };
+  uploadedBy: string | { _id: string; username: string; email: string; displayName?: string };
+  isSigned?: boolean;
+  signedAt?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -8,9 +8,7 @@ import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 @Component({
   selector: 'app-test',
   imports: [HasPermissionDirective],
-  template: `
-    <div *appHasPermission="'CREATE_USER'" id="target-element">Visible if allowed</div>
-  `
+  template: ` <div id="target-element" *appHasPermission="'CREATE_USER'">Visible if allowed</div> `,
 })
 class TestComponent {}
 
@@ -22,14 +20,12 @@ describe('HasPermissionDirective', () => {
   beforeEach(async () => {
     hasPermissionSignal = signal(false);
     mockPermissionsService = {
-      hasPermission: vi.fn().mockReturnValue(hasPermissionSignal)
+      hasPermission: vi.fn().mockReturnValue(hasPermissionSignal),
     };
 
     await TestBed.configureTestingModule({
       imports: [TestComponent],
-      providers: [
-        { provide: PermissionsService, useValue: mockPermissionsService }
-      ]
+      providers: [{ provide: PermissionsService, useValue: mockPermissionsService }],
     }).compileComponents();
   });
 
@@ -59,7 +55,7 @@ describe('HasPermissionDirective', () => {
     expect(fixture.debugElement.query(By.css('#target-element'))).toBeNull();
 
     hasPermissionSignal.set(true);
-    fixture.detectChanges(); 
+    fixture.detectChanges();
     expect(fixture.debugElement.query(By.css('#target-element'))).not.toBeNull();
 
     hasPermissionSignal.set(false);

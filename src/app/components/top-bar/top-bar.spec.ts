@@ -11,7 +11,7 @@ describe('TopBar', () => {
   let fixture: ComponentFixture<TopBar>;
   let authServiceSpy: {
     logout: ReturnType<typeof vi.fn>;
-    currentUser: ReturnType<typeof signal<{name: string, email: string}>>;
+    currentUser: ReturnType<typeof signal<{ name: string; email: string }>>;
   };
 
   beforeEach(async () => {
@@ -20,15 +20,12 @@ describe('TopBar', () => {
       currentUser: signal({
         name: 'Jane Doe',
         email: 'jane.doe@example.com',
-      })
+      }),
     };
 
     await TestBed.configureTestingModule({
       imports: [TopBar],
-      providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-        provideRouter([])
-      ]
+      providers: [{ provide: AuthService, useValue: authServiceSpy }, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopBar);
@@ -48,10 +45,10 @@ describe('TopBar', () => {
 
   it('should toggle dropdown open and close', () => {
     expect(component['dropdownOpen']()).toBe(false);
-    
+
     component['toggleDropdown']();
     expect(component['dropdownOpen']()).toBe(true);
-    
+
     component['closeDropdown']();
     expect(component['dropdownOpen']()).toBe(false);
   });
@@ -60,7 +57,7 @@ describe('TopBar', () => {
     component['onMenuItemClick']('Sign Out');
     expect(authServiceSpy.logout).toHaveBeenCalled();
   });
-  
+
   it('should close dropdown when a menu item is clicked', () => {
     component['dropdownOpen'].set(true);
     component['onMenuItemClick']('My Profile');

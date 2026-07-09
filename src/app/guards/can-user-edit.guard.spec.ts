@@ -12,28 +12,33 @@ describe('canUserEdit Guard', () => {
 
   beforeEach(() => {
     permissionsServiceMock = {
-      hasPermission: vi.fn()
+      hasPermission: vi.fn(),
     };
 
     routerMock = {
-      createUrlTree: vi.fn()
+      createUrlTree: vi.fn(),
     };
 
     TestBed.configureTestingModule({
       providers: [
         { provide: PermissionsService, useValue: permissionsServiceMock },
-        { provide: Router, useValue: routerMock }
-      ]
+        { provide: Router, useValue: routerMock },
+      ],
     });
   });
 
   it('should return true if user has edit-user permission', () => {
     // Mock the computed signal to return true
     permissionsServiceMock.hasPermission.mockReturnValue(computed(() => true));
-    
+
     // Test the guard execution within injection context
-    const result = TestBed.runInInjectionContext(() => canUserEdit(null as unknown as ActivatedRouteSnapshot, null as unknown as RouterStateSnapshot));
-    
+    const result = TestBed.runInInjectionContext(() =>
+      canUserEdit(
+        null as unknown as ActivatedRouteSnapshot,
+        null as unknown as RouterStateSnapshot,
+      ),
+    );
+
     expect(permissionsServiceMock.hasPermission).toHaveBeenCalledWith('edit-user');
     expect(result).toBe(true);
   });
@@ -41,13 +46,18 @@ describe('canUserEdit Guard', () => {
   it('should return a UrlTree to root if user does not have edit-user permission', () => {
     const mockUrlTree = {} as UrlTree;
     routerMock.createUrlTree.mockReturnValue(mockUrlTree);
-    
+
     // Mock the computed signal to return false
     permissionsServiceMock.hasPermission.mockReturnValue(computed(() => false));
-    
+
     // Test the guard execution within injection context
-    const result = TestBed.runInInjectionContext(() => canUserEdit(null as unknown as ActivatedRouteSnapshot, null as unknown as RouterStateSnapshot));
-    
+    const result = TestBed.runInInjectionContext(() =>
+      canUserEdit(
+        null as unknown as ActivatedRouteSnapshot,
+        null as unknown as RouterStateSnapshot,
+      ),
+    );
+
     expect(permissionsServiceMock.hasPermission).toHaveBeenCalledWith('edit-user');
     expect(routerMock.createUrlTree).toHaveBeenCalledWith(['/']);
     expect(result).toBe(mockUrlTree);

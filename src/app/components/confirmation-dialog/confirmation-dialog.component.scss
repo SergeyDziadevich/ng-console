@@ -1,0 +1,27 @@
+.dialog-container {
+  @apply bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5;
+}
+
+.icon-wrapper {
+  @apply w-10 h-10 rounded-full flex items-center justify-center shrink-0;
+
+  &.danger {
+    @apply bg-red-100;
+  }
+
+  &.warning {
+    @apply bg-yellow-100;
+  }
+}
+
+.btn-confirm {
+  @apply px-4 py-2 rounded-lg text-white text-sm font-medium active:scale-95 transition-all;
+
+  &.danger {
+    @apply bg-red-600 hover:bg-red-700;
+  }
+
+  &.warning {
+    @apply bg-yellow-600 hover:bg-yellow-700;
+  }
+}

@@ -17,7 +17,7 @@ export class ChatService {
   readonly activeRoomMessages = signal<ChatMessage[]>([]);
   readonly activeRoomId = signal<string | null>(null);
   readonly isOnline = signal(false);
-  readonly hasUnreadChats = computed(() => this.rooms().some(r => r.hasUnread));
+  readonly hasUnreadChats = computed(() => this.rooms().some((r) => r.hasUnread));
 
   constructor() {
     effect(() => {
@@ -65,26 +65,31 @@ export class ChatService {
           this.activeRoomMessages.update((msgs) => [...msgs, message]);
           this.markAsRead(message.roomId);
         } else {
-          this.rooms.update(rooms => rooms.map(room =>
-            room.id === message.roomId ? { ...room, hasUnread: true } : room
-          ));
+          this.rooms.update((rooms) =>
+            rooms.map((room) => (room.id === message.roomId ? { ...room, hasUnread: true } : room)),
+          );
         }
       });
     });
 
-    this.socket.on('readReceiptUpdated', (data: { roomId: string, userId: string, lastReadAt: string }) => {
-      this.zone.run(() => {
-        this.rooms.update(rooms => rooms.map(room => {
-          if (room.id !== data.roomId) return room;
+    this.socket.on(
+      'readReceiptUpdated',
+      (data: { roomId: string; userId: string; lastReadAt: string }) => {
+        this.zone.run(() => {
+          this.rooms.update((rooms) =>
+            rooms.map((room) => {
+              if (room.id !== data.roomId) return room;
 
-          const updatedMembers = room.members?.map(m =>
-            m.userId === data.userId ? { ...m, lastReadAt: data.lastReadAt } : m
+              const updatedMembers = room.members?.map((m) =>
+                m.userId === data.userId ? { ...m, lastReadAt: data.lastReadAt } : m,
+              );
+
+              return { ...room, members: updatedMembers };
+            }),
           );
-
-          return { ...room, members: updatedMembers };
-        }));
-      });
-    });
+        });
+      },
+    );
 
     this.socket.on('error', (err: unknown) => {
       this.zone.run(() => {
@@ -113,9 +118,9 @@ export class ChatService {
     if (this.socket && this.isOnline()) {
       this.socket.emit('markAsRead', { roomId });
       // Update locally
-      this.rooms.update(rooms => rooms.map(room =>
-        room.id === roomId ? { ...room, hasUnread: false } : room
-      ));
+      this.rooms.update((rooms) =>
+        rooms.map((room) => (room.id === roomId ? { ...room, hasUnread: false } : room)),
+      );
     }
   }
 
@@ -151,13 +156,17 @@ export class ChatService {
   }
 
   private fetchRoomMessages(roomId: string): void {
-    this.http.get<ChatMessage[]>(`${environment.apiUrl}/api/chats/rooms/${roomId}/messages?_t=${Date.now()}`).subscribe({
-      next: (messages) => {
-        this.activeRoomMessages.set(messages);
-      },
-      error: (err) => {
-        console.error(`Failed to fetch messages for room ${roomId}:`, err);
-      },
-    });
+    this.http
+      .get<
+        ChatMessage[]
+      >(`${environment.apiUrl}/api/chats/rooms/${roomId}/messages?_t=${Date.now()}`)
+      .subscribe({
+        next: (messages) => {
+          this.activeRoomMessages.set(messages);
+        },
+        error: (err) => {
+          console.error(`Failed to fetch messages for room ${roomId}:`, err);
+        },
+      });
   }
 }

@@ -23,8 +23,8 @@ describe('Chat Component', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([{path: 'login', component: Chat}])
-      ]
+        provideRouter([{ path: 'login', component: Chat }]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Chat);
@@ -38,10 +38,10 @@ describe('Chat Component', () => {
 
   it('should toggle create room form state', () => {
     expect(component.isCreatingRoom()).toBe(false);
-    
+
     component.toggleCreateRoom();
     expect(component.isCreatingRoom()).toBe(true);
-    
+
     component.toggleCreateRoom();
     expect(component.isCreatingRoom()).toBe(false);
   });
@@ -49,7 +49,7 @@ describe('Chat Component', () => {
   it('should reset new room form when closing', () => {
     component.newRoomName.set('Test Room');
     component.selectedUserIds.set(['user1']);
-    
+
     // Toggle to open
     component.toggleCreateRoom();
     // Toggle to close, should reset
@@ -61,13 +61,13 @@ describe('Chat Component', () => {
 
   it('should toggle user selection for new room', () => {
     expect(component.selectedUserIds()).toEqual([]);
-    
+
     component.toggleUserSelection('user1');
     expect(component.selectedUserIds()).toEqual(['user1']);
-    
+
     component.toggleUserSelection('user2');
     expect(component.selectedUserIds()).toEqual(['user1', 'user2']);
-    
+
     component.toggleUserSelection('user1');
     expect(component.selectedUserIds()).toEqual(['user2']);
   });
@@ -81,10 +81,10 @@ describe('Chat Component', () => {
   it('should send a message using ChatService', () => {
     vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room1');
     vi.spyOn(chatService, 'sendMessage');
-    
+
     component.newMessage.set('Hello World');
     component.sendMessage();
-    
+
     expect(chatService.sendMessage).toHaveBeenCalledWith('room1', 'Hello World');
     expect(component.newMessage()).toBe('');
   });
@@ -92,32 +92,38 @@ describe('Chat Component', () => {
   it('should not send message if content is empty', () => {
     vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room1');
     vi.spyOn(chatService, 'sendMessage');
-    
+
     component.newMessage.set('   ');
     component.sendMessage();
-    
+
     expect(chatService.sendMessage).not.toHaveBeenCalled();
   });
 
   it('should not send message if no active room', () => {
     vi.spyOn(chatService, 'activeRoomId').mockReturnValue(null);
     vi.spyOn(chatService, 'sendMessage');
-    
+
     component.newMessage.set('Hello World');
     component.sendMessage();
-    
+
     expect(chatService.sendMessage).not.toHaveBeenCalled();
   });
 
   it('should create room using ChatService', () => {
-    const mockRoom = { id: 'room1', name: 'Test Room', members: [], createdAt: new Date(), updatedAt: new Date() };
+    const mockRoom = {
+      id: 'room1',
+      name: 'Test Room',
+      members: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
     vi.spyOn(chatService, 'createRoom').mockReturnValue(of(mockRoom as unknown as ChatRoom));
     vi.spyOn(chatService, 'fetchRooms');
     vi.spyOn(component, 'selectRoom');
 
     component.newRoomName.set('Test Room');
     component.selectedUserIds.set(['user1', 'user2']);
-    
+
     // Assume it was toggled open
     component.isCreatingRoom.set(true);
 
@@ -147,10 +153,10 @@ describe('Chat Component', () => {
 
   it('should toggle add user form state', () => {
     expect(component.isAddingUser()).toBe(false);
-    
+
     component.toggleAddUser();
     expect(component.isAddingUser()).toBe(true);
-    
+
     component.toggleAddUser();
     expect(component.isAddingUser()).toBe(false);
   });
@@ -171,10 +177,15 @@ describe('Chat Component', () => {
       const room = { id: '1', members: [{ userId: 'u1' }] } as unknown as ChatRoom;
       vi.spyOn(chatService, 'activeRoomId').mockReturnValue('1');
       vi.spyOn(chatService, 'rooms').mockReturnValue([room]);
-      
-      const mockUsers = [{ _id: 'u1', username: 'user1' }, { _id: 'u2', username: 'user2' }];
-      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as unknown as User[]);
-      
+
+      const mockUsers = [
+        { _id: 'u1', username: 'user1' },
+        { _id: 'u2', username: 'user2' },
+      ];
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(
+        mockUsers as unknown as User[],
+      );
+
       expect(component.availableUsersToAdd()).toEqual([mockUsers[1]] as unknown as User[]);
     });
 
@@ -182,14 +193,16 @@ describe('Chat Component', () => {
       const room = { id: '1', members: [] } as unknown as ChatRoom;
       vi.spyOn(chatService, 'activeRoomId').mockReturnValue('1');
       vi.spyOn(chatService, 'rooms').mockReturnValue([room]);
-      
+
       const mockUsers = [
-        { _id: 'u1', username: 'apple' }, 
+        { _id: 'u1', username: 'apple' },
         { _id: 'u2', username: 'banana', displayName: 'Banana Split' },
-        { _id: 'u3', username: 'cherry' }
+        { _id: 'u3', username: 'cherry' },
       ];
-      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as unknown as User[]);
-      
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(
+        mockUsers as unknown as User[],
+      );
+
       component.userSearchQuery.set('BANANA');
       expect(component.availableUsersToAdd()).toEqual([mockUsers[1]] as unknown as User[]);
     });
@@ -208,7 +221,7 @@ describe('Chat Component', () => {
   describe('addUsersToRoom', () => {
     it('should not call addMembers if no active room or no users selected', () => {
       vi.spyOn(chatService, 'addMembers');
-      
+
       component.selectedUsersToAdd.set([]);
       vi.spyOn(chatService, 'activeRoomId').mockReturnValue('1');
       component.addUsersToRoom();
@@ -238,10 +251,10 @@ describe('Chat Component', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       vi.spyOn(chatService, 'activeRoomId').mockReturnValue('1');
       vi.spyOn(chatService, 'addMembers').mockReturnValue(throwError(() => new Error('test')));
-      
+
       component.selectedUsersToAdd.set(['u1']);
       component.addUsersToRoom();
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Failed to add members to room', expect.any(Error));
       consoleSpy.mockRestore();
     });
@@ -251,12 +264,12 @@ describe('Chat Component', () => {
     it('should handle error from chatService.createRoom', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       vi.spyOn(chatService, 'createRoom').mockReturnValue(throwError(() => new Error('test')));
-      
+
       component.newRoomName.set('Test');
       component.selectedUserIds.set(['u1']);
       component.isCreatingRoom.set(true);
       component.createRoom();
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Failed to create room', expect.any(Error));
       consoleSpy.mockRestore();
     });
@@ -299,29 +312,38 @@ describe('Chat Component', () => {
     });
 
     it('should return false if no other members in room', () => {
-      vi.spyOn(chatService, 'rooms').mockReturnValue([{ 
-        id: '1', members: [{ userId: 'u_curr' }] 
-      } as unknown as ChatRoom]);
+      vi.spyOn(chatService, 'rooms').mockReturnValue([
+        {
+          id: '1',
+          members: [{ userId: 'u_curr' }],
+        } as unknown as ChatRoom,
+      ]);
       expect(component.isMessageRead(mockMessage)).toBe(false);
     });
 
     it('should return false if other members have not read', () => {
-      vi.spyOn(chatService, 'rooms').mockReturnValue([{ 
-        id: '1', members: [
-          { userId: 'u_curr' },
-          { userId: 'u_other', lastReadAt: '2022-01-01T10:00:00Z' } // before message
-        ] 
-      } as unknown as ChatRoom]);
+      vi.spyOn(chatService, 'rooms').mockReturnValue([
+        {
+          id: '1',
+          members: [
+            { userId: 'u_curr' },
+            { userId: 'u_other', lastReadAt: '2022-01-01T10:00:00Z' }, // before message
+          ],
+        } as unknown as ChatRoom,
+      ]);
       expect(component.isMessageRead(mockMessage)).toBe(false);
     });
 
     it('should return true if any other member has read', () => {
-      vi.spyOn(chatService, 'rooms').mockReturnValue([{ 
-        id: '1', members: [
-          { userId: 'u_curr' },
-          { userId: 'u_other', lastReadAt: '2023-01-01T11:00:00Z' } // after message
-        ] 
-      } as unknown as ChatRoom]);
+      vi.spyOn(chatService, 'rooms').mockReturnValue([
+        {
+          id: '1',
+          members: [
+            { userId: 'u_curr' },
+            { userId: 'u_other', lastReadAt: '2023-01-01T11:00:00Z' }, // after message
+          ],
+        } as unknown as ChatRoom,
+      ]);
       expect(component.isMessageRead(mockMessage)).toBe(true);
     });
   });

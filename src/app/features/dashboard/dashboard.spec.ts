@@ -14,30 +14,36 @@ describe('Dashboard', () => {
   let component: Dashboard;
   let fixture: ComponentFixture<Dashboard>;
   let authServiceMock: { currentUser: ReturnType<typeof signal<{ id: string } | null>> };
-  let ticketServiceMock: { ticketsResource: { value: ReturnType<typeof signal<Ticket[] | undefined>>, reload: ReturnType<typeof vi.fn>, isLoading: ReturnType<typeof signal<boolean>> } };
+  let ticketServiceMock: {
+    ticketsResource: {
+      value: ReturnType<typeof signal<Ticket[] | undefined>>;
+      reload: ReturnType<typeof vi.fn>;
+      isLoading: ReturnType<typeof signal<boolean>>;
+    };
+  };
 
   beforeEach(async () => {
     authServiceMock = {
-      currentUser: signal(null)
+      currentUser: signal(null),
     };
 
     ticketServiceMock = {
       ticketsResource: {
         value: signal(undefined),
         reload: vi.fn(),
-        isLoading: signal(false)
-      }
+        isLoading: signal(false),
+      },
     };
 
     await TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
-        provideRouter([{path: '**', component: Dashboard}]),
+        provideRouter([{ path: '**', component: Dashboard }]),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceMock },
-        { provide: TicketService, useValue: ticketServiceMock }
-      ]
+        { provide: TicketService, useValue: ticketServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Dashboard);
@@ -60,7 +66,7 @@ describe('Dashboard', () => {
       { id: 1, status: TicketStatus.TODO, assignedPersonId: 'user1' },
       { id: 2, status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user1' },
       { id: 3, status: TicketStatus.DONE, assignedPersonId: 'user2' },
-      { id: 4, status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user2' }
+      { id: 4, status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user2' },
     ];
 
     beforeEach(() => {

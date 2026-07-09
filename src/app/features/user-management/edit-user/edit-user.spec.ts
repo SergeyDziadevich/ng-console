@@ -18,15 +18,15 @@ describe('EditUser', () => {
   beforeEach(async () => {
     mockUserService = {
       updateUser: vi.fn().mockReturnValue(of({})),
-      usersResource: { reload: vi.fn() } as unknown as UserService['usersResource']
+      usersResource: { reload: vi.fn() } as unknown as UserService['usersResource'],
     };
 
     mockRouter = {
-      navigate: vi.fn()
+      navigate: vi.fn(),
     };
 
     const mockActivatedRoute = {
-      paramMap: of(new Map([['id', '123']]))
+      paramMap: of(new Map([['id', '123']])),
     };
 
     await TestBed.configureTestingModule({
@@ -36,8 +36,8 @@ describe('EditUser', () => {
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditUser);
@@ -71,7 +71,7 @@ describe('EditUser', () => {
     component.onSubmit();
     expect(mockUserService.updateUser).toHaveBeenCalled();
     expect(component.showToast()).toBe(true);
-    
+
     vi.advanceTimersByTime(500);
     expect(component.showToast()).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/user-management']);
@@ -82,7 +82,7 @@ describe('EditUser', () => {
   it('should handle error on submit', () => {
     const errorResponse = new HttpErrorResponse({ error: 'Server error', status: 500 });
     mockUserService.updateUser = vi.fn().mockReturnValue(throwError(() => errorResponse));
-    
+
     component.onSubmit();
     expect(component.error()).toBe('Server error');
   });
@@ -91,9 +91,9 @@ describe('EditUser', () => {
     vi.useFakeTimers();
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     const event = { target: { files: [file] } } as unknown as Event;
-    
+
     component.onAvatarChange(event);
-    
+
     vi.advanceTimersByTime(100);
     expect(component.avatarPreview()).toContain('data:image/png;base64');
     vi.useRealTimers();

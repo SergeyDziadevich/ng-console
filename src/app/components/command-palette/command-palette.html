@@ -1,14 +1,22 @@
 @if (isCommandPaletteOpen()) {
-  <div class="palette-container" 
-       [style.transform]="currentX || currentY ? 'translate(' + currentX + 'px, ' + currentY + 'px)' : null"
-       (mousedown)="onDragStart($event)">
+  <div
+    class="palette-container"
+    [style.transform]="
+      currentX || currentY ? 'translate(' + currentX + 'px, ' + currentY + 'px)' : null
+    "
+    (mousedown)="onDragStart($event)"
+  >
     <div class="palette-header">
       <span>AI Assistant</span>
       <button class="close-btn" (click)="close()">
-        <img src="/assets/icons/icon-close.svg" class="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity" alt="close icon" />
+        <img
+          class="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity"
+          src="/assets/icons/icon-close.svg"
+          alt="close icon"
+        />
       </button>
     </div>
-    
+
     <div class="palette-messages">
       @if (messages().length === 0) {
         <div class="empty-state">
@@ -36,15 +44,15 @@
     </div>
 
     <div class="palette-input-area">
-      <input 
+      <input
+        class="command-input"
         #searchInput
-        type="text" 
-        class="command-input" 
-        [ngModel]="prompt()" 
+        [ngModel]="prompt()"
+        [disabled]="isGenerating()"
         (ngModelChange)="prompt.set($event)"
         (keydown.enter)="submitCommand()"
+        type="text"
         placeholder="Ask anything or use commands... (Cmd+K to close)"
-        [disabled]="isGenerating()"
       />
     </div>
   </div>

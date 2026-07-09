@@ -1,12 +1,16 @@
 import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { User } from '../../../models/user.model';
 import { HasPermissionDirective } from '../../../directives/has-permission.directive';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideEdit, lucideTrash2 } from '@ng-icons/lucide';
+import { ConfirmDialogComponent } from '../../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-users-table',
-  imports: [HasPermissionDirective],
+  imports: [HasPermissionDirective, NgIconComponent, ConfirmDialogComponent],
   templateUrl: './users-table.html',
   styleUrl: './users-table.scss',
+  viewProviders: [provideIcons({ lucideEdit, lucideTrash2 })],
 })
 export class UsersTable {
   users = input<User[]>([]);
@@ -23,14 +27,14 @@ export class UsersTable {
     const allUsers = this.users();
     const size = this.pageSize();
     if (size === 'all') return allUsers;
-    
+
     let current = this.currentPage();
     const total = Math.ceil(allUsers.length / size) || 1;
     // Bound the current page if data shrinks
     if (current > total) {
       current = total;
     }
-    
+
     const start = (current - 1) * size;
     return allUsers.slice(start, start + size);
   });
@@ -44,10 +48,13 @@ export class UsersTable {
 
   constructor() {
     // Reset to page 1 if users data changes significantly (optional, but good UX)
-    effect(() => {
-      this.users();
-      this.currentPage.set(1);
-    }, { allowSignalWrites: true });
+    effect(
+      () => {
+        this.users();
+        this.currentPage.set(1);
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   onPageSizeChange(event: Event) {
@@ -58,13 +65,13 @@ export class UsersTable {
 
   nextPage() {
     if (this.currentPage() < this.totalPages()) {
-      this.currentPage.update(p => p + 1);
+      this.currentPage.update((p) => p + 1);
     }
   }
 
   prevPage() {
     if (this.currentPage() > 1) {
-      this.currentPage.update(p => p - 1);
+      this.currentPage.update((p) => p - 1);
     }
   }
 

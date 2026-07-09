@@ -20,14 +20,14 @@ describe('isAdminGuard', () => {
     mockCurrentUserSignal = signal<User | null>(null);
 
     mockAuthService = {
-      currentUser: mockCurrentUserSignal
+      currentUser: mockCurrentUserSignal,
     };
 
     TestBed.configureTestingModule({
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: AuthService, useValue: mockAuthService }
-      ]
+        { provide: AuthService, useValue: mockAuthService },
+      ],
     });
   });
 
@@ -39,16 +39,16 @@ describe('isAdminGuard', () => {
       password: 'hash',
       role: UserRole.Admin,
     });
-    
+
     const result = TestBed.runInInjectionContext(() => isAdminGuard(dummyRoute, dummyState));
-    
+
     expect(result).toBe(true);
   });
 
   it('should return UrlTree to / if user is not Admin', () => {
     const urlTree = {} as unknown as UrlTree;
     mockRouter.createUrlTree.mockReturnValue(urlTree);
-    
+
     mockCurrentUserSignal.set({
       _id: '2',
       username: 'user',
@@ -56,9 +56,9 @@ describe('isAdminGuard', () => {
       password: 'hash',
       role: UserRole.User,
     });
-    
+
     const result = TestBed.runInInjectionContext(() => isAdminGuard(dummyRoute, dummyState));
-    
+
     expect(result).toBe(urlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/']);
   });
@@ -66,11 +66,11 @@ describe('isAdminGuard', () => {
   it('should return UrlTree to / if no user is logged in', () => {
     const urlTree = {} as unknown as UrlTree;
     mockRouter.createUrlTree.mockReturnValue(urlTree);
-    
+
     mockCurrentUserSignal.set(null);
-    
+
     const result = TestBed.runInInjectionContext(() => isAdminGuard(dummyRoute, dummyState));
-    
+
     expect(result).toBe(urlTree);
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/']);
   });

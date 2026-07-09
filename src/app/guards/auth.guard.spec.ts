@@ -16,18 +16,18 @@ describe('Auth Guards', () => {
   beforeEach(() => {
     mockAuthService = {
       isAuthenticated: vi.fn(),
-      checkSession: vi.fn()
+      checkSession: vi.fn(),
     };
 
     mockRouter = {
-      createUrlTree: vi.fn()
+      createUrlTree: vi.fn(),
     };
 
     TestBed.configureTestingModule({
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter }
-      ]
+        { provide: Router, useValue: mockRouter },
+      ],
     });
   });
 
@@ -56,13 +56,17 @@ describe('Auth Guards', () => {
   describe('canMatchAuthGuard', () => {
     it('should return true if authenticated', () => {
       mockAuthService.isAuthenticated.mockReturnValue(true);
-      const result = TestBed.runInInjectionContext(() => canMatchAuthGuard({} as never, [], {} as never));
+      const result = TestBed.runInInjectionContext(() =>
+        canMatchAuthGuard({} as never, [], {} as never),
+      );
       expect(result).toBe(true);
     });
 
     it('should return false if not authenticated', () => {
       mockAuthService.isAuthenticated.mockReturnValue(false);
-      const result = TestBed.runInInjectionContext(() => canMatchAuthGuard({} as never, [], {} as never));
+      const result = TestBed.runInInjectionContext(() =>
+        canMatchAuthGuard({} as never, [], {} as never),
+      );
       expect(result).toBe(false);
     });
   });

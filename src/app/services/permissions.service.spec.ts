@@ -13,14 +13,11 @@ describe('PermissionsService', () => {
 
   beforeEach(() => {
     authServiceMock = {
-      currentUser: signal(null)
+      currentUser: signal(null),
     };
 
     TestBed.configureTestingModule({
-      providers: [
-        PermissionsService,
-        { provide: AuthService, useValue: authServiceMock }
-      ]
+      providers: [PermissionsService, { provide: AuthService, useValue: authServiceMock }],
     });
     service = TestBed.inject(PermissionsService);
   });
