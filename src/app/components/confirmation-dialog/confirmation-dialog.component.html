@@ -23,13 +23,13 @@
     </div>
     <div class="flex justify-end gap-3">
       <button
-        (click)="cancel.emit()"
+        (click)="canceled.emit()"
         class="px-4 py-2 btn-secondary">
         {{ cancelText() }}
       </button>
       <button
         (click)="confirm.emit()"
-        [class]="type() === 'danger' ? 'px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all' : 'px-4 py-2 rounded-lg bg-yellow-600 text-white text-sm font-medium hover:bg-yellow-700 active:scale-95 transition-all'">
+        [class]="type() === 'danger' ? 'btn-confirm danger px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all' : 'btn-confirm warning px-4 py-2 rounded-lg bg-yellow-600 text-white text-sm font-medium hover:bg-yellow-700 active:scale-95 transition-all'">
         {{ confirmText() }}
       </button>
     </div>
