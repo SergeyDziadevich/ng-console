@@ -4,7 +4,7 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
-  ViewChild,
+  viewChild,
   computed,
   inject,
   signal,
@@ -25,7 +25,6 @@ import { Toast } from '../../../components/toast/toast';
   selector: 'app-document-viewer',
   templateUrl: './document-viewer.component.html',
   styleUrl: './document-viewer.component.scss',
-  standalone: true,
   imports: [CommonModule, NgIconComponent, Toast],
   providers: [provideIcons({ lucideFileSignature })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,14 +35,14 @@ export class DocumentViewerComponent implements OnInit, OnDestroy {
   private documentService = inject(DocumentService);
   private sanitizer = inject(DomSanitizer);
 
-  @ViewChild('signatureCanvas') signatureCanvas?: ElementRef<HTMLCanvasElement>;
   private signaturePad: SignaturePad | null = null;
   private objectUrl: string | null = null;
+
+  signatureCanvas = viewChild<ElementRef<HTMLCanvasElement>>('signatureCanvas');
 
   documentId = signal<string>('');
   previewMode = signal<'view' | 'sign'>('view');
   documentTitle = signal<string>('Document');
-
   documentPreviewUrl = signal<SafeResourceUrl | null>(null);
   isLoading = signal<boolean>(true);
   isActionLoading = signal<boolean>(false);
@@ -55,7 +54,6 @@ export class DocumentViewerComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    // Read route params
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       const mode = params.get('mode') as 'view' | 'sign';
@@ -124,8 +122,9 @@ export class DocumentViewerComponent implements OnInit, OnDestroy {
   private initSignaturePad() {
     // Wait for the next tick so the canvas is rendered
     setTimeout(() => {
-      if (this.signatureCanvas) {
-        const canvas = this.signatureCanvas.nativeElement;
+      const signatureCanvasRef = this.signatureCanvas();
+      if (signatureCanvasRef) {
+        const canvas = signatureCanvasRef.nativeElement;
         // Set canvas resolution correctly to prevent blurriness
         const ratio = Math.max(window.devicePixelRatio || 1, 1);
         canvas.width = canvas.offsetWidth * ratio;
