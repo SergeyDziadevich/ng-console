@@ -1,25 +1,33 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { HttpEventType } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 import { DocumentService } from '../../services/document.service';
 import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2 } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText } from '@ng-icons/lucide';
 import { Toast } from '../../components/toast/toast';
 import { environment } from '../../../environments/environment';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-documents',
-  imports: [CommonModule, NgIconComponent, Toast],
+  imports: [CommonModule, NgIconComponent, Toast, ConfirmDialogComponent, RouterModule],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
-  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2 })]
+  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText })]
 })
 export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);
   private authService = inject(AuthService);
+  private sanitizer = inject(DomSanitizer);
+
+  private router = inject(Router);
 
   // State
   documents = signal<UploadedDocument[]>([]);
@@ -30,6 +38,7 @@ export class DocumentsComponent implements OnInit {
   uploadProgress = signal<number | null>(null);
   uploadError = signal<string | null>(null);
   toast = signal<string | null>(null);
+  isActionLoading = signal<boolean>(false);
   documentToDelete = signal<UploadedDocument | null>(null);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -38,6 +47,20 @@ export class DocumentsComponent implements OnInit {
     return user?.role === UserRole.Admin || user?.role === UserRole.Moderator;
   });
   totalPages = computed(() => Math.ceil(this.totalDocuments() / this.pageSize()));
+
+  private previousUrl = '';
+
+  constructor() {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe((event) => {
+      if (this.previousUrl && this.previousUrl !== '/documents' && event.urlAfterRedirects === '/documents') {
+        this.loadDocuments();
+      }
+      this.previousUrl = event.urlAfterRedirects;
+    });
+  }
 
   ngOnInit() {
     this.loadDocuments();
@@ -165,6 +188,10 @@ export class DocumentsComponent implements OnInit {
         console.error('Failed to generate share link', err);
       }
     });
+  }
+
+  openPreview(doc: UploadedDocument, mode: 'sign' | 'view') {
+    this.router.navigate(['/documents', doc._id, mode], { state: { document: doc } });
   }
 
   nextPage() {

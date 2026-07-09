@@ -10,29 +10,29 @@
     </div>
   </div>
 
-  <div class="upload-zone" 
-       (dragover)="onDragOver($event)" 
+  <div class="upload-zone"
+       (dragover)="onDragOver($event)"
        (drop)="onDrop($event)"
        [class.uploading]="uploadProgress() !== null">
     <ng-icon name="lucideUploadCloud" class="upload-icon"></ng-icon>
     <p>Drag & drop your file here, or click to browse</p>
     <p class="restrictions">Allowed types: .doc, .docx, .pdf, .img, .png (Max 10MB)</p>
     <input type="file" (change)="onFileSelected($event)" accept=".doc,.docx,.pdf,.img,.png,.jpg,.jpeg" />
-    
+
     @if (uploadProgress() !== null) {
       <div class="progress-container">
         <div class="progress-bar" [style.width.%]="uploadProgress()"></div>
       </div>
       <p class="progress-text">Uploading: {{ uploadProgress() }}%</p>
     }
-    
+
     @if (uploadError()) {
       <p class="error-text">{{ uploadError() }}</p>
     }
   </div>
 
   <div class="documents-list">
-    @if (isLoading()) {
+    @if (isLoading() && documents().length === 0) {
       <div class="loading">Loading documents...</div>
     } @else if (documents().length === 0) {
       <div class="empty-state">
@@ -57,8 +57,17 @@
           @for (doc of documents(); track doc._id) {
             <tr>
               <td class="filename-cell">
-                <ng-icon name="lucideFile" class="shrink-0"></ng-icon>
-                <span class="line-clamp-2 break-words" title="{{ doc.filename }}">{{ doc.filename }}</span>
+                @if (doc.mimeType === 'application/pdf') {
+                  <ng-icon name="lucideFileText" class="shrink-0 text-red-500"></ng-icon>
+                } @else {
+                  <ng-icon name="lucideFile" class="shrink-0"></ng-icon>
+                }
+                <div class="flex flex-col">
+                  <span class="line-clamp-2 break-words" title="{{ doc.filename }}">{{ doc.filename }}</span>
+                  @if (doc.isSigned) {
+                    <span class="text-xs text-green-600 font-medium">Signed</span>
+                  }
+                </div>
               </td>
               <td>{{ doc.mimeType }}</td>
               <td>{{ formatBytes(doc.size) }}</td>
@@ -67,13 +76,23 @@
                 <td>{{ getUploaderName(doc) }}</td>
               }
               <td class="text-left whitespace-nowrap space-x-2">
-                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="shareDocument(doc)" title="Share link to the document">
+                @if (doc.mimeType === 'application/pdf') {
+                  <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="openPreview(doc, 'view')" title="Preview Document">
+                    <ng-icon name="lucideEye" class="w-4 h-4"></ng-icon>
+                  </button>
+                }
+                @if (doc.mimeType === 'application/pdf' && !doc.isSigned) {
+                  <button class="table-action-btn bg-blue-500 hover:bg-blue-600 text-white" (click)="openPreview(doc, 'sign')" title="Sign Document">
+                    <ng-icon name="lucideFileSignature" class="w-4 h-4"></ng-icon>
+                  </button>
+                }
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="shareDocument(doc)" title="Share link to the document">
                   <ng-icon name="lucideShare2" class="w-4 h-4"></ng-icon>
                 </button>
-                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="downloadDocument(doc)" title="Download">
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="downloadDocument(doc)" title="Download">
                   <ng-icon name="lucideDownload" class="w-4 h-4"></ng-icon>
                 </button>
-                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="confirmDelete(doc)" title="Delete">
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="confirmDelete(doc)" title="Delete">
                   <ng-icon name="lucideTrash2" class="w-4 h-4"></ng-icon>
                 </button>
               </td>
@@ -99,31 +118,16 @@
 }
 
 @if (documentToDelete()) {
-  <div class="modal-overlay z-50">
-    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-          <img src="/assets/icons/icon-5855b332.svg" class="w-5 h-5 text-red-500 shrink-0" alt="icon" />
-        </div>
-        <div>
-          <h3 class="text-base font-semibold text-gray-800">Remove Document</h3>
-          <p class="text-sm text-gray-500 mt-0.5">
-            Are you sure you want to remove <span class="font-medium text-gray-700 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
-          </p>
-        </div>
-      </div>
-      <div class="flex justify-end gap-3">
-        <button
-          (click)="cancelDelete()"
-          class="px-4 py-2 btn-secondary">
-          Cancel
-        </button>
-        <button
-          (click)="executeDelete()"
-          class="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all">
-          Remove
-        </button>
-      </div>
-    </div>
-  </div>
+  <app-confirm-dialog
+    title="Remove Document"
+    type="danger"
+    confirmText="Remove"
+    cancelText="Cancel"
+    (confirmAction)="executeDelete()"
+    (cancelAction)="cancelDelete()"
+  >
+    Are you sure you want to remove <span class="font-medium text-gray-700 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
+  </app-confirm-dialog>
 }
+
+<router-outlet></router-outlet>
