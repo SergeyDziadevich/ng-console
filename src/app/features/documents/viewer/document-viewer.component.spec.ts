@@ -72,4 +72,20 @@ describe('DocumentViewerComponent', () => {
     component.executeSign();
     expect(mockDocumentService.signDocument).not.toHaveBeenCalled();
   });
+
+  it('should show toast message and clear it after timeout', () => {
+    vi.useFakeTimers();
+    component.showToast('Test Toast');
+    expect(component.toast()).toBe('Test Toast');
+    vi.advanceTimersByTime(3000);
+    expect(component.toast()).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it('should require signature before signing in sign mode', () => {
+    component.previewMode.set('sign');
+    component.executeSign();
+    expect(component.toast()).toBe('Please provide a signature before confirming.');
+    expect(mockDocumentService.signDocument).not.toHaveBeenCalled();
+  });
 });
