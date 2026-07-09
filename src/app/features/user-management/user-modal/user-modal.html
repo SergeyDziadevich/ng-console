@@ -1,6 +1,7 @@
 <div class="modal-overlay z-40">
-  <div class="relative z-50 w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 flex flex-col gap-6">
-
+  <div
+    class="relative z-50 w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 flex flex-col gap-6"
+  >
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -10,10 +11,11 @@
         <h2 class="text-xl font-semibold text-gray-800">{{ title() }}</h2>
       </div>
       <button
-        type="button"
+        class="text-gray-400 hover:text-gray-600 transition-colors rounded-lg p-1 hover:bg-gray-100"
         (click)="closeModal.emit()"
-        class="text-gray-400 hover:text-gray-600 transition-colors rounded-lg p-1 hover:bg-gray-100">
-        <img src="/assets/icons/icon-3a40211c.svg" class="w-5 h-5   shrink-0" alt="icon" />
+        type="button"
+      >
+        <img class="w-5 h-5 shrink-0" src="/assets/icons/icon-3a40211c.svg" alt="icon" />
       </button>
     </div>
 
@@ -28,15 +30,13 @@
       </div>
 
       <div class="flex justify-end gap-3 pt-4 mt-2 border-t border-gray-100">
-        <button type="button" (click)="closeModal.emit()" class="px-5 py-2 btn-secondary">
+        <button class="px-5 py-2 btn-secondary" (click)="closeModal.emit()" type="button">
           Cancel
         </button>
-        <button type="submit" class="px-5 py-2 btn-primary" [disabled]="submitDisabled()">
+        <button class="px-5 py-2 btn-primary" [disabled]="submitDisabled()" type="submit">
           {{ submitLabel() }}
         </button>
       </div>
     </form>
-
   </div>
 </div>
-

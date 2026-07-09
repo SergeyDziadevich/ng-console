@@ -18,15 +18,15 @@ describe('AuthInterceptor', () => {
   beforeEach(() => {
     mockAuthService = {
       getToken: vi.fn(),
-      logout: vi.fn()
+      logout: vi.fn(),
     };
 
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting(),
-        { provide: AuthService, useValue: mockAuthService }
-      ]
+        { provide: AuthService, useValue: mockAuthService },
+      ],
     });
 
     httpClient = TestBed.inject(HttpClient);
@@ -64,15 +64,17 @@ describe('AuthInterceptor', () => {
     httpClient.get('/api/test').subscribe({
       error: (err) => {
         expect(err.status).toBe(401);
-      }
+      },
     });
 
     const req = httpTestingController.expectOne('/api/test');
     req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
 
     expect(mockAuthService.logout).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith('401 Unauthorized – session invalidated, redirecting to login.');
-    
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '401 Unauthorized – session invalidated, redirecting to login.',
+    );
+
     consoleSpy.mockRestore();
   });
 
@@ -82,7 +84,7 @@ describe('AuthInterceptor', () => {
     httpClient.get('/api/test').subscribe({
       error: (err) => {
         expect(err.status).toBe(500);
-      }
+      },
     });
 
     const req = httpTestingController.expectOne('/api/test');

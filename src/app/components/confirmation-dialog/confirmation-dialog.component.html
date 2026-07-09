@@ -1,0 +1,37 @@
+<div class="modal-overlay z-50">
+  <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
+    <div class="flex items-center gap-3">
+      @if (type() === 'danger') {
+        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+          <img src="/assets/icons/icon-danger.svg" class="w-5 h-5 text-red-500 shrink-0" alt="icon" />
+        </div>
+      } @else if (type() === 'warning') {
+        <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        </div>
+      }
+      
+      <div>
+        <h3 class="text-base font-semibold text-gray-800">{{ title() }}</h3>
+        <p class="text-sm text-gray-500 mt-0.5">
+          @if (text()) {
+            {{ text() }}
+          }
+          <ng-content></ng-content>
+        </p>
+      </div>
+    </div>
+    <div class="flex justify-end gap-3">
+      <button
+        (click)="cancel.emit()"
+        class="px-4 py-2 btn-secondary">
+        {{ cancelText() }}
+      </button>
+      <button
+        (click)="confirm.emit()"
+        [class]="type() === 'danger' ? 'px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all' : 'px-4 py-2 rounded-lg bg-yellow-600 text-white text-sm font-medium hover:bg-yellow-700 active:scale-95 transition-all'">
+        {{ confirmText() }}
+      </button>
+    </div>
+  </div>
+</div>

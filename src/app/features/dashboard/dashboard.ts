@@ -25,28 +25,28 @@ export class Dashboard implements OnInit {
   assignedTicketsCount = computed(() => {
     const user = this.currentUser();
     const tickets = this.ticketsResource.value();
-    
+
     if (!user || !user.id || !tickets) return 0;
-    
-    return tickets.filter(t => t.assignedPersonId === user.id).length;
+
+    return tickets.filter((t) => t.assignedPersonId === user.id).length;
   });
 
   inProgressTickets = computed(() => {
     const tickets = this.ticketsResource.value();
     if (!tickets) return [];
-    return tickets.filter(t => t.status === 'in progress');
+    return tickets.filter((t) => t.status === 'in progress');
   });
 
   doneTickets = computed(() => {
     const tickets = this.ticketsResource.value();
     if (!tickets) return [];
-    return tickets.filter(t => t.status === 'done');
+    return tickets.filter((t) => t.status === 'done');
   });
 
   todoTicketsCount = computed(() => {
     const tickets = this.ticketsResource.value();
     if (!tickets) return 0;
-    return tickets.filter(t => t.status === 'todo').length;
+    return tickets.filter((t) => t.status === 'todo').length;
   });
 
   inProgressTicketsCount = computed(() => this.inProgressTickets().length);
@@ -62,14 +62,14 @@ export class Dashboard implements OnInit {
     const inProgress = this.inProgressTicketsCount();
     const done = this.doneTicketsCount();
     const total = todo + inProgress + done;
-    
+
     if (total === 0) {
       return 'conic-gradient(#f3f4f6 100%, transparent 0)';
     }
-    
+
     const todoPct = (todo / total) * 100;
     const inProgressPct = (inProgress / total) * 100;
-    
+
     // Gray-400 for Todo, Blue-500 for In Progress, Green-500 for Done
     return `conic-gradient(#9ca3af 0% ${todoPct}%, #3b82f6 ${todoPct}% ${todoPct + inProgressPct}%, #22c55e ${todoPct + inProgressPct}% 100%)`;
   });
@@ -83,7 +83,7 @@ export class Dashboard implements OnInit {
       },
       error: () => {
         this.isLoadingDocuments.set(false);
-      }
+      },
     });
   }
 }

@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { UserRole } from '../enums/user-role.enum';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PermissionsService {
   private readonly authService = inject(AuthService);
@@ -11,14 +11,14 @@ export class PermissionsService {
   private readonly rolePermissions: Record<string, string[]> = {
     [UserRole.Admin]: ['create-user', 'edit-user', 'delete-user'],
     [UserRole.Moderator]: ['create-user', 'edit-user', 'delete-user'],
-    [UserRole.User]: []
+    [UserRole.User]: [],
   };
 
   hasPermission(permission: string) {
     return computed(() => {
       const user = this.authService.currentUser();
       if (!user) return false;
-      
+
       const userRole = user.role;
       const permissions = this.rolePermissions[userRole] || [];
       return permissions.includes(permission);

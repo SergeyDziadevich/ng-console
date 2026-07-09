@@ -12,6 +12,7 @@
     "e2e": "playwright test",
     "lint": "nx lint",
     "lint-fix": "nx lint --fix",
+    "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "clear-cache": "nx reset"
   },
   "private": true,
@@ -53,6 +54,7 @@
     "nx": "23.0.1",
     "postcss": "^8.5.15",
     "prettier": "^3.8.1",
+    "prettier-plugin-organize-attributes": "^1.0.0",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "8.59.2",

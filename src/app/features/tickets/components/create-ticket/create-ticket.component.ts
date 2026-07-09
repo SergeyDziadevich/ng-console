@@ -33,47 +33,53 @@ export class CreateTicketComponent implements OnInit {
     estimations: null as number | null,
   });
 
-  ticketForm = form(this.ticketModel, (schemaPath) => {
-    required(schemaPath.title, { message: 'Title is required' });
-    required(schemaPath.description, { message: 'Description is required' });
-    min(schemaPath.estimations, 0, { message: 'Estimation cannot be negative' });
-  }, {
-    submission: {
-      action: async () => {
-        if (this.ticketForm().invalid()) {
-          return undefined;
-        }
+  ticketForm = form(
+    this.ticketModel,
+    (schemaPath) => {
+      required(schemaPath.title, { message: 'Title is required' });
+      required(schemaPath.description, { message: 'Description is required' });
+      min(schemaPath.estimations, 0, { message: 'Estimation cannot be negative' });
+    },
+    {
+      submission: {
+        action: async () => {
+          if (this.ticketForm().invalid()) {
+            return undefined;
+          }
 
-        this.isSubmitting.set(true);
+          this.isSubmitting.set(true);
 
-        const formVal = this.ticketModel();
-        const ticketData = {
-          title: formVal.title,
-          description: formVal.description,
-          about: formVal.about || undefined,
-          status: formVal.status,
-          priority: formVal.priority,
-          assignedPersonId: formVal.assignedPersonId || undefined,
-          estimations: formVal.estimations || undefined,
-          epic: formVal.epicId ? { id: Number(formVal.epicId) } : undefined,
-        };
+          const formVal = this.ticketModel();
+          const ticketData = {
+            title: formVal.title,
+            description: formVal.description,
+            about: formVal.about || undefined,
+            status: formVal.status,
+            priority: formVal.priority,
+            assignedPersonId: formVal.assignedPersonId || undefined,
+            estimations: formVal.estimations || undefined,
+            epic: formVal.epicId ? { id: Number(formVal.epicId) } : undefined,
+          };
 
-        try {
-          await firstValueFrom(this.ticketService.createTicket(ticketData as unknown as Partial<Ticket>));
-          this.isSubmitting.set(false);
-          this.showToast.set(true);
-          setTimeout(() => {
-            this.router.navigate(['/tickets']);
-          }, 1500);
-          return undefined;
-        } catch (err) {
-          console.error('Error creating ticket:', err);
-          this.isSubmitting.set(false);
-          return undefined;
-        }
-      }
-    }
-  });
+          try {
+            await firstValueFrom(
+              this.ticketService.createTicket(ticketData as unknown as Partial<Ticket>),
+            );
+            this.isSubmitting.set(false);
+            this.showToast.set(true);
+            setTimeout(() => {
+              this.router.navigate(['/tickets']);
+            }, 1500);
+            return undefined;
+          } catch (err) {
+            console.error('Error creating ticket:', err);
+            this.isSubmitting.set(false);
+            return undefined;
+          }
+        },
+      },
+    },
+  );
 
   isSubmitting = signal(false);
   showToast = signal(false);
@@ -86,5 +92,4 @@ export class CreateTicketComponent implements OnInit {
     this.usersResource.reload();
     this.epicsResource.reload();
   }
-
 }

@@ -57,7 +57,7 @@ export class UsersWidget implements OnInit {
           name: name,
           username: username,
           role: role,
-          avatar: name.charAt(0).toUpperCase()
+          avatar: name.charAt(0).toUpperCase(),
         });
       }
     }
@@ -73,12 +73,12 @@ export class UsersWidget implements OnInit {
 
   onUserClick(username: string) {
     const users = this.userService.usersResource.value();
-    const user = users?.find(u => u.username === username);
+    const user = users?.find((u) => u.username === username);
     if (user) {
       this.router.navigate(['/user-management', 'edit-user', user._id]);
     } else {
-      this.userService.users$.subscribe(allUsers => {
-        const found = allUsers.find(u => u.username === username);
+      this.userService.users$.subscribe((allUsers) => {
+        const found = allUsers.find((u) => u.username === username);
         if (found) {
           this.router.navigate(['/user-management', 'edit-user', found._id]);
         }

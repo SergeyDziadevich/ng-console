@@ -15,7 +15,7 @@ describe('CommandPaletteComponent', () => {
     isGenerating: WritableSignal<boolean>;
     isCommandPaletteOpen: WritableSignal<boolean>;
   };
-  
+
   let mockMessages: WritableSignal<ChatMessage[]>;
   let mockIsGenerating: WritableSignal<boolean>;
   let mockIsCommandPaletteOpen: WritableSignal<boolean>;
@@ -27,18 +27,16 @@ describe('CommandPaletteComponent', () => {
 
     mockAiService = {
       generate: vi.fn(),
-      toggleCommandPalette: vi.fn(() => mockIsCommandPaletteOpen.update(v => !v)),
+      toggleCommandPalette: vi.fn(() => mockIsCommandPaletteOpen.update((v) => !v)),
       closeCommandPalette: vi.fn(() => mockIsCommandPaletteOpen.set(false)),
       messages: mockMessages,
       isGenerating: mockIsGenerating,
-      isCommandPaletteOpen: mockIsCommandPaletteOpen
+      isCommandPaletteOpen: mockIsCommandPaletteOpen,
     };
 
     await TestBed.configureTestingModule({
       imports: [CommandPaletteComponent],
-      providers: [
-        { provide: AiService, useValue: mockAiService }
-      ]
+      providers: [{ provide: AiService, useValue: mockAiService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CommandPaletteComponent);
@@ -64,10 +62,10 @@ describe('CommandPaletteComponent', () => {
     vi.useFakeTimers();
     mockIsCommandPaletteOpen.set(true);
     fixture.detectChanges();
-    
+
     expect(component.isCommandPaletteOpen()).toBe(true);
     vi.advanceTimersByTime(50);
-    
+
     expect(component.currentX).toBe(0);
     expect(component.currentY).toBe(0);
 
@@ -94,10 +92,10 @@ describe('CommandPaletteComponent', () => {
     mockIsCommandPaletteOpen.set(true);
     fixture.detectChanges();
     vi.advanceTimersByTime(50);
-    
+
     const exampleCommand = component.examples[0];
     component.useExample(exampleCommand);
-    
+
     expect(component.prompt()).toBe(exampleCommand);
   });
 
@@ -115,7 +113,7 @@ describe('CommandPaletteComponent', () => {
   it('should submit command and clear prompt', async () => {
     component.prompt.set('test query');
     await component.submitCommand();
-    
+
     expect(mockAiService.generate).toHaveBeenCalledWith('test query');
     expect(component.prompt()).toBe('');
   });

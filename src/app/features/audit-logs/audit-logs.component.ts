@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditLogsService } from './audit-logs.service';
@@ -8,7 +8,6 @@ import { AuditLogsService } from './audit-logs.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './audit-logs.component.html',
   styleUrls: ['./audit-logs.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuditLogsComponent implements OnInit {
   auditService = inject(AuditLogsService);
@@ -23,16 +22,16 @@ export class AuditLogsComponent implements OnInit {
   filteredAvailableActions = computed(() => {
     const query = this.actionSearchQuery().toLowerCase();
     const selected = new Set(this.selectedActions());
-    return this.auditService.availableActions().filter(a => 
-      !selected.has(a) && a.toLowerCase().includes(query)
-    );
+    return this.auditService
+      .availableActions()
+      .filter((a) => !selected.has(a) && a.toLowerCase().includes(query));
   });
 
   retentionOptions = [
     { value: 30, label: '30 Days' },
     { value: 60, label: '60 Days' },
     { value: 90, label: '90 Days' },
-    { value: 365, label: '1 Year' }
+    { value: 365, label: '1 Year' },
   ];
 
   ngOnInit() {
@@ -50,14 +49,21 @@ export class AuditLogsComponent implements OnInit {
   }
 
   toggleActionFilter(action: string) {
-    this.selectedActions.update(current => 
-      current.includes(action) ? current.filter(a => a !== action) : [...current, action]
+    this.selectedActions.update((current) =>
+      current.includes(action) ? current.filter((a) => a !== action) : [...current, action],
     );
     this.fetchLogs();
   }
 
   private fetchLogs() {
-    this.auditService.fetchLogs(1, 50, this.searchQuery(), this.startDate(), this.endDate(), this.selectedActions());
+    this.auditService.fetchLogs(
+      1,
+      50,
+      this.searchQuery(),
+      this.startDate(),
+      this.endDate(),
+      this.selectedActions(),
+    );
   }
 
   showRetentionModal = signal<boolean>(false);
@@ -65,10 +71,11 @@ export class AuditLogsComponent implements OnInit {
 
   exportLogs() {
     const logs = this.auditService.logs();
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs, null, 2));
+    const dataStr =
+      'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(logs, null, 2));
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "audit_logs.json");
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', 'audit_logs.json');
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();

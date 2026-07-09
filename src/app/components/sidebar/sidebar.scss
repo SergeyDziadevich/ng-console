@@ -1,0 +1,93 @@
+@reference "../../../styles.scss";
+
+.sidebar-container {
+  @apply flex flex-col h-full bg-gray-900 text-white transition-all duration-300 ease-in-out shrink-0 overflow-hidden;
+}
+
+.sidebar-expanded {
+  @apply w-64;
+}
+
+.sidebar-collapsed {
+  @apply w-16;
+}
+
+.sidebar-header {
+  @apply flex items-center justify-between px-4 py-5;
+}
+
+.sidebar-toggle-btn {
+  @apply p-1.5 rounded-md hover:bg-gray-700 transition-colors ml-auto;
+}
+
+.sidebar-icon {
+  @apply h-5 w-5 shrink-0;
+}
+
+.sidebar-nav {
+  @apply flex-1 overflow-y-auto py-4 space-y-1 px-2;
+}
+
+.sidebar-nav-item {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors;
+  
+  &.active {
+    @apply bg-indigo-600 text-white;
+  }
+}
+
+.sidebar-nav-label {
+  @apply text-sm font-medium whitespace-nowrap flex-1 flex items-center gap-2;
+}
+
+.sidebar-unread-indicator {
+  @apply relative flex h-2 w-2 shrink-0;
+}
+
+.sidebar-unread-dot {
+  @apply relative inline-flex rounded-full h-2 w-2 bg-green-500 shadow-sm;
+}
+
+.sidebar-badge {
+  @apply px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm;
+}
+
+.sidebar-badge-green {
+  @apply text-green-100 bg-green-600;
+}
+
+.sidebar-badge-purple {
+  @apply text-purple-100 bg-purple-600;
+}
+
+.sidebar-badge-blue {
+  @apply text-blue-100 bg-blue-600;
+}
+
+.sidebar-footer {
+  @apply border-t border-gray-700 px-4 py-4;
+}
+
+.sidebar-user-info {
+  @apply flex items-center gap-3;
+}
+
+.sidebar-user-avatar {
+  @apply h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold shrink-0;
+}
+
+.sidebar-user-avatar-collapsed {
+  @apply h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold mx-auto;
+}
+
+.sidebar-user-details {
+  @apply overflow-hidden;
+}
+
+.sidebar-user-role {
+  @apply text-sm font-medium leading-tight truncate;
+}
+
+.sidebar-user-email {
+  @apply text-xs text-gray-400 truncate;
+}

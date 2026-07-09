@@ -24,8 +24,8 @@ describe('UsersWidget', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),
-        { provide: UserService, useValue: mockUserService }
-      ]
+        { provide: UserService, useValue: mockUserService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UsersWidget);
@@ -42,7 +42,7 @@ describe('UsersWidget', () => {
       component.text = '* **John Doe** (johndoe) - admin';
       component.parseUsers();
       expect(component.users).toEqual([
-        { name: 'John Doe', username: 'johndoe', role: 'admin', avatar: 'J' }
+        { name: 'John Doe', username: 'johndoe', role: 'admin', avatar: 'J' },
       ]);
     });
 
@@ -50,7 +50,7 @@ describe('UsersWidget', () => {
       component.text = '* **Alice** (alice123)';
       component.parseUsers();
       expect(component.users).toEqual([
-        { name: 'Alice', username: 'alice123', role: 'user', avatar: 'A' }
+        { name: 'Alice', username: 'alice123', role: 'user', avatar: 'A' },
       ]);
     });
 
@@ -58,7 +58,7 @@ describe('UsersWidget', () => {
       component.text = '* **Bob Smith** (bobsmith, email: bob@example.com, Role: moderator)';
       component.parseUsers();
       expect(component.users).toEqual([
-        { name: 'Bob Smith', username: 'bobsmith', role: 'moderator', avatar: 'B' }
+        { name: 'Bob Smith', username: 'bobsmith', role: 'moderator', avatar: 'B' },
       ]);
     });
 

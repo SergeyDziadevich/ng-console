@@ -17,7 +17,7 @@ export class AiService {
   readonly isCommandPaletteOpen = signal(false);
 
   toggleCommandPalette() {
-    this.isCommandPaletteOpen.update(v => !v);
+    this.isCommandPaletteOpen.update((v) => !v);
   }
 
   closeCommandPalette() {
@@ -41,10 +41,7 @@ export class AiService {
         .toPromise();
 
       if (response && response.text) {
-        this.messages.update((msgs) => [
-          ...msgs,
-          { role: 'model', content: response.text },
-        ]);
+        this.messages.update((msgs) => [...msgs, { role: 'model', content: response.text }]);
       }
     } catch (error) {
       console.error('Error generating AI response:', error);

@@ -34,23 +34,23 @@ export class TicketListComponent implements OnInit {
   filteredTickets = computed(() => {
     const tickets = this.ticketsResource.value();
     const user = this.authService.currentUser();
-    
+
     if (!tickets) return [];
-    
+
     let filtered = tickets;
-    
+
     if (this.showAssignedToMeOnly() && user?.id) {
-      filtered = filtered.filter(t => t.assignedPersonId === user.id);
+      filtered = filtered.filter((t) => t.assignedPersonId === user.id);
     }
-    
+
     if (this.selectedEpicId()) {
-      filtered = filtered.filter(t => t.epic?.id.toString() === this.selectedEpicId());
+      filtered = filtered.filter((t) => t.epic?.id.toString() === this.selectedEpicId());
     }
-    
+
     if (this.selectedStatuses().size > 0) {
-      filtered = filtered.filter(t => this.selectedStatuses().has(t.status));
+      filtered = filtered.filter((t) => this.selectedStatuses().has(t.status));
     }
-    
+
     return filtered;
   });
 
@@ -59,20 +59,18 @@ export class TicketListComponent implements OnInit {
     this.usersResource.reload();
     this.epicsResource.reload();
 
-    this.route.queryParams
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(params => {
-        this.showAssignedToMeOnly.set(params['assignedToMe'] === 'true');
-        this.selectedEpicId.set(params['epicId'] || '');
-        
-        const statuses = params['status'];
-        if (statuses) {
-          const statusArray = Array.isArray(statuses) ? statuses : statuses.split(',');
-          this.selectedStatuses.set(new Set(statusArray as TicketStatus[]));
-        } else {
-          this.selectedStatuses.set(new Set());
-        }
-      });
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.showAssignedToMeOnly.set(params['assignedToMe'] === 'true');
+      this.selectedEpicId.set(params['epicId'] || '');
+
+      const statuses = params['status'];
+      if (statuses) {
+        const statusArray = Array.isArray(statuses) ? statuses : statuses.split(',');
+        this.selectedStatuses.set(new Set(statusArray as TicketStatus[]));
+      } else {
+        this.selectedStatuses.set(new Set());
+      }
+    });
   }
 
   toggleAssignedToMeFilter() {
@@ -80,7 +78,7 @@ export class TicketListComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { assignedToMe: !currentValue ? 'true' : undefined },
-      queryParamsHandling: 'merge'
+      queryParamsHandling: 'merge',
     });
   }
 
@@ -90,7 +88,7 @@ export class TicketListComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { epicId: value || undefined },
-      queryParamsHandling: 'merge'
+      queryParamsHandling: 'merge',
     });
   }
 
@@ -105,27 +103,27 @@ export class TicketListComponent implements OnInit {
     } else {
       current.add(status);
     }
-    
+
     const statusArray = Array.from(current);
-    
+
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { status: statusArray.length > 0 ? statusArray.join(',') : undefined },
-      queryParamsHandling: 'merge'
+      queryParamsHandling: 'merge',
     });
   }
 
   getAssignedPersonName(assignedPersonId?: string): string {
     if (!assignedPersonId) return 'Unassigned';
-    
+
     const users = this.usersResource.value();
     if (users) {
-      const user = users.find(u => u._id === assignedPersonId);
+      const user = users.find((u) => u._id === assignedPersonId);
       if (user) {
         return user.displayName || user.username;
       }
     }
-    
+
     return assignedPersonId;
   }
 }

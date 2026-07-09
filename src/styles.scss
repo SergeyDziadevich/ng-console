@@ -1,6 +1,7 @@
 @import 'tailwindcss/index.css';
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
@@ -52,4 +53,3 @@ button {
            rounded-md text-white transition-colors;
   }
 }
-

@@ -5,7 +5,7 @@ import { Ticket, Comment, EpicTag } from '../models/ticket.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TicketService {
   private http = inject(HttpClient);

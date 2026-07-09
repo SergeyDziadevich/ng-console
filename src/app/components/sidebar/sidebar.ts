@@ -8,13 +8,17 @@ interface NavItem {
   icon: string;
   route: string;
   adminOnly?: boolean;
+  badge?: {
+    text: string;
+    classes: string;
+  };
 }
 
 @Component({
   selector: 'app-sidebar',
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
-  styles: ``,
+  styleUrl: './sidebar.scss',
 })
 export class Sidebar {
   chatService = inject(ChatService);
@@ -32,16 +36,24 @@ export class Sidebar {
       label: 'AI Assistant',
       icon: 'icon-ai-assistant.svg',
       route: '/ai-assistant',
+      badge: { text: 'Beta', classes: 'sidebar-badge-green' },
     },
     {
-      label: 'Users',
+      label: 'User Management',
       icon: 'icon-users.svg',
       route: '/user-management',
+    },
+    {
+      label: 'Tickets',
+      icon: 'icon-tickets.svg',
+      route: '/tickets',
+      badge: { text: 'Preview', classes: 'sidebar-badge-purple' },
     },
     {
       label: 'Documents',
       icon: 'icon-documents.svg',
       route: '/documents',
+      badge: { text: 'New', classes: 'sidebar-badge-blue' },
     },
     {
       label: 'Chats',
@@ -59,12 +71,7 @@ export class Sidebar {
       route: '/settings',
     },
     {
-      label: 'Tickets',
-      icon: 'icon-tickets.svg',
-      route: '/tickets',
-    },
-    {
-      label: 'Activity Logs',
+      label: 'Audit Logs',
       icon: 'icon-activity-log.svg',
       route: '/audit-logs',
       adminOnly: true,

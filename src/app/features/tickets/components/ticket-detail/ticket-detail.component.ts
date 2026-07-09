@@ -10,11 +10,21 @@ import { SvgIconComponent } from '../../../../components/icons/svg-icon.componen
 import { firstValueFrom } from 'rxjs';
 import { form, FormField, FormRoot, required, min } from '@angular/forms/signals';
 import { AuthService } from '../../../../services/auth.service';
+import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-ticket-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, QuillModule, SvgIconComponent, FormField, FormRoot],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    QuillModule,
+    SvgIconComponent,
+    FormField,
+    FormRoot,
+    ConfirmDialogComponent,
+  ],
   templateUrl: './ticket-detail.component.html',
 })
 export class TicketDetailComponent implements OnInit {
@@ -62,7 +72,7 @@ export class TicketDetailComponent implements OnInit {
       error: () => {
         this.error.set(true);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -77,59 +87,84 @@ export class TicketDetailComponent implements OnInit {
     epicId: '',
   });
 
-  ticketForm = form(this.ticketModel, (schemaPath) => {
-    required(schemaPath.title, { message: 'Title is required' });
-    required(schemaPath.description, { message: 'Description is required' });
-    min(schemaPath.estimations, 0, { message: 'Estimation cannot be negative' });
-  }, {
-    submission: {
-      action: async () => {
-        if (this.ticketForm().invalid()) return undefined;
+  ticketForm = form(
+    this.ticketModel,
+    (schemaPath) => {
+      required(schemaPath.title, { message: 'Title is required' });
+      required(schemaPath.description, { message: 'Description is required' });
+      min(schemaPath.estimations, 0, { message: 'Estimation cannot be negative' });
+    },
+    {
+      submission: {
+        action: async () => {
+          if (this.ticketForm().invalid()) return undefined;
 
-        const t = this.ticket();
-        if (!t) return undefined;
+          const t = this.ticket();
+          if (!t) return undefined;
 
-        const val = this.ticketModel();
-        const epicId = val.epicId ? Number(val.epicId) : null;
-        const epicObj = epicId ? { id: epicId, name: this.epicsResource.value()?.find(e => e.id === epicId)?.name || '' } : undefined;
+          const val = this.ticketModel();
+          const epicId = val.epicId ? Number(val.epicId) : null;
+          const epicObj = epicId
+            ? {
+                id: epicId,
+                name: this.epicsResource.value()?.find((e) => e.id === epicId)?.name || '',
+              }
+            : undefined;
 
-        const payload: Record<string, unknown> = {
-          title: val.title,
-          description: val.description,
-          about: val.about || '',
-          status: val.status,
-          priority: val.priority,
-          estimations: val.estimations || undefined,
-          assignedPersonId: val.assignedPersonId || undefined,
-        };
+          const payload: Record<string, unknown> = {
+            title: val.title,
+            description: val.description,
+            about: val.about || '',
+            status: val.status,
+            priority: val.priority,
+            estimations: val.estimations || undefined,
+            assignedPersonId: val.assignedPersonId || undefined,
+          };
 
-        if (epicObj) {
-          payload['epic'] = epicObj;
-        } else {
-          payload['epic'] = null;
-        }
+          if (epicObj) {
+            payload['epic'] = epicObj;
+          } else {
+            payload['epic'] = null;
+          }
 
-        try {
-          await firstValueFrom(this.ticketService.updateTicket(t.id, payload));
-          this.ticket.update(ticket => ticket ? { ...ticket, title: val.title, description: val.description, about: val.about, status: val.status, priority: val.priority, estimations: val.estimations || undefined, assignedPersonId: val.assignedPersonId || undefined, epic: epicObj } : null);
-          this.isEditing.set(false);
-          return undefined;
-        } catch (err) {
-          console.error('Error updating ticket:', err);
-          return undefined;
-        }
-      }
-    }
-  });
+          try {
+            await firstValueFrom(this.ticketService.updateTicket(t.id, payload));
+            this.ticket.update((ticket) =>
+              ticket
+                ? {
+                    ...ticket,
+                    title: val.title,
+                    description: val.description,
+                    about: val.about,
+                    status: val.status,
+                    priority: val.priority,
+                    estimations: val.estimations || undefined,
+                    assignedPersonId: val.assignedPersonId || undefined,
+                    epic: epicObj,
+                  }
+                : null,
+            );
+            this.isEditing.set(false);
+            return undefined;
+          } catch (err) {
+            console.error('Error updating ticket:', err);
+            return undefined;
+          }
+        },
+      },
+    },
+  );
 
   addComment() {
     const t = this.ticket();
     const text = this.newCommentText().trim();
     if (!t || !text) return;
 
-    this.ticketService.addComment(t.id, text).subscribe(comment => {
+    this.ticketService.addComment(t.id, text).subscribe((comment) => {
       const currentComments = t.comments || [];
-      this.ticket.update(ticket => ticket ? { ...ticket, comments: [...currentComments, comment] } : null);
+      this.ticket.update((ticket) =>
+        ticket ? { ...ticket, comments: [...currentComments, comment] } : null,
+      );
       this.newCommentText.set('');
     });
   }
@@ -140,7 +175,7 @@ export class TicketDetailComponent implements OnInit {
 
     const users = this.usersResource.value();
     if (users) {
-      const user = users.find(u => u._id === t.assignedPersonId);
+      const user = users.find((u) => u._id === t.assignedPersonId);
       if (user) {
         return user.displayName || user.username;
       }
@@ -181,7 +216,7 @@ export class TicketDetailComponent implements OnInit {
         console.error('Failed to delete ticket', err);
         alert('Failed to delete ticket.');
         this.showDeleteConfirm.set(false);
-      }
+      },
     });
   }
 

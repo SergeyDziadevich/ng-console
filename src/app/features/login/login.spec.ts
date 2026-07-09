@@ -63,7 +63,7 @@ describe('Login Component', () => {
   describe('Google Login', () => {
     it('should navigate to home on success without 2FA', () => {
       mockAuthService.googleLogin.mockReturnValue(of({ requires2fa: false }));
-      
+
       exposedComponent.handleGoogleCredentialResponse({ credential: 'test_cred' });
 
       expect(mockAuthService.googleLogin).toHaveBeenCalledWith('test_cred');
@@ -72,8 +72,10 @@ describe('Login Component', () => {
     });
 
     it('should set step to 2 on success with 2FA', () => {
-      mockAuthService.googleLogin.mockReturnValue(of({ requires2fa: true, tempToken: 'temp_token' }));
-      
+      mockAuthService.googleLogin.mockReturnValue(
+        of({ requires2fa: true, tempToken: 'temp_token' }),
+      );
+
       exposedComponent.handleGoogleCredentialResponse({ credential: 'test_cred' });
 
       expect(mockAuthService.googleLogin).toHaveBeenCalledWith('test_cred');
@@ -83,8 +85,10 @@ describe('Login Component', () => {
     });
 
     it('should set error message on failure', () => {
-      mockAuthService.googleLogin.mockReturnValue(throwError(() => ({ error: { message: 'Google error' } })));
-      
+      mockAuthService.googleLogin.mockReturnValue(
+        throwError(() => ({ error: { message: 'Google error' } })),
+      );
+
       exposedComponent.handleGoogleCredentialResponse({ credential: 'test_cred' });
 
       expect(exposedComponent.errorMessage()).toBe('Google error');
@@ -96,7 +100,7 @@ describe('Login Component', () => {
     it('should mark form as touched and not login if form is invalid', () => {
       exposedComponent.form.controls.name.setValue('');
       exposedComponent.form.controls.password.setValue('');
-      
+
       exposedComponent.onSubmit();
 
       expect(exposedComponent.form.touched).toBe(true);
@@ -110,7 +114,10 @@ describe('Login Component', () => {
 
       exposedComponent.onSubmit();
 
-      expect(mockAuthService.login).toHaveBeenCalledWith({ username: 'testuser', password: 'password123' });
+      expect(mockAuthService.login).toHaveBeenCalledWith({
+        username: 'testuser',
+        password: 'password123',
+      });
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
     });
 
@@ -128,7 +135,9 @@ describe('Login Component', () => {
     it('should set error message on login failure', () => {
       exposedComponent.form.controls.name.setValue('testuser');
       exposedComponent.form.controls.password.setValue('password123');
-      mockAuthService.login.mockReturnValue(throwError(() => ({ error: { message: 'Login error' } })));
+      mockAuthService.login.mockReturnValue(
+        throwError(() => ({ error: { message: 'Login error' } })),
+      );
 
       exposedComponent.onSubmit();
 
@@ -144,7 +153,7 @@ describe('Login Component', () => {
 
     it('should mark codeForm as touched and not verify if form is invalid', () => {
       exposedComponent.codeForm.controls.twoFactorCode.setValue('');
-      
+
       exposedComponent.onSubmit();
 
       expect(exposedComponent.codeForm.touched).toBe(true);
@@ -163,7 +172,9 @@ describe('Login Component', () => {
 
     it('should set error message on 2FA failure', () => {
       exposedComponent.codeForm.controls.twoFactorCode.setValue('123456');
-      mockAuthService.verify2FA.mockReturnValue(throwError(() => ({ error: { message: 'Invalid code' } })));
+      mockAuthService.verify2FA.mockReturnValue(
+        throwError(() => ({ error: { message: 'Invalid code' } })),
+      );
 
       exposedComponent.onSubmit();
 
