@@ -1,0 +1,11 @@
+.shell-container {
+  @apply flex flex-col h-screen overflow-hidden bg-gray-100;
+}
+
+.shell-content {
+  @apply flex flex-1 overflow-hidden;
+}
+
+.shell-main {
+  @apply flex-1 overflow-y-auto p-6 pb-4 h-full;
+}

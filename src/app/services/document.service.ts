@@ -42,4 +42,8 @@ export class DocumentService {
   shareDocument(id: string): Observable<{ token: string }> {
     return this.http.post<{ token: string }>(`${this.apiUrl}/${id}/share`, {});
   }
+
+  signDocument(id: string, signatureImage: string): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}/${id}/sign`, { signature: signatureImage });
+  }
 }

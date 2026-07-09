@@ -1,10 +1,10 @@
-<div class="modal-overlay z-50">
+<div class="modal-overlay">
   <div class="dialog-container">
-    <div class="flex items-center gap-3">
+    <div class="dialog-header">
       @if (type() === 'danger') {
         <div class="icon-wrapper danger">
           <img
-            class="w-5 h-5 text-red-500 shrink-0"
+            class="dialog-icon danger"
             src="/assets/icons/icon-danger.svg"
             alt="danger"
           />
@@ -12,15 +12,15 @@
       } @else if (type() === 'warning') {
         <div class="icon-wrapper warning">
           <img
-            class="w-5 h-5 text-yellow-600 shrink-0"
+            class="dialog-icon warning"
             src="/assets/icons/icon-warning-dialog.svg"
             alt="warning"
           />
         </div>
       }
-      <div>
-        <h3 class="text-base font-semibold text-gray-800">{{ title() }}</h3>
-        <p class="text-sm text-gray-500 mt-0.5">
+      <div class="dialog-content">
+        <h3 class="dialog-title">{{ title() }}</h3>
+        <p class="dialog-text">
           @if (text()) {
             {{ text() }}
           }
@@ -28,7 +28,7 @@
         </p>
       </div>
     </div>
-    <div class="flex justify-end gap-3">
+    <div class="dialog-footer">
       <button class="px-4 py-2 btn-secondary" (click)="cancelAction.emit()">
         {{ cancelText() }}
       </button>
