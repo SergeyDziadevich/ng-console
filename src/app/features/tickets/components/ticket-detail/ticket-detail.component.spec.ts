@@ -15,11 +15,21 @@ interface MockTicketService {
   updateTicket: Mock;
   deleteTicket: Mock;
   addComment: Mock;
-  epicsResource: { value: ReturnType<typeof signal<unknown[]>>, isLoading: ReturnType<typeof signal<boolean>>, error: ReturnType<typeof signal<unknown>>, reload: Mock };
+  epicsResource: {
+    value: ReturnType<typeof signal<unknown[]>>;
+    isLoading: ReturnType<typeof signal<boolean>>;
+    error: ReturnType<typeof signal<unknown>>;
+    reload: Mock;
+  };
 }
 
 interface MockUserService {
-  usersResource: { value: ReturnType<typeof signal<unknown[]>>, isLoading: ReturnType<typeof signal<boolean>>, error: ReturnType<typeof signal<unknown>>, reload: Mock };
+  usersResource: {
+    value: ReturnType<typeof signal<unknown[]>>;
+    isLoading: ReturnType<typeof signal<boolean>>;
+    error: ReturnType<typeof signal<unknown>>;
+    reload: Mock;
+  };
 }
 
 describe('TicketDetailComponent', () => {
@@ -27,7 +37,9 @@ describe('TicketDetailComponent', () => {
   let fixture: ComponentFixture<TicketDetailComponent>;
   let mockTicketService: MockTicketService;
   let mockUserService: MockUserService;
-  let mockAuthService: { currentUser: ReturnType<typeof signal<{ id?: string, role?: string } | null>> };
+  let mockAuthService: {
+    currentUser: ReturnType<typeof signal<{ id?: string; role?: string } | null>>;
+  };
   let mockRouter: Router;
   let mockRoute: { snapshot: { paramMap: { get: ReturnType<typeof vi.fn> } } };
 
@@ -37,23 +49,33 @@ describe('TicketDetailComponent', () => {
       updateTicket: vi.fn(),
       deleteTicket: vi.fn(),
       addComment: vi.fn(),
-      epicsResource: { value: signal([]), isLoading: signal(false), error: signal(undefined), reload: vi.fn() }
+      epicsResource: {
+        value: signal([]),
+        isLoading: signal(false),
+        error: signal(undefined),
+        reload: vi.fn(),
+      },
     };
 
     mockUserService = {
-      usersResource: { value: signal([]), isLoading: signal(false), error: signal(undefined), reload: vi.fn() }
+      usersResource: {
+        value: signal([]),
+        isLoading: signal(false),
+        error: signal(undefined),
+        reload: vi.fn(),
+      },
     };
 
     mockAuthService = {
-      currentUser: signal(null)
+      currentUser: signal(null),
     };
 
     mockRoute = {
       snapshot: {
         paramMap: {
-          get: vi.fn().mockReturnValue('1')
-        }
-      }
+          get: vi.fn().mockReturnValue('1'),
+        },
+      },
     };
 
     await TestBed.configureTestingModule({
@@ -63,8 +85,8 @@ describe('TicketDetailComponent', () => {
         { provide: UserService, useValue: mockUserService },
         { provide: AuthService, useValue: mockAuthService },
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: mockRoute }
-      ]
+        { provide: ActivatedRoute, useValue: mockRoute },
+      ],
     }).compileComponents();
 
     mockRouter = TestBed.inject(Router);
@@ -123,7 +145,7 @@ describe('TicketDetailComponent', () => {
       priority: TicketPriority.HIGH,
       estimations: 5,
       assignedPersonId: 'user1',
-      epic: { id: 10, name: 'Epic 1' }
+      epic: { id: 10, name: 'Epic 1' },
     };
 
     beforeEach(() => {
@@ -142,7 +164,7 @@ describe('TicketDetailComponent', () => {
         priority: TicketPriority.HIGH,
         estimations: 5,
         assignedPersonId: 'user1',
-        epicId: '10'
+        epicId: '10',
       });
     });
 
@@ -162,7 +184,7 @@ describe('TicketDetailComponent', () => {
         priority: TicketPriority.MEDIUM,
         estimations: 10,
         assignedPersonId: '',
-        epicId: ''
+        epicId: '',
       });
 
       mockTicketService.updateTicket.mockReturnValue(of({}));
@@ -180,7 +202,7 @@ describe('TicketDetailComponent', () => {
         priority: TicketPriority.MEDIUM,
         estimations: 10,
         assignedPersonId: undefined,
-        epic: null
+        epic: null,
       });
 
       expect(component.isEditing()).toBe(false);
@@ -191,7 +213,7 @@ describe('TicketDetailComponent', () => {
       component.editTicket();
       component.ticketModel.set({
         ...component.ticketModel(),
-        title: '' // invalidates form
+        title: '', // invalidates form
       });
       fixture.detectChanges();
       const form = fixture.nativeElement.querySelector('form');

@@ -36,4 +36,3 @@ export const noAuthGuard: CanMatchFn = () => {
   const authService = inject(AuthService);
   return !authService.isAuthenticated();
 };
-

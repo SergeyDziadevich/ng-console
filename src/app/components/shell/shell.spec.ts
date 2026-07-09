@@ -14,15 +14,12 @@ describe('Shell Component', () => {
     const authServiceMock = {
       currentUser: signal({ name: 'Test Shell User', email: 'shell@example.com' }),
       isAuthenticated: signal(true),
-      getToken: () => 'fake-token'
+      getToken: () => 'fake-token',
     };
 
     await TestBed.configureTestingModule({
       imports: [Shell],
-      providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        provideRouter([])
-      ]
+      providers: [{ provide: AuthService, useValue: authServiceMock }, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Shell);
@@ -35,13 +32,16 @@ describe('Shell Component', () => {
   });
 
   it('should retrieve currentUser from AuthService', () => {
-    expect(component.currentUser()).toEqual({ name: 'Test Shell User', email: 'shell@example.com' });
+    expect(component.currentUser()).toEqual({
+      name: 'Test Shell User',
+      email: 'shell@example.com',
+    });
   });
 
   it('should render the top-bar and sidebar components', () => {
     const topBar = fixture.debugElement.query(By.css('app-top-bar'));
     const sidebar = fixture.debugElement.query(By.css('app-sidebar'));
-    
+
     expect(topBar).toBeTruthy();
     expect(sidebar).toBeTruthy();
   });

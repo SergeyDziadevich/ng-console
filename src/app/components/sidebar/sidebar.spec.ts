@@ -6,7 +6,6 @@ import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { signal } from '@angular/core';
 
-
 describe('Sidebar Component', () => {
   let component: Sidebar;
   let fixture: ComponentFixture<Sidebar>;
@@ -14,28 +13,25 @@ describe('Sidebar Component', () => {
 
   beforeEach(async () => {
     chatServiceSpy = {
-      hasUnreadChats: signal(false)
+      hasUnreadChats: signal(false),
     };
 
     await TestBed.configureTestingModule({
       imports: [Sidebar],
-      providers: [
-        { provide: ChatService, useValue: chatServiceSpy },
-        provideRouter([])
-      ]
+      providers: [{ provide: ChatService, useValue: chatServiceSpy }, provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Sidebar);
     component = fixture.componentInstance;
-    
+
     // Provide the required input
     fixture.componentRef.setInput('currentUser', {
       id: '123',
       name: 'Test User',
       email: 'test@example.com',
-      role: 'admin'
+      role: 'admin',
     });
-    
+
     fixture.detectChanges();
   });
 
@@ -61,7 +57,7 @@ describe('Sidebar Component', () => {
   });
 
   it('should render the current user info in the footer when not collapsed', () => {
-    const footer = fixture.debugElement.query(By.css('.border-t'));
+    const footer = fixture.debugElement.query(By.css('.sidebar-footer'));
     expect(footer.nativeElement.textContent).toContain('admin');
     expect(footer.nativeElement.textContent).toContain('test@example.com');
   });
@@ -69,8 +65,8 @@ describe('Sidebar Component', () => {
   it('should hide user details in footer when collapsed', () => {
     component.toggle();
     fixture.detectChanges();
-    
-    const footer = fixture.debugElement.query(By.css('.border-t'));
+
+    const footer = fixture.debugElement.query(By.css('.sidebar-footer'));
     expect(footer.nativeElement.textContent).not.toContain('test@example.com');
   });
 
@@ -78,9 +74,11 @@ describe('Sidebar Component', () => {
     chatServiceSpy.hasUnreadChats.set(true);
     fixture.detectChanges();
 
-    const chatsLink = fixture.debugElement.queryAll(By.css('nav a')).find(el => el.nativeElement.textContent.includes('Chats'));
-    const unreadDot = chatsLink?.query(By.css('.bg-green-500'));
-    
+    const chatsLink = fixture.debugElement
+      .queryAll(By.css('nav a'))
+      .find((el) => el.nativeElement.textContent.includes('Chats'));
+    const unreadDot = chatsLink?.query(By.css('.sidebar-unread-dot'));
+
     expect(unreadDot).toBeTruthy();
   });
 });

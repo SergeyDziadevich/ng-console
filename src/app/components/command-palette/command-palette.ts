@@ -1,4 +1,13 @@
-import { Component, ChangeDetectionStrategy, ElementRef, ViewChild, inject, signal, HostListener, effect } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ElementRef,
+  ViewChild,
+  inject,
+  signal,
+  HostListener,
+  effect,
+} from '@angular/core';
 import { AiService } from '../../services/ai.service';
 import { FormsModule } from '@angular/forms';
 
@@ -12,15 +21,15 @@ import { FormsModule } from '@angular/forms';
   host: {
     '(document:keydown.meta.k)': 'handleShortcut($event)',
     '(document:keydown.ctrl.k)': 'handleShortcut($event)',
-    '(document:keydown.escape)': 'close()'
-  }
+    '(document:keydown.escape)': 'close()',
+  },
 })
 export class CommandPaletteComponent {
   private readonly aiService = inject(AiService);
 
   readonly isCommandPaletteOpen = this.aiService.isCommandPaletteOpen;
   readonly prompt = signal('');
-  
+
   readonly messages = this.aiService.messages;
   readonly isGenerating = this.aiService.isGenerating;
 
@@ -41,10 +50,10 @@ export class CommandPaletteComponent {
   }
 
   readonly examples = [
-    "Summarize all of our latest posts.",
-    "Can you list all the tickets we currently have?",
-    "What tickets are currently marked as TODO?",
-    "Mark tickets 1 and 2 as IN_PROGRESS."
+    'Summarize all of our latest posts.',
+    'Can you list all the tickets we currently have?',
+    'What tickets are currently marked as TODO?',
+    'Mark tickets 1 and 2 as IN_PROGRESS.',
   ];
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;

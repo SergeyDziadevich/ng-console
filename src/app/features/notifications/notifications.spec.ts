@@ -27,17 +27,15 @@ describe('Notifications', () => {
       sendNotification: vi.fn(),
       dropConnection: vi.fn(),
       reconnect: vi.fn(),
-      markAsRead: vi.fn()
+      markAsRead: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
       imports: [
-        Notifications, 
-        RouterTestingModule.withRoutes([{ path: 'login', component: DummyLogin }])
+        Notifications,
+        RouterTestingModule.withRoutes([{ path: 'login', component: DummyLogin }]),
       ],
-      providers: [
-        { provide: NotificationsService, useValue: mockService }
-      ]
+      providers: [{ provide: NotificationsService, useValue: mockService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Notifications);

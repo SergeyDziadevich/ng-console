@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal, viewChild, ElementRef, afterNextRender } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  viewChild,
+  ElementRef,
+  afterNextRender,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -11,7 +19,10 @@ export interface GoogleCredentialResponse {
 declare let google: {
   accounts: {
     id: {
-      initialize: (config: { client_id: string; callback: (res: GoogleCredentialResponse) => void }) => void;
+      initialize: (config: {
+        client_id: string;
+        callback: (res: GoogleCredentialResponse) => void;
+      }) => void;
       renderButton: (parent: HTMLElement, options: Record<string, string>) => void;
     };
   };
@@ -61,12 +72,9 @@ export class Login {
     }
     google.accounts.id.initialize({
       client_id: environment.googleClientId,
-      callback: this.handleGoogleCredentialResponse.bind(this)
+      callback: this.handleGoogleCredentialResponse.bind(this),
     });
-    google.accounts.id.renderButton(
-      element,
-      { theme: 'outline', size: 'large', width: '320' }
-    );
+    google.accounts.id.renderButton(element, { theme: 'outline', size: 'large', width: '320' });
   }
 
   protected handleGoogleCredentialResponse(response: GoogleCredentialResponse): void {
@@ -85,9 +93,7 @@ export class Login {
       },
       error: (err) => {
         this.loading.set(false);
-        this.errorMessage.set(
-          err?.error?.message ?? 'Google login failed. Please try again.',
-        );
+        this.errorMessage.set(err?.error?.message ?? 'Google login failed. Please try again.');
       },
     });
   }
@@ -116,9 +122,7 @@ export class Login {
         },
         error: (err) => {
           this.loading.set(false);
-          this.errorMessage.set(
-            err?.error?.message ?? 'Invalid credentials. Please try again.',
-          );
+          this.errorMessage.set(err?.error?.message ?? 'Invalid credentials. Please try again.');
         },
       });
     } else {
@@ -139,12 +143,9 @@ export class Login {
         },
         error: (err) => {
           this.loading.set(false);
-          this.errorMessage.set(
-            err?.error?.message ?? 'Invalid code. Please try again.',
-          );
+          this.errorMessage.set(err?.error?.message ?? 'Invalid code. Please try again.');
         },
       });
     }
   }
 }
-

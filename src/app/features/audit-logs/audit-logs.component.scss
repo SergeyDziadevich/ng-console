@@ -34,7 +34,7 @@
         align-items: center;
         cursor: help;
         color: var(--primary-color, #007bff);
-        
+
         .info-icon {
           width: 1.2rem;
           height: 1.2rem;
@@ -57,11 +57,11 @@
           font-size: 0.85rem;
           opacity: 0;
           transition: opacity 0.3s;
-          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           pointer-events: none;
-          
+
           &::after {
-            content: "";
+            content: '';
             position: absolute;
             bottom: 100%;
             left: 50%;
@@ -105,8 +105,12 @@
         cursor: pointer;
         transition: background 0.2s;
 
-        .w-4 { width: 1rem; }
-        .h-4 { height: 1rem; }
+        .w-4 {
+          width: 1rem;
+        }
+        .h-4 {
+          height: 1rem;
+        }
 
         &:hover {
           background: var(--primary-color-hover, #0056b3);
@@ -120,7 +124,7 @@
     gap: 1rem;
     flex-wrap: wrap;
     align-items: center;
-    
+
     .search-input {
       flex: 0 0 330px;
       padding: 0.25rem 0.5rem;
@@ -132,7 +136,9 @@
       font-size: 0.9rem;
       color: var(--text-primary, #333);
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 
       &:focus {
         border-color: var(--primary-color, #007bff);
@@ -182,7 +188,9 @@
         min-height: 2.25rem;
         cursor: text;
         flex-wrap: wrap;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
 
         &:focus-within {
           border-color: var(--primary-color, #007bff);
@@ -246,7 +254,7 @@
         background: #fff;
         border: 1px solid var(--border-color, #eaeaea);
         border-radius: 6px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         z-index: 20;
         display: flex;
         flex-direction: column;
@@ -284,7 +292,7 @@
         cursor: pointer;
         user-select: none;
 
-        input[type="checkbox"] {
+        input[type='checkbox'] {
           width: 1rem;
           height: 1rem;
           cursor: pointer;
@@ -331,7 +339,9 @@
         cursor: pointer;
         list-style: none;
         user-select: none;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+          monospace;
         font-size: 0.85rem;
         transition: background 0.15s;
 
@@ -376,15 +386,17 @@
           background: var(--bg-subtle, #f1f3f4);
           color: var(--text-secondary, #5f6368);
 
-          &[data-action*="create" i] {
+          &[data-action*='create' i] {
             background: #e6f4ea;
             color: #1e8e3e;
           }
-          &[data-action*="delete" i], &[data-action*="remove" i] {
+          &[data-action*='delete' i],
+          &[data-action*='remove' i] {
             background: #fce8e6;
             color: #d93025;
           }
-          &[data-action*="update" i], &[data-action*="edit" i] {
+          &[data-action*='update' i],
+          &[data-action*='edit' i] {
             background: #fef7e0;
             color: #b06000;
           }
@@ -425,7 +437,7 @@
         flex-direction: column;
         border-top: 1px solid var(--border-color, #eaeaea);
         background: var(--bg-subtle, #f8f9fa);
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
       }
 
       .log-meta-info {
@@ -445,12 +457,37 @@
 
       .log-meta {
         padding: 0.75rem 1rem 1rem;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+          monospace;
         font-size: 0.85rem;
         white-space: pre-wrap;
         overflow-x: auto;
         color: #333;
-        margin: 0;
+      }
+    }
+
+    .no-logs {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      text-align: center;
+      background: var(--bg-surface, #fff);
+
+      .no-logs-icon {
+        width: 3rem;
+        height: 3rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.25;
+        filter: brightness(0);
+      }
+
+      .no-logs-text {
+        font-size: 0.95rem;
+        color: var(--text-secondary, #666);
+        font-weight: 500;
       }
     }
   }

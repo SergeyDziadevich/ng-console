@@ -25,7 +25,7 @@ export interface NotificationPayload {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationsService {
   private http = inject(HttpClient);
@@ -37,11 +37,11 @@ export class NotificationsService {
   isOnline = signal(false);
 
   unreadCount = computed(() => {
-    return this.messages().filter(m => !m.isRead).length;
+    return this.messages().filter((m) => !m.isRead).length;
   });
 
   unreadMessages = computed(() => {
-    return this.messages().filter(m => !m.isRead);
+    return this.messages().filter((m) => !m.isRead);
   });
 
   constructor() {
@@ -51,17 +51,21 @@ export class NotificationsService {
   private init() {
     this.http.get<NotificationPayload[]>(`${environment.apiUrl}/api/notifications`).subscribe({
       next: (history) => {
-        this.messages.set((history || []).map(n => ({
-          id: n.id,
-          title: n.title,
-          body: n.body,
-          replayed: false,
-          isSystem: n.isSystem,
-          timestamp: n.ts,
-          isRead: n.isRead,
-        })));
+        this.messages.set(
+          (history || []).map((n) => ({
+            id: n.id,
+            title: n.title,
+            body: n.body,
+            replayed: false,
+            isSystem: n.isSystem,
+            timestamp: n.ts,
+            isRead: n.isRead,
+          })),
+        );
       },
-      error: () => { /* empty */ }
+      error: () => {
+        /* empty */
+      },
     });
 
     this.zone.runOutsideAngular(() => {
@@ -83,7 +87,7 @@ export class NotificationsService {
           const replayed = this.socket.recovered;
 
           this.messages.update((msgs) => {
-            if (msgs.some(m => m.id === n.id)) return msgs;
+            if (msgs.some((m) => m.id === n.id)) return msgs;
             return [
               {
                 id: n.id,
@@ -105,11 +109,13 @@ export class NotificationsService {
   sendNotification(title: string): void {
     const user = this.authService.currentUser();
     if (user) {
-      this.http.post(`${environment.apiUrl}/api/notifications/notify`, {
-        title,
-        type: 'info',
-        userId: user.id
-      }).subscribe({ error: () => void 0 });
+      this.http
+        .post(`${environment.apiUrl}/api/notifications/notify`, {
+          title,
+          type: 'info',
+          userId: user.id,
+        })
+        .subscribe({ error: () => void 0 });
     }
   }
 
@@ -117,9 +123,9 @@ export class NotificationsService {
     if (!id || id.startsWith('sys-')) return;
     this.http.post(`${environment.apiUrl}/api/notifications/${id}/read`, {}).subscribe({
       next: () => {
-        this.messages.update((msgs) => msgs.map(m => m.id === id ? { ...m, isRead: true } : m));
+        this.messages.update((msgs) => msgs.map((m) => (m.id === id ? { ...m, isRead: true } : m)));
       },
-      error: () => void 0
+      error: () => void 0,
     });
   }
 

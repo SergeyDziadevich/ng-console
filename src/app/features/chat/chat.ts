@@ -34,20 +34,20 @@ export class Chat {
     const activeRoomId = this.chatService.activeRoomId();
     if (!activeRoomId) return [];
 
-    const room = this.chatService.rooms().find(r => r.id === activeRoomId);
+    const room = this.chatService.rooms().find((r) => r.id === activeRoomId);
     if (!room) return [];
 
-    const roomMemberIds = new Set(room.members?.map(m => m.userId) ?? []);
+    const roomMemberIds = new Set(room.members?.map((m) => m.userId) ?? []);
 
     // Filter out existing members
-    let available = allUsers.filter(u => !roomMemberIds.has(u._id));
+    let available = allUsers.filter((u) => !roomMemberIds.has(u._id));
 
     // Filter by search query
     const query = this.userSearchQuery().toLowerCase().trim();
     if (query) {
-      available = available.filter(u =>
-        (u.displayName?.toLowerCase().includes(query)) ||
-        (u.username?.toLowerCase().includes(query))
+      available = available.filter(
+        (u) =>
+          u.displayName?.toLowerCase().includes(query) || u.username?.toLowerCase().includes(query),
       );
     }
 
@@ -70,7 +70,7 @@ export class Chat {
   }
 
   toggleCreateRoom() {
-    this.isCreatingRoom.update(v => !v);
+    this.isCreatingRoom.update((v) => !v);
     if (!this.isCreatingRoom()) {
       this.resetCreateRoomForm();
     }
@@ -79,7 +79,7 @@ export class Chat {
   toggleUserSelection(userId: string) {
     const current = this.selectedUserIds();
     if (current.includes(userId)) {
-      this.selectedUserIds.set(current.filter(id => id !== userId));
+      this.selectedUserIds.set(current.filter((id) => id !== userId));
     } else {
       this.selectedUserIds.set([...current, userId]);
     }
@@ -97,7 +97,7 @@ export class Chat {
         },
         error: (err) => {
           console.error('Failed to create room', err);
-        }
+        },
       });
     }
   }
@@ -109,7 +109,7 @@ export class Chat {
 
   // Add Users to Existing Room Methods
   toggleAddUser() {
-    this.isAddingUser.update(v => !v);
+    this.isAddingUser.update((v) => !v);
     if (!this.isAddingUser()) {
       this.resetAddUserForm();
     }
@@ -118,7 +118,7 @@ export class Chat {
   toggleAddUserSelection(userId: string) {
     const current = this.selectedUsersToAdd();
     if (current.includes(userId)) {
-      this.selectedUsersToAdd.set(current.filter(id => id !== userId));
+      this.selectedUsersToAdd.set(current.filter((id) => id !== userId));
     } else {
       this.selectedUsersToAdd.set([...current, userId]);
     }
@@ -135,7 +135,7 @@ export class Chat {
         },
         error: (err) => {
           console.error('Failed to add members to room', err);
-        }
+        },
       });
     }
   }
@@ -146,17 +146,17 @@ export class Chat {
   }
 
   isMessageRead(message: ChatMessage): boolean {
-    const room = this.chatService.rooms().find(r => r.id === message.roomId);
+    const room = this.chatService.rooms().find((r) => r.id === message.roomId);
     if (!room || !room.members) return false;
 
     const currentUserId = this.currentUser()?.id;
-    const otherMembers = room.members.filter(m => m.userId !== currentUserId);
+    const otherMembers = room.members.filter((m) => m.userId !== currentUserId);
 
     if (otherMembers.length === 0) return false;
 
     const messageTime = new Date(message.createdAt).getTime();
 
-    return otherMembers.some(m => {
+    return otherMembers.some((m) => {
       if (!m.lastReadAt) return false;
       return new Date(m.lastReadAt).getTime() >= messageTime;
     });

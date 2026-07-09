@@ -27,7 +27,10 @@ export class AiAssistant {
 
   isWeatherMessage(text: string): boolean {
     try {
-      const cleaned = text.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '').trim();
+      const cleaned = text
+        .replace(/^```(json)?\n?/i, '')
+        .replace(/\n?```$/i, '')
+        .trim();
       const parsed = JSON.parse(cleaned);
       if (parsed?.type === 'weatherWidget') return true;
       return !!(parsed && parsed.temp !== undefined && parsed.city && parsed.condition);
@@ -37,9 +40,7 @@ export class AiAssistant {
   }
 
   isUsersMessage(text: string): boolean {
-    return (
-      text.includes('Here is the list of all users:')
-    );
+    return text.includes('Here is the list of all users:');
   }
 
   updatePrompt(value: string) {

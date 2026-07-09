@@ -1,114 +1,138 @@
-<header class="w-full h-16 bg-gray-900 border-b border-gray-700 shadow-sm flex items-center justify-between px-6 z-50">
+<header class="top-bar-container">
   <!-- Left: Logo + App Title -->
-  <div class="flex items-center gap-3">
-    <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center">
-      <img src="/assets/icons/icon-043b52b2.svg" class="w-5 h-5 text-white   shrink-0" alt="icon" />
+  <div class="top-bar-left">
+    <div class="app-logo-wrapper">
+      <img class="app-logo" src="/assets/icons/icon-043b52b2.svg" alt="icon" />
     </div>
-    <span class="text-xl font-bold text-white tracking-tight">
-      Ng Console Platform
-    </span>
+    <span class="app-title"> Ng Console Platform </span>
   </div>
 
-  <div class="relative flex items-center gap-2">
+  <div class="top-bar-right">
     <button
+      class="top-bar-btn"
       (click)="toggleAiAssistant()"
       title="AI Assistant (Cmd+K)"
-      class="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
-      <img src="/assets/icons/icon-ai-stars.svg" class="w-5 h-5 shrink-0" alt="icon" />
+    >
+      <img class="top-bar-btn-icon" src="/assets/icons/icon-ai-stars.svg" alt="icon" />
     </button>
     <button
+      class="top-bar-btn"
       (click)="toggleNotifications()"
       title="Notifications"
-      class="relative w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
-      <img src="/assets/icons/icon-2c9fcb7e.svg" class="w-5 h-5 shrink-0" alt="icon" />
+    >
+      <img class="top-bar-btn-icon" src="/assets/icons/icon-2c9fcb7e.svg" alt="icon" />
       <!-- Unread notification badge -->
       @if (unreadCount() > 0) {
-        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-gray-900 animate-pulse"></span>
+        <span class="notification-badge"></span>
       }
     </button>
 
     @if (notificationsOpen()) {
-      <div class="fixed inset-0 z-40" role="button" tabindex="0" aria-label="Close notifications" (click)="closeNotifications()" (keydown)="closeNotifications()"></div>
+      <div
+        class="dropdown-overlay"
+        (click)="closeNotifications()"
+        (keydown)="closeNotifications()"
+        role="button"
+        tabindex="0"
+        aria-label="Close notifications"
+      ></div>
 
-      <div class="absolute right-0 top-12 w-80 sm:w-96 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden flex flex-col max-h-[85vh]">
-        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-gray-800">Notifications</h3>
+      <div class="notifications-dropdown">
+        <div class="dropdown-header">
+          <h3 class="dropdown-title">Notifications</h3>
           @if (unreadCount() > 0) {
-            <span class="text-xs font-medium bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{{ unreadCount() }} new</span>
+            <span class="unread-badge">{{ unreadCount() }} new</span>
           }
         </div>
 
-        <div class="overflow-y-auto flex-1">
-          <ul class="py-1">
+        <div class="notifications-list-wrapper">
+          <ul class="notifications-list">
             @for (msg of unreadMessages().slice(0, 5); track msg.id) {
-              <li class="px-4 py-3 hover:bg-indigo-50 border-b border-gray-50 last:border-0 transition-colors cursor-pointer group flex gap-3 relative" 
-                  tabindex="0"
-                  (click)="markAsRead(msg.id)"
-                  (keydown.enter)="markAsRead(msg.id)"
-                  (keydown.space)="markAsRead(msg.id); $event.preventDefault()">
-                <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
-                <div class="flex-1 min-w-0 pr-6">
-                  <p class="text-sm font-medium text-gray-800 truncate" [class.font-semibold]="!msg.isRead">{{ msg.title }}</p>
+              <li
+                class="notification-item group"
+                (click)="markAsRead(msg.id)"
+                (keydown.enter)="markAsRead(msg.id)"
+                (keydown.space)="markAsRead(msg.id); $event.preventDefault()"
+                tabindex="0"
+              >
+                <div class="notification-dot"></div>
+                <div class="notification-content">
+                  <p
+                    class="notification-title"
+                    [class.unread]="!msg.isRead"
+                  >
+                    {{ msg.title }}
+                  </p>
                   @if (msg.body) {
-                    <p class="text-xs text-gray-600 line-clamp-2 mt-0.5">{{ msg.body }}</p>
+                    <p class="notification-body">{{ msg.body }}</p>
                   }
-                  <p class="text-[10px] text-gray-400 mt-1 uppercase">{{ msg.timestamp | date:'short' }}</p>
+                  <p class="notification-time">
+                    {{ msg.timestamp | date: 'short' }}
+                  </p>
                 </div>
-                <button 
-                  class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-700 p-1 focus:outline-none" 
+                <button
+                  class="mark-read-btn"
+                  (click)="markAsRead(msg.id); $event.stopPropagation()"
                   title="Mark as read"
-                  (click)="markAsRead(msg.id); $event.stopPropagation()">
-                  <img src="/assets/icons/icon-close-small.svg" class="h-4 w-4" alt="close" />
+                >
+                  <img class="mark-read-icon" src="/assets/icons/icon-close-small.svg" alt="close" />
                 </button>
               </li>
             } @empty {
-              <li class="px-4 py-8 text-center">
-                <img src="/assets/icons/icon-2c9fcb7e.svg" class="w-8 h-8 opacity-20 mx-auto mb-2" alt="icon" />
-                <p class="text-sm text-gray-500 font-medium">No new notifications</p>
-                <p class="text-xs text-gray-400 mt-1">You're all caught up!</p>
+              <li class="empty-notifications">
+                <img
+                  class="empty-icon"
+                  src="/assets/icons/icon-2c9fcb7e.svg"
+                  alt="icon"
+                />
+                <p class="empty-title">No new notifications</p>
+                <p class="empty-subtitle">You're all caught up!</p>
               </li>
             }
           </ul>
         </div>
 
-        <div class="px-4 py-2 border-t border-gray-100 bg-gray-50 text-center hover:bg-gray-100 transition-colors">
-          <a routerLink="/notifications" (click)="closeNotifications()" class="text-sm font-medium text-indigo-600 hover:text-indigo-700 w-full inline-block py-1">See all notifications</a>
+        <div class="dropdown-footer">
+          <a
+            class="see-all-link"
+            (click)="closeNotifications()"
+            routerLink="/notifications"
+            >See all notifications</a
+          >
         </div>
       </div>
     }
 
-    <!-- Settings icon link
-    <a
-      routerLink="/settings"
-      title="Settings"
-      class="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
-      <img src="/assets/icons/icon-b949a719.svg" class="w-5 h-5   shrink-0" alt="icon" />
-    </a>
-    -->
-
     <!-- Divider -->
-    <div class="w-px h-6 bg-gray-700 mx-1"></div>
+    <div class="divider"></div>
 
-    <div class="hidden sm:flex flex-col items-end leading-tight">
-      <span class="text-sm font-semibold text-gray-100">{{ currentUser()?.name }}</span>
-      <span class="text-xs text-gray-400">{{ currentUser()?.email }}</span>
+    <div class="user-info">
+      <span class="user-name">{{ currentUser()?.name }}</span>
+      <span class="user-email">{{ currentUser()?.email }}</span>
     </div>
 
     <button
+      class="avatar-btn"
       (click)="toggleDropdown()"
-      class="w-9 h-9 rounded-full bg-indigo-500 text-white text-sm font-bold flex items-center justify-center cursor-pointer hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400">
+    >
       {{ userAvatar() }}
     </button>
 
     <!-- Dropdown -->
     @if (dropdownOpen()) {
-      <div class="fixed inset-0 z-40" role="button" tabindex="0" aria-label="Close menu" (click)="closeDropdown()" (keydown)="closeDropdown()"></div>
+      <div
+        class="dropdown-overlay"
+        (click)="closeDropdown()"
+        (keydown)="closeDropdown()"
+        role="button"
+        tabindex="0"
+        aria-label="Close menu"
+      ></div>
 
-      <div class="absolute right-0 top-12 w-52 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden">
-
-        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
-          <p class="text-sm font-semibold text-gray-800">{{ currentUser()?.name }}</p>
-          <p class="text-xs text-gray-500 truncate">{{ currentUser()?.email }}</p>
+      <div class="user-dropdown">
+        <div class="user-dropdown-header">
+          <p class="user-dropdown-name">{{ currentUser()?.name }}</p>
+          <p class="user-dropdown-email">{{ currentUser()?.email }}</p>
         </div>
 
         <ul class="py-1">
@@ -116,17 +140,19 @@
             <li>
               @if (item.route) {
                 <a
+                  class="menu-item"
                   [routerLink]="item.route"
                   (click)="closeDropdown()"
-                  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors cursor-pointer">
-                  <img [src]="'/assets/icons/' + item.icon" class="w-4 h-4 shrink-0" alt="icon" />
+                >
+                  <img class="menu-item-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
                   {{ item.label }}
                 </a>
               } @else {
                 <button
-                  class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors cursor-pointer"
-                  (click)="onMenuItemClick(item.label)">
-                  <img [src]="'/assets/icons/' + item.icon" class="w-4 h-4 shrink-0" alt="icon" />
+                  class="menu-item"
+                  (click)="onMenuItemClick(item.label)"
+                >
+                  <img class="menu-item-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
                   {{ item.label }}
                 </button>
               }

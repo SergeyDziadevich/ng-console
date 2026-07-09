@@ -1,6 +1,6 @@
 <div class="max-w-6xl mx-auto p-6 min-h-screen flex flex-col">
   <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
-    <img src="/assets/icons/icon-settings.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
+    <img class="h-7 w-7 brightness-0 shrink-0" src="/assets/icons/icon-settings.svg" alt="icon" />
     Settings
   </h1>
 
@@ -18,92 +18,126 @@
 
   @if (isLoading()) {
     <div class="flex flex-1 justify-center items-center mt-20">
-      <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      <div
+        class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"
+      ></div>
     </div>
   } @else {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="bg-gray-800 shadow rounded-lg p-6 border border-gray-700 h-fit">
-    <h2 class="text-xl font-semibold mb-4 text-white">Notifications</h2>
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="text-lg font-medium text-gray-200">Receive Notifications</h3>
-        <p class="text-sm text-gray-400">Get notified about important updates and activity.</p>
-      </div>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" class="sr-only peer" [checked]="receiveNotifications()" (change)="toggleSetting('receiveNotifications', $event)">
-        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-indigo-600" [class.after:transition-all]="isReady()"></div>
-      </label>
-    </div>
-
-    <!-- Email Notifications -->
-    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
-      <div>
-        <h3 class="text-lg font-medium text-gray-200">Receive Emails</h3>
-        <p class="text-sm text-gray-400">Get notified via email for critical alerts.</p>
-      </div>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" class="sr-only peer" [checked]="receiveEmails()" (change)="toggleSetting('receiveEmails', $event)">
-        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-indigo-600" [class.after:transition-all]="isReady()"></div>
-      </label>
-    </div>
-
-    <!-- SMS Notifications -->
-    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
-      <div>
-        <h3 class="text-lg font-medium text-gray-200">Receive SMS</h3>
-        <p class="text-sm text-gray-400">Get text messages for immediate notifications.</p>
-      </div>
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" class="sr-only peer" [checked]="receiveSMS()" (change)="toggleSetting('receiveSMS', $event)">
-        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-indigo-600" [class.after:transition-all]="isReady()"></div>
-      </label>
-    </div>
-    </div>
-
-    <div class="bg-gray-800 shadow rounded-lg p-6 border border-gray-700 h-fit">
-    <h2 class="text-xl font-semibold mb-4 text-white">Two-Factor Authentication (2FA)</h2>
-
-
-
-    @if (!qrCodeUrl()) {
-      <p class="mb-4 text-gray-300">Protect your account with an extra layer of security.</p>
-      <button
-        (click)="generate2FA()"
-        [disabled]="isGenerating()"
-        class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50">
-        {{ isGenerating() ? 'Generating...' : 'Setup 2FA' }}
-      </button>
-    } @else {
-      <div class="mb-6">
-        <p class="mb-4 text-gray-300">Scan this QR code with your authenticator app:</p>
-        <img [src]="qrCodeUrl()" alt="2FA QR Code" class="mb-6 border-4 border-white rounded-lg inline-block bg-white" />
-
-        <form [formGroup]="twoFactorForm" (ngSubmit)="turnOn2FA()">
-          <div class="mb-4 max-w-xs">
-            <label for="code" class="block text-sm font-medium text-gray-300 mb-1">Verification Code</label>
-            <input
-              type="text"
-              id="code"
-              formControlName="code"
-              placeholder="123456"
-              class="w-full rounded-lg bg-gray-700 border border-gray-600 px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors" />
+      <div class="bg-gray-800 shadow rounded-lg p-6 border border-gray-700 h-fit">
+        <h2 class="text-xl font-semibold mb-4 text-white">Notifications</h2>
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-medium text-gray-200">Receive Notifications</h3>
+            <p class="text-sm text-gray-400">Get notified about important updates and activity.</p>
           </div>
-          <button
-            type="submit"
-            [disabled]="isSubmitting() || twoFactorForm.invalid"
-            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50">
-            {{ isSubmitting() ? 'Verifying...' : 'Verify & Enable' }}
-          </button>
-          <button
-            type="button"
-            (click)="qrCodeUrl.set(null)"
-            class="ml-3 text-gray-400 hover:text-gray-200">
-            Cancel
-          </button>
-        </form>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              class="sr-only peer"
+              [checked]="receiveNotifications()"
+              (change)="toggleSetting('receiveNotifications', $event)"
+              type="checkbox"
+            />
+            <div
+              class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-indigo-600"
+              [class.after:transition-all]="isReady()"
+            ></div>
+          </label>
+        </div>
+
+        <!-- Email Notifications -->
+        <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+          <div>
+            <h3 class="text-lg font-medium text-gray-200">Receive Emails</h3>
+            <p class="text-sm text-gray-400">Get notified via email for critical alerts.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              class="sr-only peer"
+              [checked]="receiveEmails()"
+              (change)="toggleSetting('receiveEmails', $event)"
+              type="checkbox"
+            />
+            <div
+              class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-indigo-600"
+              [class.after:transition-all]="isReady()"
+            ></div>
+          </label>
+        </div>
+
+        <!-- SMS Notifications -->
+        <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+          <div>
+            <h3 class="text-lg font-medium text-gray-200">Receive SMS</h3>
+            <p class="text-sm text-gray-400">Get text messages for immediate notifications.</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              class="sr-only peer"
+              [checked]="receiveSMS()"
+              (change)="toggleSetting('receiveSMS', $event)"
+              type="checkbox"
+            />
+            <div
+              class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-indigo-600"
+              [class.after:transition-all]="isReady()"
+            ></div>
+          </label>
+        </div>
       </div>
-    }
-    </div>
+
+      <div class="bg-gray-800 shadow rounded-lg p-6 border border-gray-700 h-fit">
+        <h2 class="text-xl font-semibold mb-4 text-white">Two-Factor Authentication (2FA)</h2>
+
+        @if (!qrCodeUrl()) {
+          <p class="mb-4 text-gray-300">Protect your account with an extra layer of security.</p>
+          <button
+            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+            [disabled]="isGenerating()"
+            (click)="generate2FA()"
+          >
+            {{ isGenerating() ? 'Generating...' : 'Setup 2FA' }}
+          </button>
+        } @else {
+          <div class="mb-6">
+            <p class="mb-4 text-gray-300">Scan this QR code with your authenticator app:</p>
+            <img
+              class="mb-6 border-4 border-white rounded-lg inline-block bg-white"
+              [src]="qrCodeUrl()"
+              alt="2FA QR Code"
+            />
+
+            <form [formGroup]="twoFactorForm" (ngSubmit)="turnOn2FA()">
+              <div class="mb-4 max-w-xs">
+                <label class="block text-sm font-medium text-gray-300 mb-1" for="code"
+                  >Verification Code</label
+                >
+                <input
+                  class="w-full rounded-lg bg-gray-700 border border-gray-600 px-4 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+                  id="code"
+                  type="text"
+                  formControlName="code"
+                  placeholder="123456"
+                />
+              </div>
+              <button
+                class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                [disabled]="isSubmitting() || twoFactorForm.invalid"
+                type="submit"
+              >
+                {{ isSubmitting() ? 'Verifying...' : 'Verify & Enable' }}
+              </button>
+              <button
+                class="ml-3 text-gray-400 hover:text-gray-200"
+                (click)="qrCodeUrl.set(null)"
+                type="button"
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        }
+      </div>
     </div>
   }
 </div>

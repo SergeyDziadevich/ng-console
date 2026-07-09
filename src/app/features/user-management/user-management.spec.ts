@@ -30,19 +30,19 @@ describe('UserManagement', () => {
       imports: [UserManagement],
       providers: [
         provideRouter([
-          {path: 'user-management/edit-user/:id', component: UserManagement},
-          {path: 'login', component: UserManagement}
+          { path: 'user-management/edit-user/:id', component: UserManagement },
+          { path: 'login', component: UserManagement },
         ]),
         provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserManagement);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     userService = TestBed.inject(UserService);
-    
+
     // We don't need to wait for fixture.whenStable if we don't trigger change detection yet
   });
 
@@ -53,35 +53,35 @@ describe('UserManagement', () => {
   it('should apply filter and update userService filterParams', () => {
     component.filterField.set('email');
     component.filterValue.set('test@example.com');
-    
+
     component.applyFilter();
-    
+
     expect(userService.filterParams()).toEqual({ filter: 'email', value: 'test@example.com' });
   });
 
   it('should clear filter and update userService filterParams', () => {
     component.filterValue.set('some value');
-    
+
     component.clearFilter();
-    
+
     expect(component.filterValue()).toBe('');
     expect(userService.filterParams()).toEqual({});
   });
 
   it('should navigate to edit user page', () => {
     vi.spyOn(router, 'navigate');
-    
+
     component.editUser(mockUser);
-    
+
     expect(router.navigate).toHaveBeenCalledWith(['/user-management', 'edit-user', mockUser._id]);
   });
 
   it('should delete user and show toast', () => {
     vi.spyOn(userService, 'deleteUser').mockReturnValue(of(void 0));
     vi.spyOn(component.usersResource, 'reload');
-    
+
     component.deleteUser(mockUser);
-    
+
     expect(userService.deleteUser).toHaveBeenCalledWith(mockUser._id);
     expect(component.toast()).toBe('User deleted successfully');
     expect(component.usersResource.reload).toHaveBeenCalled();
@@ -90,11 +90,11 @@ describe('UserManagement', () => {
   it('should show toast and hide it after 3 seconds', () => {
     vi.useFakeTimers();
     component.showToast('Test Message');
-    
+
     expect(component.toast()).toBe('Test Message');
-    
+
     vi.advanceTimersByTime(3000);
-    
+
     expect(component.toast()).toBeNull();
     vi.useRealTimers();
   });
@@ -103,13 +103,13 @@ describe('UserManagement', () => {
     vi.useFakeTimers();
     component.showToast('First Message');
     vi.advanceTimersByTime(1500);
-    
+
     component.showToast('Second Message');
     expect(component.toast()).toBe('Second Message');
-    
+
     vi.advanceTimersByTime(1500); // 3000ms from first, but should be cancelled
     expect(component.toast()).toBe('Second Message');
-    
+
     vi.advanceTimersByTime(1500); // 3000ms from second message
     expect(component.toast()).toBeNull();
     vi.useRealTimers();

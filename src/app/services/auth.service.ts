@@ -36,11 +36,11 @@ export class AuthService {
   private readonly router = inject(Router);
 
   readonly isAuthenticated = signal(
-    !!localStorage.getItem(TOKEN_KEY) && !this.isTokenExpired(localStorage.getItem(TOKEN_KEY))
+    !!localStorage.getItem(TOKEN_KEY) && !this.isTokenExpired(localStorage.getItem(TOKEN_KEY)),
   );
 
   readonly currentUser = signal<AuthResponse['user'] | null>(
-    this.decodeToken(localStorage.getItem(TOKEN_KEY))
+    this.decodeToken(localStorage.getItem(TOKEN_KEY)),
   );
 
   constructor() {
@@ -109,7 +109,9 @@ export class AuthService {
 
   login(credentials: LoginCredentials) {
     return this.http
-      .post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials, { responseType: 'json' })
+      .post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, credentials, {
+        responseType: 'json',
+      })
       .pipe(
         tap((res) => {
           if (res.access_token) {
@@ -126,7 +128,11 @@ export class AuthService {
 
   googleLogin(token: string) {
     return this.http
-      .post<LoginResponse>(`${environment.apiUrl}/api/auth/google`, { token }, { responseType: 'json' })
+      .post<LoginResponse>(
+        `${environment.apiUrl}/api/auth/google`,
+        { token },
+        { responseType: 'json' },
+      )
       .pipe(
         tap((res) => {
           if (res.access_token) {
@@ -142,7 +148,9 @@ export class AuthService {
 
   verify2FA(tempToken: string, code: string) {
     return this.http
-      .post<{ access_token: string }>(`${environment.apiUrl}/api/auth/2fa/authenticate`, { tempToken, code }, { responseType: 'json' })
+      .post<{
+        access_token: string;
+      }>(`${environment.apiUrl}/api/auth/2fa/authenticate`, { tempToken, code }, { responseType: 'json' })
       .pipe(
         tap((res) => {
           const token: string = res.access_token;
@@ -162,15 +170,22 @@ export class AuthService {
   }
 
   generate2FA() {
-    return this.http.post<{ qrCodeUrl: string }>(`${environment.apiUrl}/api/auth/2fa/generate`, {}, { responseType: 'json' });
+    return this.http.post<{ qrCodeUrl: string }>(
+      `${environment.apiUrl}/api/auth/2fa/generate`,
+      {},
+      { responseType: 'json' },
+    );
   }
 
   turnOn2FA(twoFactorCode: string) {
-    return this.http.post(`${environment.apiUrl}/api/auth/2fa/turn-on`, { twoFactorCode }, { responseType: 'json' });
+    return this.http.post(
+      `${environment.apiUrl}/api/auth/2fa/turn-on`,
+      { twoFactorCode },
+      { responseType: 'json' },
+    );
   }
 
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
   }
 }
-
