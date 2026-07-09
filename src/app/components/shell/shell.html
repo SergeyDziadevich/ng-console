@@ -1,8 +1,8 @@
-<div class="flex flex-col h-screen overflow-hidden bg-gray-100">
+<div class="shell-container">
   <app-top-bar />
-  <div class="flex flex-1 overflow-hidden">
+  <div class="shell-content">
     <app-sidebar [currentUser]="currentUser()" />
-    <main class="flex-1 overflow-y-auto p-6 pb-4 h-full">
+    <main class="shell-main">
       <router-outlet />
     </main>
   </div>

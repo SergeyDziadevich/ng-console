@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-shell',
   imports: [RouterOutlet, Sidebar, TopBar],
   templateUrl: './shell.html',
+  styleUrl: './shell.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Shell {
