@@ -44,6 +44,6 @@ export class DocumentService {
   }
 
   signDocument(id: string, signatureImage: string): Observable<unknown> {
-    return this.http.post(`${this.apiUrl}/${id}/sign`, { signature: signatureImage });
+    return this.http.post(`${this.apiUrl}/${id}/sign`, { signatureImage });
   }
 }

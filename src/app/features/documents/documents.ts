@@ -1,4 +1,6 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { HttpEventType } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -11,7 +13,7 @@ import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShar
 import { Toast } from '../../components/toast/toast';
 import { environment } from '../../../environments/environment';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-documents',
@@ -45,6 +47,20 @@ export class DocumentsComponent implements OnInit {
     return user?.role === UserRole.Admin || user?.role === UserRole.Moderator;
   });
   totalPages = computed(() => Math.ceil(this.totalDocuments() / this.pageSize()));
+
+  private previousUrl = '';
+
+  constructor() {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe((event) => {
+      if (this.previousUrl && this.previousUrl !== '/documents' && event.urlAfterRedirects === '/documents') {
+        this.loadDocuments();
+      }
+      this.previousUrl = event.urlAfterRedirects;
+    });
+  }
 
   ngOnInit() {
     this.loadDocuments();
