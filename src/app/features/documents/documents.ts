@@ -7,17 +7,18 @@ import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText } from '@ng-icons/lucide';
 import { Toast } from '../../components/toast/toast';
 import { environment } from '../../../environments/environment';
 import SignaturePad from 'signature_pad';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-documents',
-  imports: [CommonModule, NgIconComponent, Toast],
+  imports: [CommonModule, NgIconComponent, Toast, ConfirmDialogComponent],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
-  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye })]
+  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText })]
 })
 export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);

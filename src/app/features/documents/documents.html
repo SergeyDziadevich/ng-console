@@ -57,7 +57,11 @@
           @for (doc of documents(); track doc._id) {
             <tr>
               <td class="filename-cell">
-                <ng-icon name="lucideFile" class="shrink-0"></ng-icon>
+                @if (doc.mimeType === 'application/pdf') {
+                  <ng-icon name="lucideFileText" class="shrink-0 text-red-500"></ng-icon>
+                } @else {
+                  <ng-icon name="lucideFile" class="shrink-0"></ng-icon>
+                }
                 <div class="flex flex-col">
                   <span class="line-clamp-2 break-words" title="{{ doc.filename }}">{{ doc.filename }}</span>
                   @if (doc.isSigned) {
@@ -114,34 +118,16 @@
 }
 
 @if (documentToDelete()) {
-  <!-- TODO: create modal component -->
-  <div class="modal-overlay z-50">
-    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-          <img src="/assets/icons/icon-danger.svg" class="w-5 h-5 text-red-500 shrink-0" alt="icon" />
-        </div>
-        <div>
-          <h3 class="text-base font-semibold text-gray-800">Remove Document</h3>
-          <p class="text-sm text-gray-500 mt-0.5">
-            Are you sure you want to remove <span class="font-medium text-gray-700 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
-          </p>
-        </div>
-      </div>
-      <div class="flex justify-end gap-3">
-        <button
-          (click)="cancelDelete()"
-          class="px-4 py-2 btn-secondary">
-          Cancel
-        </button>
-        <button
-          (click)="executeDelete()"
-          class="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all">
-          Remove
-        </button>
-      </div>
-    </div>
-  </div>
+  <app-confirm-dialog
+    title="Remove Document"
+    type="danger"
+    confirmText="Remove"
+    cancelText="Cancel"
+    (confirm)="executeDelete()"
+    (cancel)="cancelDelete()"
+  >
+    Are you sure you want to remove <span class="font-medium text-gray-700 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
+  </app-confirm-dialog>
 }
 
 @if (documentToPreview() && documentPreviewUrl()) {
