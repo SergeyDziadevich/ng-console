@@ -123,8 +123,8 @@
     type="danger"
     confirmText="Remove"
     cancelText="Cancel"
-    (confirm)="executeDelete()"
-    (cancel)="cancelDelete()"
+    (confirmAction)="executeDelete()"
+    (cancelAction)="cancelDelete()"
   >
     Are you sure you want to remove <span class="font-medium text-gray-700 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
   </app-confirm-dialog>
