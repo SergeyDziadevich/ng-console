@@ -8,28 +8,15 @@ import { io } from 'socket.io-client';
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 import { signal } from '@angular/core';
 
-vi.mock('socket.io-client', () => {
-  const mockSocket = {
-    on: vi.fn(),
-    io: {
-      engine: {
-        close: vi.fn(),
-      },
-    },
-    connect: vi.fn(),
-    disconnect: vi.fn(),
-    recovered: false,
-  };
-  return {
-    io: vi.fn(() => mockSocket),
-    Socket: vi.fn(),
-  };
-});
+vi.mock('socket.io-client');
+
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
   let httpTestingController: HttpTestingController;
-  let authServiceMock: { currentUser: import('@angular/core').WritableSignal<{ id: string, name: string } | null> };
+  let authServiceMock: {
+    currentUser: import('@angular/core').WritableSignal<{ id: string; name: string } | null>;
+  };
   let mockSocket: {
     on: Mock;
     io: { engine: { close: Mock } };
@@ -37,23 +24,38 @@ describe('NotificationsService', () => {
     disconnect: Mock;
     recovered: boolean;
   };
+  let handlers: Record<string, (...args: unknown[]) => void>;
 
   beforeEach(() => {
+    handlers = {};
+    mockSocket = {
+      on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
+        handlers[event] = cb;
+      }),
+      io: { engine: { close: vi.fn() } },
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      recovered: false,
+    };
+
+    vi.mocked(io).mockClear();
+    vi.mocked(io).mockReturnValue(mockSocket as unknown as ReturnType<typeof io>);
+
     authServiceMock = {
-      currentUser: signal({ id: 'user-123', name: 'Test User' })
+      currentUser: signal({ id: 'user-123', name: 'Test User' }),
     };
 
     TestBed.configureTestingModule({
       providers: [
+        NotificationsService,
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceMock },
-      ]
+      ],
     });
 
     service = TestBed.inject(NotificationsService);
     httpTestingController = TestBed.inject(HttpTestingController);
-    mockSocket = (io as Mock).mock.results[0]?.value;
   });
 
   afterEach(() => {
@@ -69,7 +71,7 @@ describe('NotificationsService', () => {
 
     const mockHistory: NotificationPayload[] = [
       { id: '1', title: 'Test 1', body: 'Body 1', ts: 1000, isRead: false },
-      { id: '2', title: 'Test 2', body: 'Body 2', ts: 2000, isRead: true }
+      { id: '2', title: 'Test 2', body: 'Body 2', ts: 2000, isRead: true },
     ];
     req.flush(mockHistory);
 
@@ -83,14 +85,12 @@ describe('NotificationsService', () => {
     req.flush([]);
 
     // Find the 'connect' handler and call it
-    const connectHandler = mockSocket.on.mock.calls.find((c: unknown[]) => c[0] === 'connect')![1];
-    connectHandler();
+    handlers['connect']();
 
     expect(service.isOnline()).toBe(true);
 
     // Find the 'disconnect' handler and call it
-    const disconnectHandler = mockSocket.on.mock.calls.find((c: unknown[]) => c[0] === 'disconnect')![1];
-    disconnectHandler();
+    handlers['disconnect']();
 
     expect(service.isOnline()).toBe(false);
   });
@@ -99,9 +99,15 @@ describe('NotificationsService', () => {
     const req = httpTestingController.expectOne(`${environment.apiUrl}/api/notifications`);
     req.flush([]);
 
-    const notifHandler = mockSocket.on.mock.calls.find((c: unknown[]) => c[0] === 'notification')![1];
     mockSocket.recovered = false;
-    notifHandler({ id: 'new-1', title: 'New Notif', body: 'New Body', ts: 3000, isSystem: false });
+    handlers['notification']({
+      id: 'new-1',
+      title: 'New Notif',
+      body: 'New Body',
+      ts: 2000,
+      isSystem: false,
+      isRead: false,
+    });
 
     expect(service.messages().length).toBe(1);
     expect(service.messages()[0].id).toBe('new-1');
@@ -114,9 +120,15 @@ describe('NotificationsService', () => {
     const req = httpTestingController.expectOne(`${environment.apiUrl}/api/notifications`);
     req.flush([]);
 
-    const notifHandler = mockSocket.on.mock.calls.find((c: unknown[]) => c[0] === 'notification')![1];
     mockSocket.recovered = true;
-    notifHandler({ id: 'replayed-1', title: 'Replayed Notif', body: 'Body', ts: 4000 });
+    handlers['notification']({
+      id: 'replayed-1',
+      title: 'Replayed Notif',
+      body: 'Body',
+      ts: 3000,
+      isSystem: false,
+      isRead: false,
+    });
 
     expect(service.messages()[0].replayed).toBe(true);
   });
@@ -125,8 +137,14 @@ describe('NotificationsService', () => {
     const req = httpTestingController.expectOne(`${environment.apiUrl}/api/notifications`);
     req.flush([{ id: 'existing-1', title: 'Existing', body: 'Body', ts: 1000 }]);
 
-    const notifHandler = mockSocket.on.mock.calls.find((c: unknown[]) => c[0] === 'notification')![1];
-    notifHandler({ id: 'existing-1', title: 'Existing Duplicate', body: 'Body', ts: 1000 });
+    handlers['notification']({
+      id: 'existing-1',
+      title: 'Existing Duplicate',
+      body: 'Body',
+      ts: 4000,
+      isSystem: false,
+      isRead: false,
+    });
 
     // Length should still be 1
     expect(service.messages().length).toBe(1);
@@ -138,12 +156,14 @@ describe('NotificationsService', () => {
 
     service.sendNotification('Test Outgoing');
 
-    const reqPost = httpTestingController.expectOne(`${environment.apiUrl}/api/notifications/notify`);
+    const reqPost = httpTestingController.expectOne(
+      `${environment.apiUrl}/api/notifications/notify`,
+    );
     expect(reqPost.request.method).toBe('POST');
     expect(reqPost.request.body).toEqual({
       title: 'Test Outgoing',
       type: 'info',
-      userId: 'user-123'
+      userId: 'user-123',
     });
     reqPost.flush({});
   });
@@ -166,7 +186,9 @@ describe('NotificationsService', () => {
 
     service.markAsRead('msg-1');
 
-    const reqPost = httpTestingController.expectOne(`${environment.apiUrl}/api/notifications/msg-1/read`);
+    const reqPost = httpTestingController.expectOne(
+      `${environment.apiUrl}/api/notifications/msg-1/read`,
+    );
     expect(reqPost.request.method).toBe('POST');
     reqPost.flush({});
 

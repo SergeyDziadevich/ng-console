@@ -29,11 +29,7 @@ describe('AuditLogsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        AuditLogsService
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting(), AuditLogsService],
     });
     httpMock = TestBed.inject(HttpTestingController);
     service = TestBed.inject(AuditLogsService);
@@ -70,11 +66,21 @@ describe('AuditLogsService', () => {
     expect(req.request.method).toBe('GET');
 
     const mockResponse: AuditLogResponse = {
-      items: [{ _id: '1', action: 'CREATE', entityType: 'User', entityId: 'u1', authorId: 'a1', createdAt: 'date', expiresAt: 'date' }],
+      items: [
+        {
+          _id: '1',
+          action: 'CREATE',
+          entityType: 'User',
+          entityId: 'u1',
+          authorId: 'a1',
+          createdAt: 'date',
+          expiresAt: 'date',
+        },
+      ],
       total: 100,
       page: 1,
       limit: 50,
-      totalPages: 2
+      totalPages: 2,
     };
     req.flush(mockResponse);
 
@@ -84,17 +90,37 @@ describe('AuditLogsService', () => {
 
   it('should append logs when fetching page > 1', () => {
     // Initial setup with page 1
-    service.logs.set([{ _id: '1', action: 'CREATE', entityType: 'User', entityId: 'u1', authorId: 'a1', createdAt: 'date', expiresAt: 'date' }]);
+    service.logs.set([
+      {
+        _id: '1',
+        action: 'CREATE',
+        entityType: 'User',
+        entityId: 'u1',
+        authorId: 'a1',
+        createdAt: 'date',
+        expiresAt: 'date',
+      },
+    ]);
 
     service.fetchLogs(2, 50);
 
     const req = httpMock.expectOne(`${environment.apiUrl}/api/audit-logs?page=2&limit=50&search=`);
     const mockResponse: AuditLogResponse = {
-      items: [{ _id: '2', action: 'UPDATE', entityType: 'User', entityId: 'u1', authorId: 'a1', createdAt: 'date', expiresAt: 'date' }],
+      items: [
+        {
+          _id: '2',
+          action: 'UPDATE',
+          entityType: 'User',
+          entityId: 'u1',
+          authorId: 'a1',
+          createdAt: 'date',
+          expiresAt: 'date',
+        },
+      ],
       total: 100,
       page: 2,
       limit: 50,
-      totalPages: 2
+      totalPages: 2,
     };
     req.flush(mockResponse);
 

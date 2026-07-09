@@ -8,7 +8,10 @@ interface WeatherData {
 
 function parseWeatherData(text: string): WeatherData | null {
   try {
-    const cleaned = text.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '').trim();
+    const cleaned = text
+      .replace(/^```(json)?\n?/i, '')
+      .replace(/\n?```$/i, '')
+      .trim();
     const parsed = JSON.parse(cleaned);
     const raw = parsed?.type === 'weatherWidget' ? parsed.data : parsed;
     if (raw && raw.temp !== undefined && raw.city && raw.condition) {

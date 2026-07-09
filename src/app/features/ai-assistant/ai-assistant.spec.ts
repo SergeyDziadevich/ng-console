@@ -12,7 +12,7 @@ describe('AiAssistant', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AiAssistant],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AiAssistant);
@@ -31,7 +31,10 @@ describe('AiAssistant', () => {
     });
 
     it('should return true for weather widget type', () => {
-      const json = JSON.stringify({ type: 'weatherWidget', data: { temp: 20, city: 'London', condition: 'Sunny' } });
+      const json = JSON.stringify({
+        type: 'weatherWidget',
+        data: { temp: 20, city: 'London', condition: 'Sunny' },
+      });
       expect(component.isWeatherMessage(json)).toBe(true);
     });
 

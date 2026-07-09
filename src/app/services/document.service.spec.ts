@@ -14,7 +14,7 @@ describe('DocumentService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [DocumentService]
+      providers: [DocumentService],
     });
     service = TestBed.inject(DocumentService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -55,10 +55,10 @@ describe('DocumentService', () => {
         total: 0,
         page: 1,
         limit: 10,
-        totalPages: 1
+        totalPages: 1,
       };
 
-      service.getDocuments().subscribe(res => {
+      service.getDocuments().subscribe((res) => {
         expect(res).toEqual(mockResponse);
       });
 
@@ -79,7 +79,7 @@ describe('DocumentService', () => {
     it('should download a document as a Blob', () => {
       const mockBlob = new Blob(['test'], { type: 'text/plain' });
 
-      service.downloadDocument('doc1').subscribe(blob => {
+      service.downloadDocument('doc1').subscribe((blob) => {
         expect(blob).toEqual(mockBlob);
       });
 
@@ -104,7 +104,7 @@ describe('DocumentService', () => {
     it('should request a share token for a document', () => {
       const mockResponse = { token: 'abc123token' };
 
-      service.shareDocument('doc1').subscribe(res => {
+      service.shareDocument('doc1').subscribe((res) => {
         expect(res).toEqual(mockResponse);
       });
 

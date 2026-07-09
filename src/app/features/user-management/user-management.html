@@ -2,21 +2,24 @@
   <!-- Toolbar -->
   <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
     <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
-      <img src="/assets/icons/icon-users.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
+      <img class="h-7 w-7 brightness-0 shrink-0" src="/assets/icons/icon-users.svg" alt="icon" />
       User Management
     </h1>
     <a
+      class="flex items-center gap-2 px-4 py-2 btn-primary"
       *appHasPermission="'create-user'"
       routerLink="add-user"
-      class="flex items-center gap-2 px-4 py-2 btn-primary">
-      <img src="/assets/icons/icon-plus.svg" class="w-4 h-4 shrink-0" alt="add icon" />
+    >
+      <img class="w-4 h-4 shrink-0" src="/assets/icons/icon-plus.svg" alt="add icon" />
       Add User
     </a>
   </div>
 
   @if (usersResource.isLoading()) {
     <div class="flex flex-1 justify-center items-center">
-      <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <div
+        class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+      ></div>
     </div>
   }
 
@@ -33,22 +36,21 @@
 
   @if (usersResource.error()) {
     <div class="flex flex-1 flex-col items-center justify-center gap-4 text-center px-4">
-      <img src="/assets/icons/icon-78905717.svg" class="w-24 h-24 text-red-400   shrink-0" alt="icon" />
+      <img
+        class="w-24 h-24 text-red-400 shrink-0"
+        src="/assets/icons/icon-78905717.svg"
+        alt="icon"
+      />
       <div>
         <h2 class="text-xl font-semibold text-gray-800">Something went wrong</h2>
         <p class="mt-1 text-sm text-gray-500">We couldn't load the users. Please try again.</p>
       </div>
-      <button
-        (click)="usersResource.reload()"
-        class="mt-2 px-5 py-2 btn-primary">
-        Retry
-      </button>
+      <button class="mt-2 px-5 py-2 btn-primary" (click)="usersResource.reload()">Retry</button>
     </div>
   }
 
   <router-outlet></router-outlet>
 </div>
-
 
 @if (toast()) {
   <app-toast [message]="toast() ?? ''"></app-toast>

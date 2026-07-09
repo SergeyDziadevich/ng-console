@@ -11,11 +11,7 @@ describe('AiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        AiService,
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+      providers: [AiService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(AiService);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -41,9 +37,9 @@ describe('AiService', () => {
     it('should handle successful response', async () => {
       const message = 'Hello';
       const responseText = 'Hi there!';
-      
+
       const promise = service.generate(message);
-      
+
       // Check optimistic update and generating state
       expect(service.isGenerating()).toBe(true);
       expect(service.messages().length).toBe(1);
@@ -53,9 +49,9 @@ describe('AiService', () => {
       const req = httpTestingController.expectOne(`${environment.apiUrl}/api/ai/generate`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ message, messages: [] });
-      
+
       req.flush({ text: responseText });
-      
+
       await promise;
 
       // Check final state
@@ -65,26 +61,29 @@ describe('AiService', () => {
     });
 
     it('should include history in payload', async () => {
-      const history: ChatMessage[] = [{ role: 'user', content: 'prev' }, { role: 'model', content: 'resp' }];
+      const history: ChatMessage[] = [
+        { role: 'user', content: 'prev' },
+        { role: 'model', content: 'resp' },
+      ];
       service.messages.set(history);
-      
+
       const promise = service.generate('Next');
-      
+
       const req = httpTestingController.expectOne(`${environment.apiUrl}/api/ai/generate`);
       expect(req.request.body).toEqual({ message: 'Next', messages: history });
       req.flush({ text: 'Answer' });
-      
+
       await promise;
     });
 
     it('should handle error response', async () => {
       const message = 'Hello error';
-      
+
       const promise = service.generate(message);
-      
+
       const req = httpTestingController.expectOne(`${environment.apiUrl}/api/ai/generate`);
       req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
-      
+
       await promise;
 
       expect(service.isGenerating()).toBe(false);

@@ -5,7 +5,7 @@ import { PaginatedDocuments } from '../models/document.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DocumentService {
   private http = inject(HttpClient);
@@ -17,23 +17,21 @@ export class DocumentService {
 
     const req = new HttpRequest('POST', `${this.apiUrl}/upload`, formData, {
       reportProgress: true,
-      responseType: 'json'
+      responseType: 'json',
     });
 
     return this.http.request(req);
   }
 
   getDocuments(page = 1, limit = 10): Observable<PaginatedDocuments> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('limit', limit.toString());
+    const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
 
     return this.http.get<PaginatedDocuments>(this.apiUrl, { params });
   }
 
   downloadDocument(id: string): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/${id}`, {
-      responseType: 'blob'
+      responseType: 'blob',
     });
   }
 
@@ -43,5 +41,9 @@ export class DocumentService {
 
   shareDocument(id: string): Observable<{ token: string }> {
     return this.http.post<{ token: string }>(`${this.apiUrl}/${id}/share`, {});
+  }
+
+  signDocument(id: string, signatureImage: string): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}/${id}/sign`, { signature: signatureImage });
   }
 }

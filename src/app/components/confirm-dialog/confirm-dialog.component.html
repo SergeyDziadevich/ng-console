@@ -1,0 +1,45 @@
+<div class="modal-overlay">
+  <div class="dialog-container">
+    <div class="dialog-header">
+      @if (type() === 'danger') {
+        <div class="icon-wrapper danger">
+          <img
+            class="dialog-icon danger"
+            src="/assets/icons/icon-danger.svg"
+            alt="danger"
+          />
+        </div>
+      } @else if (type() === 'warning') {
+        <div class="icon-wrapper warning">
+          <img
+            class="dialog-icon warning"
+            src="/assets/icons/icon-warning-dialog.svg"
+            alt="warning"
+          />
+        </div>
+      }
+      <div class="dialog-content">
+        <h3 class="dialog-title">{{ title() }}</h3>
+        <p class="dialog-text">
+          @if (text()) {
+            {{ text() }}
+          }
+          <ng-content></ng-content>
+        </p>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="px-4 py-2 btn-secondary" (click)="cancelAction.emit()">
+        {{ cancelText() }}
+      </button>
+      <button
+        class="btn-confirm"
+        [class.danger]="type() === 'danger'"
+        [class.warning]="type() === 'warning'"
+        (click)="confirmAction.emit()"
+      >
+        {{ confirmText() }}
+      </button>
+    </div>
+  </div>
+</div>

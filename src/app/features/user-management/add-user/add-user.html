@@ -1,68 +1,107 @@
 <app-user-modal
-  title="Add New User"
-  submitLabel="Add User"
   [submitDisabled]="userForm().invalid()"
   [error]="error()"
   (closeModal)="close()"
-  (submitted)="onSubmit()">
-
-  <img src="/assets/icons/icon-8a89fc23.svg" class="w-5 h-5 text-blue-500   shrink-0" alt="icon" />
+  (submitted)="onSubmit()"
+  title="Add New User"
+  submitLabel="Add User"
+>
+  <img class="w-5 h-5 text-blue-500 shrink-0" src="/assets/icons/icon-8a89fc23.svg" alt="icon" />
 
   <div class="form-field">
-    <label for="add-name" class="text-sm font-medium text-gray-700">Full Name</label>
-    <input id="add-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="userForm.username" />
+    <label class="text-sm font-medium text-gray-700" for="add-name">Full Name</label>
+    <input
+      class="px-4 py-2 form-input transition-all"
+      id="add-name"
+      [formField]="userForm.username"
+      type="text"
+      placeholder="John Doe"
+    />
     @if (userForm.username().touched() && userForm.username().invalid()) {
       <div class="error-message">
-        @for (err of userForm.username().errors(); track err) { <p>{{ err.message }}</p> }
+        @for (err of userForm.username().errors(); track err) {
+          <p>{{ err.message }}</p>
+        }
       </div>
     }
   </div>
 
   <div class="form-field">
-    <label for="add-email" class="text-sm font-medium text-gray-700">Email Address</label>
-    <input id="add-email" type="email" placeholder="john@example.com" class="px-4 py-2 form-input transition-all" [formField]="userForm.email" />
+    <label class="text-sm font-medium text-gray-700" for="add-email">Email Address</label>
+    <input
+      class="px-4 py-2 form-input transition-all"
+      id="add-email"
+      [formField]="userForm.email"
+      type="email"
+      placeholder="john@example.com"
+    />
     @if (userForm.email().touched() && userForm.email().invalid()) {
       <div class="error-message">
-        @for (err of userForm.email().errors(); track err) { <p>{{ err.message }}</p> }
+        @for (err of userForm.email().errors(); track err) {
+          <p>{{ err.message }}</p>
+        }
       </div>
     }
   </div>
 
   <div class="form-field">
-    <label for="add-password" class="text-sm font-medium text-gray-700">Password</label>
-    <input id="add-password" type="password" placeholder="Min. 8 characters" class="px-4 py-2 form-input transition-all" [formField]="userForm.password" />
+    <label class="text-sm font-medium text-gray-700" for="add-password">Password</label>
+    <input
+      class="px-4 py-2 form-input transition-all"
+      id="add-password"
+      [formField]="userForm.password"
+      type="password"
+      placeholder="Min. 8 characters"
+    />
     @if (userForm.password().touched() && userForm.password().invalid()) {
       <div class="error-message">
-        @for (err of userForm.password().errors(); track err) { <p>{{ err.message }}</p> }
+        @for (err of userForm.password().errors(); track err) {
+          <p>{{ err.message }}</p>
+        }
       </div>
     }
   </div>
 
   <div class="form-field">
-    <label for="add-role" class="text-sm font-medium text-gray-700">Role</label>
-    <select id="add-role" [formField]="userForm.role" class="px-4 py-2 form-input border-gray-300 bg-white">
-      @for (role of userRoles; track role) { <option [value]="role">{{ role }}</option> }
+    <label class="text-sm font-medium text-gray-700" for="add-role">Role</label>
+    <select
+      class="px-4 py-2 form-input border-gray-300 bg-white"
+      id="add-role"
+      [formField]="userForm.role"
+    >
+      @for (role of userRoles; track role) {
+        <option [value]="role">{{ role }}</option>
+      }
     </select>
   </div>
 
   <div class="form-field">
-    <label for="avatar" class="text-sm font-medium text-gray-700">Avatar</label>
+    <label class="text-sm font-medium text-gray-700" for="avatar">Avatar</label>
     <div class="flex items-center gap-4 mt-1">
       @if (avatarPreview()) {
-        <img [src]="avatarPreview()" alt="Avatar preview" class="w-12 h-12 rounded-full object-cover border border-gray-200" />
+        <img
+          class="w-12 h-12 rounded-full object-cover border border-gray-200"
+          [src]="avatarPreview()"
+          alt="Avatar preview"
+        />
       } @else {
-        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
-          <img src="/assets/icons/icon-86d3aaad.svg" class="w-6 h-6   shrink-0" alt="icon" />
+        <div
+          class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400"
+        >
+          <img class="w-6 h-6 shrink-0" src="/assets/icons/icon-86d3aaad.svg" alt="icon" />
         </div>
       }
-      <input id="avatar" type="file" accept="image/*" (change)="onAvatarChange($event)"
-        class="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+      <input
+        class="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+        id="avatar"
+        (change)="onAvatarChange($event)"
+        type="file"
+        accept="image/*"
+      />
     </div>
   </div>
-
 </app-user-modal>
 
 @if (showToast()) {
   <app-toast message="User added successfully!"></app-toast>
 }
-

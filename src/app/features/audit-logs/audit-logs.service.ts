@@ -23,7 +23,7 @@ export interface AuditLogResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuditLogsService {
   private http = inject(HttpClient);
@@ -46,45 +46,55 @@ export class AuditLogsService {
     this.socket = io(`${url.protocol}//${url.host}`, { transports: ['websocket'] });
 
     this.socket.on('new-audit-log', (newLog: AuditLog) => {
-      this.logs.update(currentLogs => [newLog, ...currentLogs]);
-      this.totalLogs.update(total => total + 1);
+      this.logs.update((currentLogs) => [newLog, ...currentLogs]);
+      this.totalLogs.update((total) => total + 1);
     });
   }
 
-  async fetchLogs(page = 1, limit = 50, search = '', startDate = '', endDate = '', actions: string[] = []) {
+  async fetchLogs(
+    page = 1,
+    limit = 50,
+    search = '',
+    startDate = '',
+    endDate = '',
+    actions: string[] = [],
+  ) {
     let queryParams = `?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`;
     if (startDate) queryParams += `&startDate=${encodeURIComponent(startDate)}`;
     if (endDate) queryParams += `&endDate=${encodeURIComponent(endDate)}`;
     if (actions.length > 0) queryParams += `&actions=${encodeURIComponent(actions.join(','))}`;
 
-    this.http.get<AuditLogResponse>(`${this.apiUrl}${queryParams}`)
-      .subscribe(response => {
-        if (page === 1) {
-          this.logs.set(response.items);
-        } else {
-          this.logs.update(current => [...current, ...response.items]);
-        }
-        this.totalLogs.set(response.total);
-      });
+    this.http.get<AuditLogResponse>(`${this.apiUrl}${queryParams}`).subscribe((response) => {
+      if (page === 1) {
+        this.logs.set(response.items);
+      } else {
+        this.logs.update((current) => [...current, ...response.items]);
+      }
+      this.totalLogs.set(response.total);
+    });
   }
 
   async fetchAvailableActions() {
-    this.http.get<string[]>(`${this.apiUrl}/actions`)
-      .subscribe(response => {
-        this.availableActions.set(response);
-      });
+    this.http.get<string[]>(`${this.apiUrl}/actions`).subscribe((response) => {
+      this.availableActions.set(response);
+    });
   }
 
   async fetchRetentionDays() {
-    this.http.get<{ retentionDays: number }>(`${this.apiUrl}/settings/retention`)
-      .subscribe(response => {
+    this.http
+      .get<{ retentionDays: number }>(`${this.apiUrl}/settings/retention`)
+      .subscribe((response) => {
         this.retentionDays.set(response.retentionDays);
       });
   }
 
   async setRetentionDays(days: number) {
-    this.http.post<{ success: boolean, retentionDays: number }>(`${this.apiUrl}/settings/retention`, { days })
-      .subscribe(response => {
+    this.http
+      .post<{
+        success: boolean;
+        retentionDays: number;
+      }>(`${this.apiUrl}/settings/retention`, { days })
+      .subscribe((response) => {
         if (response.success) {
           this.retentionDays.set(response.retentionDays);
         }

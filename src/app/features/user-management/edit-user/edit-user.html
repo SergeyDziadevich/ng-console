@@ -1,67 +1,101 @@
 @if (userResource.isLoading()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    <div
+      class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+    ></div>
   </div>
 }
 
 @if (userResource.value()) {
   <app-user-modal
-    title="Edit User"
-    submitLabel="Save Changes"
     [submitDisabled]="editForm().invalid()"
     [error]="error()"
     (closeModal)="close()"
-    (submitted)="onSubmit()">
-
+    (submitted)="onSubmit()"
+    title="Edit User"
+    submitLabel="Save Changes"
+  >
     <!-- Pencil icon -->
-    <img src="/assets/icons/icon-bc1a93f7.svg" class="w-5 h-5 text-blue-500   shrink-0" alt="icon" />
+    <img class="w-5 h-5 text-blue-500 shrink-0" src="/assets/icons/icon-bc1a93f7.svg" alt="icon" />
 
     <!-- Name -->
     <div class="form-field">
-      <label for="edit-name" class="text-sm font-medium text-gray-700">Full Name</label>
-      <input id="edit-name" type="text" placeholder="John Doe" class="px-4 py-2 form-input transition-all" [formField]="editForm.username" />
+      <label class="text-sm font-medium text-gray-700" for="edit-name">Full Name</label>
+      <input
+        class="px-4 py-2 form-input transition-all"
+        id="edit-name"
+        [formField]="editForm.username"
+        type="text"
+        placeholder="John Doe"
+      />
       @if (editForm.username().touched() && editForm.username().invalid()) {
         <div class="error-message">
-          @for (err of editForm.username().errors(); track err) { <p>{{ err.message }}</p> }
+          @for (err of editForm.username().errors(); track err) {
+            <p>{{ err.message }}</p>
+          }
         </div>
       }
     </div>
 
     <!-- Email -->
     <div class="form-field">
-      <label for="edit-email" class="text-sm font-medium text-gray-700">Email Address</label>
-      <input id="edit-email" type="email" placeholder="john@example.com" class="px-4 py-2 form-input transition-all" [formField]="editForm.email" />
+      <label class="text-sm font-medium text-gray-700" for="edit-email">Email Address</label>
+      <input
+        class="px-4 py-2 form-input transition-all"
+        id="edit-email"
+        [formField]="editForm.email"
+        type="email"
+        placeholder="john@example.com"
+      />
       @if (editForm.email().touched() && editForm.email().invalid()) {
         <div class="error-message">
-          @for (err of editForm.email().errors(); track err) { <p>{{ err.message }}</p> }
+          @for (err of editForm.email().errors(); track err) {
+            <p>{{ err.message }}</p>
+          }
         </div>
       }
     </div>
 
     <!-- Role -->
     <div class="form-field">
-      <label for="edit-role" class="text-sm font-medium text-gray-700">Role</label>
-      <select id="edit-role" [formField]="editForm.role" class="px-4 py-2 form-input border-gray-300 bg-white">
-        @for (role of userRoles; track role) { <option [value]="role">{{ role }}</option> }
+      <label class="text-sm font-medium text-gray-700" for="edit-role">Role</label>
+      <select
+        class="px-4 py-2 form-input border-gray-300 bg-white"
+        id="edit-role"
+        [formField]="editForm.role"
+      >
+        @for (role of userRoles; track role) {
+          <option [value]="role">{{ role }}</option>
+        }
       </select>
     </div>
 
     <!-- Avatar -->
     <div class="form-field">
-      <label for="avatar" class="text-sm font-medium text-gray-700">Avatar</label>
+      <label class="text-sm font-medium text-gray-700" for="avatar">Avatar</label>
       <div class="flex items-center gap-4 mt-1">
         @if (avatarPreview()) {
-          <img [src]="avatarPreview()" alt="Avatar preview" class="w-12 h-12 rounded-full object-cover border border-gray-200" />
+          <img
+            class="w-12 h-12 rounded-full object-cover border border-gray-200"
+            [src]="avatarPreview()"
+            alt="Avatar preview"
+          />
         } @else {
-          <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
-            <img src="/assets/icons/icon-4a9e6849.svg" class="w-6 h-6   shrink-0" alt="icon" />
+          <div
+            class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400"
+          >
+            <img class="w-6 h-6 shrink-0" src="/assets/icons/icon-4a9e6849.svg" alt="icon" />
           </div>
         }
-        <input id="avatar" type="file" accept="image/*" (change)="onAvatarChange($event)"
-          class="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+        <input
+          class="text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+          id="avatar"
+          (change)="onAvatarChange($event)"
+          type="file"
+          accept="image/*"
+        />
       </div>
     </div>
-
   </app-user-modal>
 }
 

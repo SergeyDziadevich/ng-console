@@ -10,12 +10,22 @@ import { UserService } from '../../../../services/user-service';
 import { TicketPriority, TicketStatus } from '../../models/ticket.model';
 
 interface MockTicketService {
-  epicsResource: { value: ReturnType<typeof signal<unknown[]>>, isLoading: ReturnType<typeof signal<boolean>>, error: ReturnType<typeof signal<unknown>>, reload: Mock };
+  epicsResource: {
+    value: ReturnType<typeof signal<unknown[]>>;
+    isLoading: ReturnType<typeof signal<boolean>>;
+    error: ReturnType<typeof signal<unknown>>;
+    reload: Mock;
+  };
   createTicket: Mock;
 }
 
 interface MockUserService {
-  usersResource: { value: ReturnType<typeof signal<unknown[]>>, isLoading: ReturnType<typeof signal<boolean>>, error: ReturnType<typeof signal<unknown>>, reload: Mock };
+  usersResource: {
+    value: ReturnType<typeof signal<unknown[]>>;
+    isLoading: ReturnType<typeof signal<boolean>>;
+    error: ReturnType<typeof signal<unknown>>;
+    reload: Mock;
+  };
 }
 
 describe('CreateTicketComponent', () => {
@@ -27,12 +37,22 @@ describe('CreateTicketComponent', () => {
 
   beforeEach(async () => {
     mockTicketService = {
-      epicsResource: { value: signal([]), isLoading: signal(false), error: signal(undefined), reload: vi.fn() },
-      createTicket: vi.fn()
+      epicsResource: {
+        value: signal([]),
+        isLoading: signal(false),
+        error: signal(undefined),
+        reload: vi.fn(),
+      },
+      createTicket: vi.fn(),
     };
 
     mockUserService = {
-      usersResource: { value: signal([]), isLoading: signal(false), error: signal(undefined), reload: vi.fn() }
+      usersResource: {
+        value: signal([]),
+        isLoading: signal(false),
+        error: signal(undefined),
+        reload: vi.fn(),
+      },
     };
 
     await TestBed.configureTestingModule({
@@ -40,8 +60,8 @@ describe('CreateTicketComponent', () => {
       providers: [
         { provide: TicketService, useValue: mockTicketService },
         { provide: UserService, useValue: mockUserService },
-        provideRouter([])
-      ]
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     mockRouter = TestBed.inject(Router);
@@ -103,10 +123,10 @@ describe('CreateTicketComponent', () => {
         priority: TicketPriority.HIGH,
         assignedPersonId: undefined,
         estimations: undefined,
-        epic: undefined
+        epic: undefined,
       });
 
-      await new Promise(resolve => setTimeout(resolve, 1600));
+      await new Promise((resolve) => setTimeout(resolve, 1600));
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/tickets']);
     });
 

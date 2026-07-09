@@ -11,12 +11,27 @@ import { AuthService } from '../../../../services/auth.service';
 import { Ticket, TicketStatus } from '../../models/ticket.model';
 
 interface MockTicketService {
-  ticketsResource: { value: ReturnType<typeof signal<Ticket[] | undefined>>, isLoading: ReturnType<typeof signal<boolean>>, error: ReturnType<typeof signal<unknown>>, reload: Mock };
-  epicsResource: { value: ReturnType<typeof signal<unknown[]>>, isLoading: ReturnType<typeof signal<boolean>>, error: ReturnType<typeof signal<unknown>>, reload: Mock };
+  ticketsResource: {
+    value: ReturnType<typeof signal<Ticket[] | undefined>>;
+    isLoading: ReturnType<typeof signal<boolean>>;
+    error: ReturnType<typeof signal<unknown>>;
+    reload: Mock;
+  };
+  epicsResource: {
+    value: ReturnType<typeof signal<unknown[]>>;
+    isLoading: ReturnType<typeof signal<boolean>>;
+    error: ReturnType<typeof signal<unknown>>;
+    reload: Mock;
+  };
 }
 
 interface MockUserService {
-  usersResource: { value: ReturnType<typeof signal<unknown[]>>, isLoading: ReturnType<typeof signal<boolean>>, error: ReturnType<typeof signal<unknown>>, reload: Mock };
+  usersResource: {
+    value: ReturnType<typeof signal<unknown[]>>;
+    isLoading: ReturnType<typeof signal<boolean>>;
+    error: ReturnType<typeof signal<unknown>>;
+    reload: Mock;
+  };
 }
 
 describe('TicketListComponent', () => {
@@ -24,21 +39,38 @@ describe('TicketListComponent', () => {
   let fixture: ComponentFixture<TicketListComponent>;
   let mockTicketService: MockTicketService;
   let mockUserService: MockUserService;
-  let mockAuthService: { currentUser: ReturnType<typeof signal<{ id?: string, role?: string } | null>> };
+  let mockAuthService: {
+    currentUser: ReturnType<typeof signal<{ id?: string; role?: string } | null>>;
+  };
   let mockRouter: Router;
 
   beforeEach(async () => {
     mockTicketService = {
-      ticketsResource: { value: signal(undefined), isLoading: signal(false), error: signal(undefined), reload: vi.fn() },
-      epicsResource: { value: signal([]), isLoading: signal(false), error: signal(undefined), reload: vi.fn() }
+      ticketsResource: {
+        value: signal(undefined),
+        isLoading: signal(false),
+        error: signal(undefined),
+        reload: vi.fn(),
+      },
+      epicsResource: {
+        value: signal([]),
+        isLoading: signal(false),
+        error: signal(undefined),
+        reload: vi.fn(),
+      },
     };
 
     mockUserService = {
-      usersResource: { value: signal([]), isLoading: signal(false), error: signal(undefined), reload: vi.fn() }
+      usersResource: {
+        value: signal([]),
+        isLoading: signal(false),
+        error: signal(undefined),
+        reload: vi.fn(),
+      },
     };
 
     mockAuthService = {
-      currentUser: signal(null)
+      currentUser: signal(null),
     };
 
     await TestBed.configureTestingModule({
@@ -47,12 +79,12 @@ describe('TicketListComponent', () => {
         { provide: TicketService, useValue: mockTicketService },
         { provide: UserService, useValue: mockUserService },
         { provide: AuthService, useValue: mockAuthService },
-        { 
-          provide: ActivatedRoute, 
-          useValue: { queryParams: of({}) }
+        {
+          provide: ActivatedRoute,
+          useValue: { queryParams: of({}) },
         },
-        provideRouter([])
-      ]
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     mockRouter = TestBed.inject(Router);
@@ -75,9 +107,27 @@ describe('TicketListComponent', () => {
 
   describe('Filtering', () => {
     const mockTickets: Partial<Ticket>[] = [
-      { id: 1, title: 'T1', status: TicketStatus.TODO, assignedPersonId: 'user1', epic: { id: 10, name: 'Epic 1' } },
-      { id: 2, title: 'T2', status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user2', epic: { id: 20, name: 'Epic 2' } },
-      { id: 3, title: 'T3', status: TicketStatus.DONE, assignedPersonId: 'user1', epic: { id: 10, name: 'Epic 1' } },
+      {
+        id: 1,
+        title: 'T1',
+        status: TicketStatus.TODO,
+        assignedPersonId: 'user1',
+        epic: { id: 10, name: 'Epic 1' },
+      },
+      {
+        id: 2,
+        title: 'T2',
+        status: TicketStatus.IN_PROGRESS,
+        assignedPersonId: 'user2',
+        epic: { id: 20, name: 'Epic 2' },
+      },
+      {
+        id: 3,
+        title: 'T3',
+        status: TicketStatus.DONE,
+        assignedPersonId: 'user1',
+        epic: { id: 10, name: 'Epic 1' },
+      },
     ];
 
     beforeEach(() => {
@@ -94,22 +144,22 @@ describe('TicketListComponent', () => {
       component.showAssignedToMeOnly.set(true);
       const filtered = component.filteredTickets();
       expect(filtered.length).toBe(2);
-      expect(filtered.every(t => t.assignedPersonId === 'user1')).toBe(true);
+      expect(filtered.every((t) => t.assignedPersonId === 'user1')).toBe(true);
     });
 
     it('should filter by epic id', () => {
       component.selectedEpicId.set('10');
       const filtered = component.filteredTickets();
       expect(filtered.length).toBe(2);
-      expect(filtered.every(t => t.epic?.id === 10)).toBe(true);
+      expect(filtered.every((t) => t.epic?.id === 10)).toBe(true);
     });
 
     it('should filter by statuses', () => {
       component.selectedStatuses.set(new Set([TicketStatus.IN_PROGRESS, TicketStatus.DONE]));
       const filtered = component.filteredTickets();
       expect(filtered.length).toBe(2);
-      expect(filtered.find(t => t.id === 2)).toBeTruthy();
-      expect(filtered.find(t => t.id === 3)).toBeTruthy();
+      expect(filtered.find((t) => t.id === 2)).toBeTruthy();
+      expect(filtered.find((t) => t.id === 3)).toBeTruthy();
     });
 
     it('should combine filters correctly', () => {
@@ -125,32 +175,44 @@ describe('TicketListComponent', () => {
   describe('toggle methods routing', () => {
     it('should navigate on toggleAssignedToMeFilter', () => {
       component.toggleAssignedToMeFilter();
-      expect(mockRouter.navigate).toHaveBeenCalledWith([], expect.objectContaining({
-        queryParams: { assignedToMe: 'true' }
-      }));
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { assignedToMe: 'true' },
+        }),
+      );
     });
 
     it('should navigate on toggleStatusFilter', () => {
       component.toggleStatusFilter(TicketStatus.IN_PROGRESS);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([], expect.objectContaining({
-        queryParams: { status: TicketStatus.IN_PROGRESS }
-      }));
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { status: TicketStatus.IN_PROGRESS },
+        }),
+      );
     });
 
     it('should remove status filter if already present', () => {
       component.selectedStatuses.set(new Set([TicketStatus.TODO]));
       component.toggleStatusFilter(TicketStatus.TODO);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([], expect.objectContaining({
-        queryParams: { status: undefined }
-      }));
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { status: undefined },
+        }),
+      );
     });
 
     it('should navigate on epic change', () => {
       const mockEvent = { target: { value: '55' } } as unknown as Event;
       component.onEpicChange(mockEvent);
-      expect(mockRouter.navigate).toHaveBeenCalledWith([], expect.objectContaining({
-        queryParams: { epicId: '55' }
-      }));
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { epicId: '55' },
+        }),
+      );
     });
   });
 
@@ -158,7 +220,7 @@ describe('TicketListComponent', () => {
     beforeEach(() => {
       mockUserService.usersResource.value.set([
         { _id: 'user1', displayName: 'John Doe' },
-        { _id: 'user2', username: 'janedoe' }
+        { _id: 'user2', username: 'janedoe' },
       ]);
     });
 

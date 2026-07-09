@@ -1,34 +1,59 @@
 <div class="p-6 max-w-2xl mx-auto font-sans text-gray-900">
   <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
-    <img src="/assets/icons/icon-notifications.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
-    Notifications 
-    <span class="text-xs px-2.5 py-0.5 rounded-full text-white transition-colors" [class.bg-red-600]="!isOnline()" [class.bg-green-600]="isOnline()">
+    <img
+      class="h-7 w-7 brightness-0 shrink-0"
+      src="/assets/icons/icon-notifications.svg"
+      alt="icon"
+    />
+    Notifications
+    <span
+      class="text-xs px-2.5 py-0.5 rounded-full text-white transition-colors"
+      [class.bg-red-600]="!isOnline()"
+      [class.bg-green-600]="isOnline()"
+    >
       {{ isOnline() ? 'online' : 'offline' }}
     </span>
   </h1>
-  
+
   <div class="flex gap-2 flex-wrap mb-6">
     @if (isAdminOrModerator()) {
-      <input #titleInput value="Deploy finished" class="px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 min-w-[200px]" />
-      <button (click)="sendNotification(titleInput.value)" class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm">Send</button>
+      <input
+        class="px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 min-w-[200px]"
+        #titleInput
+        value="Deploy finished"
+      />
+      <button
+        class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm"
+        (click)="sendNotification(titleInput.value)"
+      >
+        Send
+      </button>
     }
-    <button (click)="dropConnection()" class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm">⚡ Drop connection</button>
-    <button (click)="reconnect()" class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm">🔌 Reconnect</button>
+    <button
+      class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm"
+      (click)="dropConnection()"
+    >
+      ⚡ Drop connection
+    </button>
+    <button
+      class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm"
+      (click)="reconnect()"
+    >
+      🔌 Reconnect
+    </button>
   </div>
 
   <ul class="list-none p-0 flex flex-col gap-2">
     @for (msg of messages(); track msg) {
-      <li 
+      <li
         class="border rounded-lg px-4 py-2.5 transition-all"
         [class.bg-white]="!msg.isSystem && !msg.replayed"
         [class.border-gray-200]="!msg.isSystem && !msg.replayed"
         [class.text-gray-800]="!msg.isSystem && !msg.replayed"
         [class.shadow-sm]="!msg.isSystem"
-        
         [class.bg-yellow-50]="msg.replayed"
         [class.border-yellow-400]="msg.replayed"
         [class.text-yellow-900]="msg.replayed"
-
         [class.bg-transparent]="msg.isSystem"
         [class.border-dashed]="msg.isSystem"
         [class.border-gray-300]="msg.isSystem"
@@ -57,10 +82,17 @@
           </div>
           <div class="flex items-center gap-3">
             @if (!msg.isRead) {
-              <button (click)="markAsRead(msg.id)" class="text-xs bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-md text-blue-700 transition-colors cursor-pointer shadow-sm">Mark as read</button>
+              <button
+                class="text-xs bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-md text-blue-700 transition-colors cursor-pointer shadow-sm"
+                (click)="markAsRead(msg.id)"
+              >
+                Mark as read
+              </button>
             }
             @if (msg.timestamp) {
-              <span class="text-xs text-gray-500 whitespace-nowrap">{{ msg.timestamp | date:'short' }}</span>
+              <span class="text-xs text-gray-500 whitespace-nowrap">{{
+                msg.timestamp | date: 'short'
+              }}</span>
             }
           </div>
         </div>

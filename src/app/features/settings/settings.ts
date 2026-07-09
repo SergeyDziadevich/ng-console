@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
@@ -53,7 +60,8 @@ export class Settings implements OnInit, OnDestroy {
 
     this.userService.getUserById(user.id).subscribe({
       next: (userData: User) => {
-        const settings: UserSettings = typeof userData.settings === 'object' ? userData.settings ?? {} : {};
+        const settings: UserSettings =
+          typeof userData.settings === 'object' ? (userData.settings ?? {}) : {};
         this.receiveNotifications.set(settings.receiveNotifications ?? true);
         this.receiveEmails.set(settings.receiveEmails ?? false);
         this.receiveSMS.set(settings.receiveSMS ?? false);

@@ -1,52 +1,53 @@
 <aside
-  [class]="collapsed() ? 'w-16' : 'w-64'"
-  class="flex flex-col h-full bg-gray-900 text-white transition-all duration-300 ease-in-out shrink-0 overflow-hidden">
-
+  class="sidebar-container"
+  [class.sidebar-collapsed]="collapsed()"
+  [class.sidebar-expanded]="!collapsed()"
+>
   <!-- Header -->
-  <div class="flex items-center justify-between px-4 py-5">
+  <div class="sidebar-header">
     <!--
     @if (!collapsed()) {
       <span class="text-lg font-bold tracking-wide whitespace-nowrap">Menu</span>
     }
     -->
     <button
+      class="sidebar-toggle-btn"
+      [title]="collapsed() ? 'Expand' : 'Collapse'"
       (click)="toggle()"
-      class="p-1.5 rounded-md hover:bg-gray-700 transition-colors ml-auto"
-      [title]="collapsed() ? 'Expand' : 'Collapse'">
+    >
       @if (collapsed()) {
-        <img src="/assets/icons/icon-expand.svg" class="h-5 w-5   shrink-0" alt="icon" />
+        <img class="sidebar-icon" src="/assets/icons/icon-expand.svg" alt="icon" />
       } @else {
-        <img src="/assets/icons/icon-collapse.svg" class="h-5 w-5   shrink-0" alt="icon" />
+        <img class="sidebar-icon" src="/assets/icons/icon-collapse.svg" alt="icon" />
       }
     </button>
   </div>
 
   <!-- Nav -->
-  <nav class="flex-1 overflow-y-auto py-4 space-y-1 px-2">
+  <nav class="sidebar-nav">
     @for (item of navItems; track item.route) {
       @if (!item.adminOnly || currentUser()?.role === 'admin') {
         <a
+          class="sidebar-nav-item"
           [routerLink]="item.route"
-        routerLinkActive="bg-indigo-600 text-white"
-        [routerLinkActiveOptions]="{ exact: item.route === '/' }"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors group">
-        <img [src]="'/assets/icons/' + item.icon" class="h-5 w-5 shrink-0" alt="icon" />
-        @if (!collapsed()) {
-          <span class="text-sm font-medium whitespace-nowrap flex-1 flex items-center gap-2">
-            {{ item.label }}
-            @if (item.label === 'Chats' && chatService.hasUnreadChats()) {
-              <span class="relative flex h-2 w-2 shrink-0">
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500 shadow-sm"></span>
+          [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+          routerLinkActive="active"
+        >
+          <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
+          @if (!collapsed()) {
+            <span class="sidebar-nav-label">
+              {{ item.label }}
+              @if (item.label === 'Chats' && chatService.hasUnreadChats()) {
+                <span class="sidebar-unread-indicator">
+                  <span class="sidebar-unread-dot"></span>
+                </span>
+              }
+            </span>
+            @if (item.badge) {
+              <span class="sidebar-badge {{ item.badge.classes }}">
+                {{ item.badge.text }}
               </span>
             }
-          </span>
-          @if (item.label === 'Tickets') {
-            <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-100 bg-purple-600 rounded-full shadow-sm">Preview</span>
-          } @else if (item.label === 'AI Assistant') {
-            <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-100 bg-green-600 rounded-full shadow-sm">Beta</span>
-          } @else if (item.label === 'Chats') {
-            <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-100 bg-blue-600 rounded-full shadow-sm">New</span>
-          }
           }
         </a>
       }
@@ -54,17 +55,21 @@
   </nav>
 
   <!-- Footer -->
-  <div class="border-t border-gray-700 px-4 py-4">
+  <div class="sidebar-footer">
     @if (!collapsed() && currentUser()) {
-      <div class="flex items-center gap-3">
-        <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold shrink-0">A</div>
-        <div class="overflow-hidden">
-          <p class="text-sm font-medium leading-tight truncate">{{ currentUser()?.role }}</p>
-          <p class="text-xs text-gray-400 truncate">{{ currentUser()?.email }}</p>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-avatar">
+          A
+        </div>
+        <div class="sidebar-user-details">
+          <p class="sidebar-user-role">{{ currentUser()?.role }}</p>
+          <p class="sidebar-user-email">{{ currentUser()?.email }}</p>
         </div>
       </div>
     } @else {
-      <div class="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-sm font-bold mx-auto">A</div>
+      <div class="sidebar-user-avatar-collapsed">
+        A
+      </div>
     }
   </div>
 </aside>

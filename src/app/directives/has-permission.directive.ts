@@ -3,7 +3,7 @@ import { PermissionsService } from '../services/permissions.service';
 
 @Directive({
   selector: '[appHasPermission]',
-  standalone: true
+  standalone: true,
 })
 export class HasPermissionDirective {
   private readonly templateRef = inject(TemplateRef<unknown>);

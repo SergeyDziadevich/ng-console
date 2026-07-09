@@ -26,14 +26,12 @@ describe('AuditLogsComponent', () => {
       availableActions: signal(['CREATE', 'UPDATE', 'DELETE']),
       fetchLogs: vi.fn(),
       fetchAvailableActions: vi.fn(),
-      setRetentionDays: vi.fn()
+      setRetentionDays: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
       imports: [AuditLogsComponent, FormsModule],
-      providers: [
-        { provide: AuditLogsService, useValue: mockAuditLogsService }
-      ]
+      providers: [{ provide: AuditLogsService, useValue: mockAuditLogsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuditLogsComponent);
@@ -90,11 +88,13 @@ describe('AuditLogsComponent', () => {
     const mockAnchor = {
       setAttribute: vi.fn(),
       click: vi.fn(),
-      remove: vi.fn()
+      remove: vi.fn(),
     } as unknown as HTMLAnchorElement;
     createElementSpy.mockReturnValue(mockAnchor);
-    
-    const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation((node) => node);
+
+    const appendChildSpy = vi
+      .spyOn(document.body, 'appendChild')
+      .mockImplementation((node) => node);
 
     component.exportLogs();
 

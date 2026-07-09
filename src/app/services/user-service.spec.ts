@@ -12,10 +12,7 @@ describe('UserService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(UserService);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -30,7 +27,12 @@ describe('UserService', () => {
   });
 
   it('should create user', () => {
-    const newUser: CreateUser = { username: 'test', email: 't@t.com', password: '123', role: UserRole.User };
+    const newUser: CreateUser = {
+      username: 'test',
+      email: 't@t.com',
+      password: '123',
+      role: UserRole.User,
+    };
     const mockRes = { _id: '1', ...newUser };
 
     service.createUser(newUser).subscribe((res) => {

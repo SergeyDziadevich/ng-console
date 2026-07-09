@@ -14,19 +14,19 @@ describe('AddUser', () => {
   beforeEach(async () => {
     mockUserService = {
       createUser: vi.fn().mockReturnValue(of({})),
-      usersResource: { reload: vi.fn() } as unknown as UserService['usersResource']
+      usersResource: { reload: vi.fn() } as unknown as UserService['usersResource'],
     };
 
     mockRouter = {
-      navigate: vi.fn()
+      navigate: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
       imports: [AddUser],
       providers: [
         { provide: UserService, useValue: mockUserService },
-        { provide: Router, useValue: mockRouter }
-      ]
+        { provide: Router, useValue: mockRouter },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddUser);
@@ -52,7 +52,7 @@ describe('AddUser', () => {
     component.onSubmit();
     expect(mockUserService.createUser).toHaveBeenCalled();
     expect(component.showToast()).toBe(true);
-    
+
     vi.advanceTimersByTime(500);
     expect(component.showToast()).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/user-management']);
@@ -63,7 +63,7 @@ describe('AddUser', () => {
   it('should handle error on submit', () => {
     const errorResponse = new HttpErrorResponse({ error: 'Server error', status: 500 });
     mockUserService.createUser = vi.fn().mockReturnValue(throwError(() => errorResponse));
-    
+
     component.onSubmit();
     expect(component.error()).toBe('Server error');
   });
@@ -72,9 +72,9 @@ describe('AddUser', () => {
     vi.useFakeTimers();
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     const event = { target: { files: [file] } } as unknown as Event;
-    
+
     component.onAvatarChange(event);
-    
+
     vi.advanceTimersByTime(100);
     expect(component.avatarPreview()).toContain('data:image/png;base64');
     vi.useRealTimers();

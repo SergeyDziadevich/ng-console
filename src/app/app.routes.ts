@@ -51,17 +51,23 @@ export const routes: Routes = [
       {
         path: 'tickets',
         loadComponent: () =>
-          import('./features/tickets/components/ticket-list/ticket-list.component').then((m) => m.TicketListComponent),
+          import('./features/tickets/components/ticket-list/ticket-list.component').then(
+            (m) => m.TicketListComponent,
+          ),
       },
       {
         path: 'tickets/new',
         loadComponent: () =>
-          import('./features/tickets/components/create-ticket/create-ticket.component').then((m) => m.CreateTicketComponent),
+          import('./features/tickets/components/create-ticket/create-ticket.component').then(
+            (m) => m.CreateTicketComponent,
+          ),
       },
       {
         path: 'tickets/:id',
         loadComponent: () =>
-          import('./features/tickets/components/ticket-detail/ticket-detail.component').then((m) => m.TicketDetailComponent),
+          import('./features/tickets/components/ticket-detail/ticket-detail.component').then(
+            (m) => m.TicketDetailComponent,
+          ),
       },
       {
         path: 'notifications',
@@ -91,6 +97,15 @@ export const routes: Routes = [
         path: 'documents',
         loadComponent: () =>
           import('./features/documents/documents').then((m) => m.DocumentsComponent),
+        children: [
+          {
+            path: ':id/:mode',
+            loadComponent: () =>
+              import('./features/documents/viewer/document-viewer.component').then(
+                (m) => m.DocumentViewerComponent,
+              ),
+          },
+        ],
       },
       {
         path: 'audit-logs',
