@@ -12,7 +12,7 @@ NgConsole is the frontend Angular application that serves as the administrative 
 - **Authentication & Security:** Secure login flow with support for Google OAuth2 and Two-Factor Authentication (2FA).
 - **User Management:** Comprehensive interface to create, edit, and manage user accounts with role-based access control (Admin, Moderator).
 - **Profile & Settings:** Personalized user settings allowing for account configuration and security management.
-- **Document Management:** Upload, delete, and securely share documents via short public links without requiring user authentication.
+- **Document Management:** Upload, delete, securely share documents via short public links without requiring user authentication, and digitally sign PDF documents.
 - **Audit Logs:** A dedicated interface for administrators to view, filter (by date, action, actor), and export comprehensive audit trails, with customizable data retention settings.
 - **Real-Time Chat & Notifications:** Live messaging system and instant push notifications to keep users connected and informed.
 - **AI Assistant:** An integrated, intelligent chat assistant powered by Firebase Genkit AI to help users navigate and perform tasks.
