@@ -1,7 +1,7 @@
-import { Component, computed, inject, signal, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpEventType } from '@angular/common/http';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { DocumentService } from '../../services/document.service';
 import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
@@ -10,12 +10,12 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText } from '@ng-icons/lucide';
 import { Toast } from '../../components/toast/toast';
 import { environment } from '../../../environments/environment';
-import SignaturePad from 'signature_pad';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-documents',
-  imports: [CommonModule, NgIconComponent, Toast, ConfirmDialogComponent],
+  imports: [CommonModule, NgIconComponent, Toast, ConfirmDialogComponent, RouterModule],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
   viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText })]
@@ -24,6 +24,8 @@ export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);
   private authService = inject(AuthService);
   private sanitizer = inject(DomSanitizer);
+
+  private router = inject(Router);
 
   // State
   documents = signal<UploadedDocument[]>([]);
@@ -36,13 +38,7 @@ export class DocumentsComponent implements OnInit {
   toast = signal<string | null>(null);
   isActionLoading = signal<boolean>(false);
   documentToDelete = signal<UploadedDocument | null>(null);
-  documentToPreview = signal<UploadedDocument | null>(null);
-  documentPreviewUrl = signal<SafeUrl | null>(null);
-  previewMode = signal<'sign' | 'view' | null>(null);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
-
-  @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;
-  private signaturePad: SignaturePad | null = null;
 
   isAdmin = computed(() => {
     const user = this.authService.currentUser();
@@ -179,77 +175,7 @@ export class DocumentsComponent implements OnInit {
   }
 
   openPreview(doc: UploadedDocument, mode: 'sign' | 'view') {
-    this.isActionLoading.set(true);
-    this.documentService.downloadDocument(doc._id).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        this.documentPreviewUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        this.documentToPreview.set(doc);
-        this.previewMode.set(mode);
-        this.isActionLoading.set(false);
-        
-        if (mode === 'sign') {
-          setTimeout(() => {
-            if (this.signatureCanvas) {
-              const canvas = this.signatureCanvas.nativeElement;
-              // Set canvas resolution correctly
-              const ratio = Math.max(window.devicePixelRatio || 1, 1);
-              canvas.width = canvas.offsetWidth * ratio;
-              canvas.height = canvas.offsetHeight * ratio;
-              canvas.getContext('2d')?.scale(ratio, ratio);
-              
-              this.signaturePad = new SignaturePad(canvas, {
-                penColor: 'rgb(0, 0, 0)',
-                backgroundColor: 'rgba(0,0,0,0)'
-              });
-            }
-          }, 0);
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load preview', err);
-        this.showToast('Failed to load document preview');
-        this.isActionLoading.set(false);
-      }
-    });
-  }
-
-  cancelPreview() {
-    this.documentToPreview.set(null);
-    this.documentPreviewUrl.set(null);
-    this.previewMode.set(null);
-    this.signaturePad = null;
-  }
-
-  clearSignature() {
-    if (this.signaturePad) {
-      this.signaturePad.clear();
-    }
-  }
-
-  executeSign() {
-    const doc = this.documentToPreview();
-    if (!doc) return;
-
-    let signatureImage: string | undefined;
-    if (this.previewMode() === 'sign' && this.signaturePad && !this.signaturePad.isEmpty()) {
-      signatureImage = this.signaturePad.toDataURL('image/png');
-    }
-
-    this.isActionLoading.set(true);
-    this.documentService.signDocument(doc._id, signatureImage).subscribe({
-      next: () => {
-        this.showToast('Document signed successfully!');
-        this.loadDocuments();
-        this.cancelPreview();
-        this.isActionLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to sign document', err);
-        this.showToast(err.error?.message || 'Failed to sign document');
-        this.isActionLoading.set(false);
-      }
-    });
+    this.router.navigate(['/documents', doc._id, mode], { state: { document: doc } });
   }
 
   nextPage() {
