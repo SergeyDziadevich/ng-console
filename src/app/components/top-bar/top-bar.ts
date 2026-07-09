@@ -9,6 +9,7 @@ import { NotificationsService } from '../../services/notifications.service';
   selector: 'app-top-bar',
   imports: [CommonModule, RouterLink, DatePipe],
   templateUrl: './top-bar.html',
+  styleUrl: './top-bar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopBar {

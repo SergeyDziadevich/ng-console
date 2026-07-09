@@ -39,7 +39,7 @@ describe('TopBar', () => {
 
   it('should display user initials as avatar', () => {
     expect(component['userAvatar']()).toBe('JA');
-    const avatarBtn = fixture.debugElement.query(By.css('button.bg-indigo-500'));
+    const avatarBtn = fixture.debugElement.query(By.css('button.avatar-btn'));
     expect(avatarBtn.nativeElement.textContent.trim()).toBe('JA');
   });
 
@@ -66,7 +66,7 @@ describe('TopBar', () => {
   });
 
   it('should display the app title "Ng Console Platform"', () => {
-    const titleElement = fixture.nativeElement.querySelector('span.tracking-tight');
+    const titleElement = fixture.nativeElement.querySelector('span.app-title');
     expect(titleElement).toBeTruthy();
     expect(titleElement.textContent.trim()).toContain('Console Platform');
   });
