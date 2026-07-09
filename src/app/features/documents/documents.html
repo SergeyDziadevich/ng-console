@@ -10,29 +10,29 @@
     </div>
   </div>
 
-  <div class="upload-zone" 
-       (dragover)="onDragOver($event)" 
+  <div class="upload-zone"
+       (dragover)="onDragOver($event)"
        (drop)="onDrop($event)"
        [class.uploading]="uploadProgress() !== null">
     <ng-icon name="lucideUploadCloud" class="upload-icon"></ng-icon>
     <p>Drag & drop your file here, or click to browse</p>
     <p class="restrictions">Allowed types: .doc, .docx, .pdf, .img, .png (Max 10MB)</p>
     <input type="file" (change)="onFileSelected($event)" accept=".doc,.docx,.pdf,.img,.png,.jpg,.jpeg" />
-    
+
     @if (uploadProgress() !== null) {
       <div class="progress-container">
         <div class="progress-bar" [style.width.%]="uploadProgress()"></div>
       </div>
       <p class="progress-text">Uploading: {{ uploadProgress() }}%</p>
     }
-    
+
     @if (uploadError()) {
       <p class="error-text">{{ uploadError() }}</p>
     }
   </div>
 
   <div class="documents-list">
-    @if (isLoading()) {
+    @if (isLoading() && documents().length === 0) {
       <div class="loading">Loading documents...</div>
     } @else if (documents().length === 0) {
       <div class="empty-state">
@@ -58,7 +58,12 @@
             <tr>
               <td class="filename-cell">
                 <ng-icon name="lucideFile" class="shrink-0"></ng-icon>
-                <span class="line-clamp-2 break-words" title="{{ doc.filename }}">{{ doc.filename }}</span>
+                <div class="flex flex-col">
+                  <span class="line-clamp-2 break-words" title="{{ doc.filename }}">{{ doc.filename }}</span>
+                  @if (doc.isSigned) {
+                    <span class="text-xs text-green-600 font-medium">Signed</span>
+                  }
+                </div>
               </td>
               <td>{{ doc.mimeType }}</td>
               <td>{{ formatBytes(doc.size) }}</td>
@@ -67,13 +72,23 @@
                 <td>{{ getUploaderName(doc) }}</td>
               }
               <td class="text-left whitespace-nowrap space-x-2">
-                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="shareDocument(doc)" title="Share link to the document">
+                @if (doc.mimeType === 'application/pdf') {
+                  <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="openPreview(doc, 'view')" title="Preview Document">
+                    <ng-icon name="lucideEye" class="w-4 h-4"></ng-icon>
+                  </button>
+                }
+                @if (doc.mimeType === 'application/pdf' && !doc.isSigned) {
+                  <button class="table-action-btn bg-blue-500 hover:bg-blue-600 text-white" (click)="openPreview(doc, 'sign')" title="Sign Document">
+                    <ng-icon name="lucideFileSignature" class="w-4 h-4"></ng-icon>
+                  </button>
+                }
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="shareDocument(doc)" title="Share link to the document">
                   <ng-icon name="lucideShare2" class="w-4 h-4"></ng-icon>
                 </button>
-                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="downloadDocument(doc)" title="Download">
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="downloadDocument(doc)" title="Download">
                   <ng-icon name="lucideDownload" class="w-4 h-4"></ng-icon>
                 </button>
-                <button class="table-action-btn bg-gray-500 hover:bg-gray-600" (click)="confirmDelete(doc)" title="Delete">
+                <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="confirmDelete(doc)" title="Delete">
                   <ng-icon name="lucideTrash2" class="w-4 h-4"></ng-icon>
                 </button>
               </td>
@@ -99,6 +114,7 @@
 }
 
 @if (documentToDelete()) {
+  <!-- TODO: create modal component -->
   <div class="modal-overlay z-50">
     <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
       <div class="flex items-center gap-3">
@@ -123,6 +139,48 @@
           class="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 active:scale-95 transition-all">
           Remove
         </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (documentToPreview() && documentPreviewUrl()) {
+  <!-- TODO: refactor -->
+  <div class="modal-overlay z-50">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-5xl h-[85vh] flex flex-col gap-5">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold text-gray-800">
+          {{ previewMode() === 'sign' ? 'Preview & Sign Document' : 'Preview Document' }}
+        </h3>
+        <button (click)="cancelPreview()" class="text-gray-500 hover:text-gray-700 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="flex-1 bg-gray-100 rounded-lg overflow-hidden border border-gray-200" [ngClass]="{'h-1/2': previewMode() === 'sign'}">
+        <iframe [src]="documentPreviewUrl()" class="w-full h-full border-0"></iframe>
+      </div>
+      @if (previewMode() === 'sign') {
+        <div class="shrink-0 flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-gray-700">Draw Your Signature</span>
+            <button (click)="clearSignature()" class="text-xs text-blue-600 hover:text-blue-800 font-medium">Clear</button>
+          </div>
+          <div class="border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 flex items-center justify-center relative h-40">
+            <canvas #signatureCanvas class="w-full h-full cursor-crosshair rounded-lg"></canvas>
+            <div class="absolute inset-0 pointer-events-none flex items-center justify-center text-gray-400 opacity-50 select-none">
+              <span class="text-xl">Sign Here</span>
+            </div>
+          </div>
+        </div>
+      }
+      <div class="flex justify-end gap-3 shrink-0">
+        <button (click)="cancelPreview()" class="px-5 py-2.5 btn-secondary font-medium">Close</button>
+        @if (previewMode() === 'sign') {
+          <button (click)="executeSign()" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:scale-95 transition-all flex items-center gap-2">
+            <ng-icon name="lucideFileSignature" class="w-4 h-4"></ng-icon>
+            Confirm & Sign
+          </button>
+        }
       </div>
     </div>
   </div>

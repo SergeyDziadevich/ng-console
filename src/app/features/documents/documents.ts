@@ -1,25 +1,28 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpEventType } from '@angular/common/http';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../services/document.service';
 import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2 } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye } from '@ng-icons/lucide';
 import { Toast } from '../../components/toast/toast';
 import { environment } from '../../../environments/environment';
+import SignaturePad from 'signature_pad';
 
 @Component({
   selector: 'app-documents',
   imports: [CommonModule, NgIconComponent, Toast],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
-  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2 })]
+  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye })]
 })
 export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);
   private authService = inject(AuthService);
+  private sanitizer = inject(DomSanitizer);
 
   // State
   documents = signal<UploadedDocument[]>([]);
@@ -30,8 +33,15 @@ export class DocumentsComponent implements OnInit {
   uploadProgress = signal<number | null>(null);
   uploadError = signal<string | null>(null);
   toast = signal<string | null>(null);
+  isActionLoading = signal<boolean>(false);
   documentToDelete = signal<UploadedDocument | null>(null);
+  documentToPreview = signal<UploadedDocument | null>(null);
+  documentPreviewUrl = signal<SafeUrl | null>(null);
+  previewMode = signal<'sign' | 'view' | null>(null);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+  @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;
+  private signaturePad: SignaturePad | null = null;
 
   isAdmin = computed(() => {
     const user = this.authService.currentUser();
@@ -163,6 +173,80 @@ export class DocumentsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to generate share link', err);
+      }
+    });
+  }
+
+  openPreview(doc: UploadedDocument, mode: 'sign' | 'view') {
+    this.isActionLoading.set(true);
+    this.documentService.downloadDocument(doc._id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        this.documentPreviewUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        this.documentToPreview.set(doc);
+        this.previewMode.set(mode);
+        this.isActionLoading.set(false);
+        
+        if (mode === 'sign') {
+          setTimeout(() => {
+            if (this.signatureCanvas) {
+              const canvas = this.signatureCanvas.nativeElement;
+              // Set canvas resolution correctly
+              const ratio = Math.max(window.devicePixelRatio || 1, 1);
+              canvas.width = canvas.offsetWidth * ratio;
+              canvas.height = canvas.offsetHeight * ratio;
+              canvas.getContext('2d')?.scale(ratio, ratio);
+              
+              this.signaturePad = new SignaturePad(canvas, {
+                penColor: 'rgb(0, 0, 0)',
+                backgroundColor: 'rgba(0,0,0,0)'
+              });
+            }
+          }, 0);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load preview', err);
+        this.showToast('Failed to load document preview');
+        this.isActionLoading.set(false);
+      }
+    });
+  }
+
+  cancelPreview() {
+    this.documentToPreview.set(null);
+    this.documentPreviewUrl.set(null);
+    this.previewMode.set(null);
+    this.signaturePad = null;
+  }
+
+  clearSignature() {
+    if (this.signaturePad) {
+      this.signaturePad.clear();
+    }
+  }
+
+  executeSign() {
+    const doc = this.documentToPreview();
+    if (!doc) return;
+
+    let signatureImage: string | undefined;
+    if (this.previewMode() === 'sign' && this.signaturePad && !this.signaturePad.isEmpty()) {
+      signatureImage = this.signaturePad.toDataURL('image/png');
+    }
+
+    this.isActionLoading.set(true);
+    this.documentService.signDocument(doc._id, signatureImage).subscribe({
+      next: () => {
+        this.showToast('Document signed successfully!');
+        this.loadDocuments();
+        this.cancelPreview();
+        this.isActionLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to sign document', err);
+        this.showToast(err.error?.message || 'Failed to sign document');
+        this.isActionLoading.set(false);
       }
     });
   }
