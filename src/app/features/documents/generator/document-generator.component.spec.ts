@@ -38,7 +38,7 @@ describe('DocumentGeneratorComponent', () => {
   });
 
   it('should initialize form with default values', () => {
-    expect(component.form.get('templateType')?.value).toBe('invoice');
+    expect(component.form.get('templateType')?.value).toBe('msa');
     expect(component.form.get('noticePeriod')?.value).toBe('1 month(s)');
   });
 
