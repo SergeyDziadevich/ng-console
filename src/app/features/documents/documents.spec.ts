@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserRole } from '../../enums/user-role.enum';
 import { of, throwError } from 'rxjs';
 import { UploadedDocument } from '../../models/document.model';
+import { ActivatedRoute } from '@angular/router';
 import { signal, WritableSignal } from '@angular/core';
 import { HttpEventType, HttpResponse, HttpProgressEvent } from '@angular/common/http';
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
@@ -46,7 +47,8 @@ describe('DocumentsComponent', () => {
       imports: [DocumentsComponent],
       providers: [
         { provide: DocumentService, useValue: documentServiceSpy },
-        { provide: AuthService, useValue: mockAuthService }
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: ActivatedRoute, useValue: { queryParams: of({}) } }
       ]
     }).compileComponents();
 

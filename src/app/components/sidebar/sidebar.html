@@ -62,9 +62,9 @@
                 >
                   @if (child.icon) {
                     @if (child.icon.endsWith('.svg')) {
-                      <img class="w-[18px] h-[18px] opacity-70" [src]="'/assets/icons/' + child.icon" alt="icon" />
+                      <img class="w-6 h-6 -ml-1 opacity-70" [src]="'/assets/icons/' + child.icon" alt="icon" />
                     } @else {
-                      <ng-icon class="w-[18px] h-[18px] opacity-70 shrink-0" [name]="child.icon"></ng-icon>
+                      <ng-icon class="w-6 h-6 -ml-1 opacity-70 shrink-0" [name]="child.icon"></ng-icon>
                     }
                   }
                   {{ child.label }}

@@ -64,6 +64,7 @@
 
     .sidebar-submenu {
       @apply flex flex-col mb-2 gap-1 bg-gray-800/50 rounded-b-xl py-2;
+      padding-left: 10px;
 
       .sidebar-submenu-item {
         @apply flex items-center gap-3 text-[13px] text-gray-400 font-medium py-2.5 px-3 rounded-lg transition-colors hover:bg-gray-700 hover:text-white;

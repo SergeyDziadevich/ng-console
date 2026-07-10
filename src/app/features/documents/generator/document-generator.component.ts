@@ -22,7 +22,7 @@ export class DocumentGeneratorComponent {
 
   constructor() {
     this.form = this.fb.group({
-      templateType: ['invoice', Validators.required],
+      templateType: ['b2b-contract-pl', Validators.required],
       customerName: [''],
       description: [''],
       amount: [''],

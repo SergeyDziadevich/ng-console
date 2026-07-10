@@ -47,7 +47,7 @@ export class DocumentService {
     return this.http.post(`${this.apiUrl}/${id}/sign`, { signatureImage });
   }
 
-  generateDocument(payload: { templateType: string; data: Record<string, any> }): Observable<unknown> {
+  generateDocument(payload: { templateType: string; data: Record<string, unknown> }): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/generate`, payload);
   }
 }
