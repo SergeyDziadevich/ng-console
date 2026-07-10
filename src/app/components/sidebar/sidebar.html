@@ -27,29 +27,52 @@
   <nav class="sidebar-nav">
     @for (item of navItems; track item.route) {
       @if (!item.adminOnly || currentUser()?.role === 'admin') {
-        <a
-          class="sidebar-nav-item"
-          [routerLink]="item.route"
-          [routerLinkActiveOptions]="{ exact: item.route === '/' }"
-          routerLinkActive="active"
-        >
-          <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
-          @if (!collapsed()) {
-            <span class="sidebar-nav-label">
-              {{ item.label }}
-              @if (item.label === 'Chats' && chatService.hasUnreadChats()) {
-                <span class="sidebar-unread-indicator">
-                  <span class="sidebar-unread-dot"></span>
+        <div class="sidebar-nav-item-wrapper">
+          <a
+            class="sidebar-nav-item"
+            [routerLink]="item.route"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            routerLinkActive="active"
+            #rla="routerLinkActive"
+          >
+            <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
+            @if (!collapsed()) {
+              <span class="sidebar-nav-label">
+                {{ item.label }}
+                @if (item.label === 'Chats' && chatService.hasUnreadChats()) {
+                  <span class="sidebar-unread-indicator">
+                    <span class="sidebar-unread-dot"></span>
+                  </span>
+                }
+              </span>
+              @if (item.badge) {
+                <span class="sidebar-badge {{ item.badge.classes }}">
+                  {{ item.badge.text }}
                 </span>
               }
-            </span>
-            @if (item.badge) {
-              <span class="sidebar-badge {{ item.badge.classes }}">
-                {{ item.badge.text }}
-              </span>
             }
+          </a>
+          @if (item.children && !collapsed() && rla.isActive) {
+            <div class="sidebar-submenu">
+              @for (child of item.children; track child.route) {
+                <a
+                  class="sidebar-submenu-item"
+                  [routerLink]="child.route"
+                  routerLinkActive="active"
+                >
+                  @if (child.icon) {
+                    @if (child.icon.endsWith('.svg')) {
+                      <img class="w-[18px] h-[18px] opacity-70" [src]="'/assets/icons/' + child.icon" alt="icon" />
+                    } @else {
+                      <ng-icon class="w-[18px] h-[18px] opacity-70 shrink-0" [name]="child.icon"></ng-icon>
+                    }
+                  }
+                  {{ child.label }}
+                </a>
+              }
+            </div>
           }
-        </a>
+        </div>
       }
     }
   </nav>

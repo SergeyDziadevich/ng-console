@@ -93,15 +93,20 @@ export const routes: Routes = [
         path: 'documents',
         loadComponent: () =>
           import('./features/documents/documents').then((m) => m.DocumentsComponent),
-        children: [
-          {
-            path: ':id/:mode',
-            loadComponent: () =>
-              import('./features/documents/viewer/document-viewer.component').then(
-                (m) => m.DocumentViewerComponent,
-              ),
-          },
-        ],
+      },
+      {
+        path: 'documents/generate',
+        loadComponent: () =>
+          import('./features/documents/generator/document-generator.component').then(
+            (m) => m.DocumentGeneratorComponent,
+          ),
+      },
+      {
+        path: 'documents/:id/:mode',
+        loadComponent: () =>
+          import('./features/documents/viewer/document-viewer.component').then(
+            (m) => m.DocumentViewerComponent,
+          ),
       },
       {
         path: 'audit-logs',
