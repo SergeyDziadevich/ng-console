@@ -1,14 +1,74 @@
-.btn-secondary {
-  background-color: #f3f4f6;
-  color: #374151;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  border: 1px solid #d1d5db;
+@reference "../../../../styles.scss";
 
-  &:hover {
-    background-color: #e5e7eb;
+:host {
+  @apply block;
+}
+
+.document-generator-container {
+  @apply max-w-2xl mx-auto p-6;
+
+  .generator-header {
+    @apply flex flex-wrap items-center justify-between gap-3 mb-5;
+
+    .header-text {
+      @apply flex flex-col;
+
+      h1 {
+        @apply text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900;
+        
+        img {
+          @apply h-7 w-7 brightness-0 shrink-0;
+        }
+      }
+
+      p {
+        @apply text-gray-500 text-sm;
+      }
+    }
+  }
+
+  .generator-card {
+    @apply bg-white rounded-2xl shadow-sm border p-6 flex flex-col gap-6;
+
+    .generator-form {
+      @apply flex flex-col gap-5;
+
+      .form-group {
+        label {
+          @apply block text-sm font-medium text-gray-700 mb-1;
+        }
+        
+        input, select, textarea {
+          @apply w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
+        }
+      }
+
+      .error-message {
+        @apply text-sm text-red-500;
+      }
+
+      .form-actions {
+        @apply flex justify-end gap-3 mt-4 pt-4 border-t;
+
+        .btn-secondary {
+          background-color: #f3f4f6;
+          color: #374151;
+          border-radius: 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          transition: all 0.2s;
+          border: 1px solid #d1d5db;
+
+          &:hover {
+            background-color: #e5e7eb;
+          }
+        }
+
+        .btn-primary {
+          @apply px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:scale-95 transition-all disabled:opacity-50;
+        }
+      }
+    }
   }
 }
 
