@@ -35,9 +35,16 @@
     }
   </div>
 
-  <div class="documents-list">
+  <div class="documents-list relative">
+    @if (isLoading() && documents().length > 0) {
+      <div class="loading-bar-indicator"></div>
+    }
+
     @if (isLoading() && documents().length === 0) {
-      <div class="loading">Loading documents...</div>
+      <div class="loading">
+        <ng-icon name="lucideLoader2" class="animate-spin text-blue-500 w-8 h-8 mb-2"></ng-icon>
+        <p>Loading documents...</p>
+      </div>
     } @else if (documents().length === 0) {
       <div class="empty-state">
         <ng-icon name="lucideFile"></ng-icon>
