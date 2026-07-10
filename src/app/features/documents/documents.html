@@ -8,6 +8,10 @@
       </h1>
       <p class="text-gray-500 text-sm">Upload and manage your files safely.</p>
     </div>
+    <a routerLink="/documents/generate" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+      <ng-icon name="lucideFilePlus" class="w-4 h-4"></ng-icon>
+      Generate Document
+    </a>
   </div>
 
   <div class="upload-zone"
@@ -31,9 +35,16 @@
     }
   </div>
 
-  <div class="documents-list">
+  <div class="documents-list relative">
+    @if (isLoading() && documents().length > 0) {
+      <div class="loading-bar-indicator"></div>
+    }
+
     @if (isLoading() && documents().length === 0) {
-      <div class="loading">Loading documents...</div>
+      <div class="loading">
+        <ng-icon name="lucideLoader2" class="animate-spin text-blue-500 w-8 h-8 mb-2"></ng-icon>
+        <p>Loading documents...</p>
+      </div>
     } @else if (documents().length === 0) {
       <div class="empty-state">
         <ng-icon name="lucideFile"></ng-icon>
@@ -130,4 +141,3 @@
   </app-confirm-dialog>
 }
 
-<router-outlet></router-outlet>
