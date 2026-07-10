@@ -5,7 +5,7 @@
 }
 
 .document-generator-container {
-  @apply max-w-2xl mx-auto p-6;
+  @apply p-6;
 
   .generator-header {
     @apply flex flex-wrap items-center justify-between gap-3 mb-5;
@@ -28,7 +28,7 @@
   }
 
   .generator-card {
-    @apply bg-white rounded-2xl shadow-sm border p-6 flex flex-col gap-6;
+    @apply bg-white rounded-2xl shadow-sm border p-6 flex flex-col gap-6 max-w-2xl mx-auto;
 
     .generator-form {
       @apply flex flex-col gap-5;
