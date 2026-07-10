@@ -19,6 +19,7 @@ export class DocumentGeneratorComponent {
   form: FormGroup;
   isGenerating = false;
   error: string | null = null;
+  protected readonly todayDate = new Date().toLocaleDateString();
 
   constructor() {
     this.form = this.fb.group({
