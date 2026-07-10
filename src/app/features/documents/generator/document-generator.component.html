@@ -15,11 +15,36 @@
       <div class="form-group">
         <label for="templateType">Template Type</label>
         <select id="templateType" formControlName="templateType">
+          <option value="msa">Master Services Agreement</option>
           <option value="b2b-contract-pl">B2B IT Contract (Poland)</option>
           <option value="invoice">Invoice</option>
           <option value="contract">Contract</option>
         </select>
       </div>
+
+      <!-- MSA Fields -->
+      @if (form.get('templateType')?.value === 'msa') {
+        <div class="form-group">
+          <label for="providerName">Provider Name</label>
+          <input id="providerName" type="text" formControlName="providerName" placeholder="e.g. Provider Company LLC">
+        </div>
+        <div class="form-group">
+          <label for="clientName">Client Name</label>
+          <input id="clientName" type="text" formControlName="clientName" placeholder="e.g. Client Company Inc.">
+        </div>
+        <div class="form-group">
+          <label for="effectiveDate">Effective Date</label>
+          <input id="effectiveDate" type="text" formControlName="effectiveDate" placeholder="e.g. July 10, 2026">
+        </div>
+        <div class="form-group">
+          <label for="governingLaw">Governing Law</label>
+          <input id="governingLaw" type="text" formControlName="governingLaw" placeholder="e.g. State of Delaware">
+        </div>
+        <div class="form-group">
+          <label for="servicesDescription">Services Description (General Scope)</label>
+          <input id="servicesDescription" type="text" formControlName="servicesDescription" placeholder="e.g. software development and consulting services">
+        </div>
+      }
 
       <!-- Invoice Fields -->
       @if (form.get('templateType')?.value === 'invoice') {

@@ -22,7 +22,7 @@ export class DocumentGeneratorComponent {
 
   constructor() {
     this.form = this.fb.group({
-      templateType: ['b2b-contract-pl', Validators.required],
+      templateType: ['msa', Validators.required],
       customerName: [''],
       description: [''],
       amount: [''],
@@ -34,6 +34,9 @@ export class DocumentGeneratorComponent {
       servicesDescription: [''],
       monthlyFee: [''],
       noticePeriod: ['1 month(s)'],
+      providerName: [''],
+      effectiveDate: [''],
+      governingLaw: [''],
     });
 
     this.form.get('templateType')?.valueChanges.subscribe(() => {
@@ -56,6 +59,14 @@ export class DocumentGeneratorComponent {
       ? { customerName: allData.customerName, description: allData.description, amount: allData.amount }
       : templateType === 'contract'
       ? { partyA: allData.partyA, partyB: allData.partyB, terms: allData.terms }
+      : templateType === 'msa'
+      ? { 
+          providerName: allData.providerName, 
+          clientName: allData.clientName, 
+          effectiveDate: allData.effectiveDate, 
+          governingLaw: allData.governingLaw, 
+          servicesDescription: allData.servicesDescription 
+        }
       : { 
           contractorName: allData.contractorName, 
           clientName: allData.clientName, 
@@ -63,6 +74,7 @@ export class DocumentGeneratorComponent {
           monthlyFee: allData.monthlyFee,
           noticePeriod: allData.noticePeriod
         };
+
 
     this.documentService.generateDocument({ templateType, data }).subscribe({
       next: () => {
