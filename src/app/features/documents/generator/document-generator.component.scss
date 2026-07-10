@@ -1,0 +1,14 @@
+.btn-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: 1px solid #d1d5db;
+
+  &:hover {
+    background-color: #e5e7eb;
+  }
+}
+
