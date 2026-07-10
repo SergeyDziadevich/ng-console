@@ -2,6 +2,8 @@ import { Component, input, signal, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthResponse } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideFilePlus } from '@ng-icons/lucide';
 
 interface NavItem {
   label: string;
@@ -12,13 +14,15 @@ interface NavItem {
     text: string;
     classes: string;
   };
+  children?: { label: string; route: string; icon?: string }[];
 }
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, NgIconComponent],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
+  viewProviders: [provideIcons({ lucideFilePlus })],
 })
 export class Sidebar {
   chatService = inject(ChatService);
@@ -54,6 +58,9 @@ export class Sidebar {
       icon: 'icon-documents.svg',
       route: '/documents',
       badge: { text: 'New', classes: 'sidebar-badge-blue' },
+      children: [
+        { label: 'Generate Document', route: '/documents/generate', icon: 'lucideFilePlus' }
+      ]
     },
     {
       label: 'Chats',

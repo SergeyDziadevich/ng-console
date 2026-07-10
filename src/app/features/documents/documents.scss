@@ -86,7 +86,36 @@
     padding: 1.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
-    .loading, .empty-state {
+    .loading-bar-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: #3b82f6;
+      animation: loading-bar 1.5s infinite ease-in-out;
+      transform-origin: 0% 50%;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      color: #6b7280;
+
+      ng-icon {
+        animation: spin 1s linear infinite;
+        font-size: 2rem;
+        color: #3b82f6;
+        opacity: 1 !important;
+      }
+    }
+
+    .empty-state {
       text-align: center;
       padding: 3rem;
       color: #6b7280;
@@ -176,3 +205,25 @@
     }
   }
 }
+
+@keyframes loading-bar {
+  0% {
+    transform: scaleX(0) translateX(0);
+  }
+  50% {
+    transform: scaleX(0.5) translateX(50%);
+  }
+  100% {
+    transform: scaleX(0) translateX(100%);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+

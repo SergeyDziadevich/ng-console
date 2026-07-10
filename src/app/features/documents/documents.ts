@@ -9,18 +9,18 @@ import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2 } from '@ng-icons/lucide';
 import { Toast } from '../../components/toast/toast';
 import { environment } from '../../../environments/environment';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
-import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-documents',
-  imports: [CommonModule, NgIconComponent, Toast, ConfirmDialogComponent, RouterModule],
+  imports: [CommonModule, NgIconComponent, Toast, RouterLink, ConfirmDialogComponent],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
-  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText })]
+  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFilePlus, lucideFileSignature, lucideEye, lucideFileText, lucideLoader2 })]
 })
 export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);
@@ -28,7 +28,7 @@ export class DocumentsComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
 
   private router = inject(Router);
-
+  private route = inject(ActivatedRoute);
   // State
   documents = signal<UploadedDocument[]>([]);
   totalDocuments = signal<number>(0);
@@ -40,6 +40,7 @@ export class DocumentsComponent implements OnInit {
   toast = signal<string | null>(null);
   isActionLoading = signal<boolean>(false);
   documentToDelete = signal<UploadedDocument | null>(null);
+
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   isAdmin = computed(() => {
@@ -64,6 +65,11 @@ export class DocumentsComponent implements OnInit {
 
   ngOnInit() {
     this.loadDocuments();
+    this.route.queryParams.subscribe(params => {
+      if (params['generated']) {
+        this.showToast('Document generated successfully');
+      }
+    });
   }
 
   showToast(message: string) {

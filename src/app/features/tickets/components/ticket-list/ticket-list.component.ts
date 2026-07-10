@@ -30,6 +30,7 @@ export class TicketListComponent implements OnInit {
   showAssignedToMeOnly = signal(false);
   selectedEpicId = signal<string>('');
   selectedStatuses = signal<Set<TicketStatus>>(new Set());
+  isCompactView = signal(false);
 
   filteredTickets = computed(() => {
     const tickets = this.ticketsResource.value();
@@ -62,6 +63,7 @@ export class TicketListComponent implements OnInit {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.showAssignedToMeOnly.set(params['assignedToMe'] === 'true');
       this.selectedEpicId.set(params['epicId'] || '');
+      this.isCompactView.set(params['view'] === 'compact');
 
       const statuses = params['status'];
       if (statuses) {
@@ -78,6 +80,15 @@ export class TicketListComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { assignedToMe: !currentValue ? 'true' : undefined },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  toggleCompactView() {
+    const isCompact = this.isCompactView();
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view: !isCompact ? 'compact' : undefined },
       queryParamsHandling: 'merge',
     });
   }
