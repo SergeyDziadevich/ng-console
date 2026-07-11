@@ -46,7 +46,7 @@ export class Login {
   protected readonly tempToken = signal<string>('');
 
   protected readonly form = this.fb.group({
-    name: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
@@ -108,9 +108,9 @@ export class Login {
       this.loading.set(true);
       this.errorMessage.set(null);
 
-      const { name, password } = this.form.getRawValue();
+      const { email, password } = this.form.getRawValue();
 
-      this.authService.login({ username: name!, password: password! }).subscribe({
+      this.authService.login({ email: email!, password: password! }).subscribe({
         next: (res) => {
           this.loading.set(false);
           if (res.requires2fa && res.tempToken) {

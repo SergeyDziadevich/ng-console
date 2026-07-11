@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 export class ChatPage {
   readonly page: Page;
@@ -42,11 +42,15 @@ export class ChatPage {
   }
 
   async typeMessage(message: string) {
-    await this.page.getByPlaceholder('Type a message...').fill(message);
+    const input = this.page.getByPlaceholder('Type a message...');
+    await input.click();
+    await input.fill(message);
   }
 
   async sendMessage() {
-    await this.page.locator('button[type="submit"]').click();
+    const button = this.page.locator('button[type="submit"]');
+    await expect(button).toBeEnabled({ timeout: 5000 });
+    await button.click();
   }
 
   async openAddUserModal() {
