@@ -28,55 +28,29 @@
             </div>
           }
 
-          <!-- Email
-        <div class="mb-5">
-          <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">
-            Email address
-          </label>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            aria-required="true"
-            [attr.aria-describedby]="form.controls.email.invalid && form.controls.email.touched ? 'email-error' : null"
-            class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-            [class.border-red-500]="form.controls.email.invalid && form.controls.email.touched"
-            [class.border-gray-600]="!(form.controls.email.invalid && form.controls.email.touched)" />
-          @if (form.controls.email.invalid && form.controls.email.touched) {
-            <p id="email-error" class="mt-1.5 text-xs text-red-400" role="alert">
-              @if (form.controls.email.errors?.['required']) {
-                Email is required.
-              } @else {
-                Enter a valid email address.
-              }
-            </p>
-          }
-        </div>
-        -->
-          <!-- name -->
+          <!-- Email -->
           <div class="mb-5">
-            <label class="block text-sm font-medium text-gray-300 mb-1.5" for="name"> Name </label>
+            <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">
+              Email address
+            </label>
             <input
-              class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-              id="name"
-              [attr.aria-describedby]="
-                form.controls.name.invalid && form.controls.name.touched ? 'email-error' : null
-              "
-              [class.border-red-500]="form.controls.name.invalid && form.controls.name.touched"
-              [class.border-gray-600]="!(form.controls.name.invalid && form.controls.name.touched)"
-              formControlName="name"
-              placeholder="name"
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="you@example.com"
               aria-required="true"
-            />
-            @if (
-              form.controls.name.invalid &&
-              form.controls.name.touched &&
-              form.controls.name.errors?.['required']
-            ) {
-              <p class="mt-1.5 text-xs text-red-400" id="email-error" role="alert">
-                Name is required.
+              [attr.aria-describedby]="form.controls.email.invalid && form.controls.email.touched ? 'email-error' : null"
+              class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              [class.border-red-500]="form.controls.email.invalid && form.controls.email.touched"
+              [class.border-gray-600]="!(form.controls.email.invalid && form.controls.email.touched)" />
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+              <p id="email-error" class="mt-1.5 text-xs text-red-400" role="alert">
+                @if (form.controls.email.errors?.['required']) {
+                  Email is required.
+                } @else {
+                  Enter a valid email address.
+                }
               </p>
             }
           </div>

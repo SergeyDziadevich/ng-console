@@ -91,7 +91,7 @@ describe('AuthService', () => {
   });
 
   it('should login and set token', () => {
-    service.login({ username: 'test', password: '123' }).subscribe();
+    service.login({ email: 'test@example.com', password: '123' }).subscribe();
 
     const req = httpTestingController.expectOne(`${environment.apiUrl}/api/auth/login`);
     expect(req.request.method).toBe('POST');

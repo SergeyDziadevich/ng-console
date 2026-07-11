@@ -2,13 +2,13 @@ import { Page, Locator } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
-  readonly nameInput: Locator;
+  readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly submitButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.nameInput = page.locator('input[formControlName="name"]');
+    this.emailInput = page.locator('input[formControlName="email"]');
     this.passwordInput = page.locator('input[formControlName="password"]');
     this.submitButton = page.locator('button[type="submit"]');
   }
@@ -17,8 +17,8 @@ export class LoginPage {
     await this.page.goto('/login');
   }
 
-  async login(name: string, password = 'password') {
-    await this.nameInput.fill(name);
+  async login(email: string, password = 'password') {
+    await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.submitButton.click();
   }
