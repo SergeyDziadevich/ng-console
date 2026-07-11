@@ -16,7 +16,7 @@ interface MockAuthService {
 interface ExposedLogin {
   handleGoogleCredentialResponse: (res: GoogleCredentialResponse) => void;
   onSubmit: () => void;
-  form: FormGroup<{ name: FormControl<string | null>; password: FormControl<string | null> }>;
+  form: FormGroup<{ email: FormControl<string | null>; password: FormControl<string | null> }>;
   codeForm: FormGroup<{ twoFactorCode: FormControl<string | null> }>;
   loading: Signal<boolean>;
   step: WritableSignal<1 | 2>;
@@ -98,7 +98,7 @@ describe('Login Component', () => {
 
   describe('onSubmit (Step 1)', () => {
     it('should mark form as touched and not login if form is invalid', () => {
-      exposedComponent.form.controls.name.setValue('');
+      exposedComponent.form.controls.email.setValue('');
       exposedComponent.form.controls.password.setValue('');
 
       exposedComponent.onSubmit();
@@ -108,21 +108,21 @@ describe('Login Component', () => {
     });
 
     it('should navigate to home on success without 2FA', () => {
-      exposedComponent.form.controls.name.setValue('testuser');
+      exposedComponent.form.controls.email.setValue('test@example.com');
       exposedComponent.form.controls.password.setValue('password123');
       mockAuthService.login.mockReturnValue(of({ requires2fa: false }));
 
       exposedComponent.onSubmit();
 
       expect(mockAuthService.login).toHaveBeenCalledWith({
-        username: 'testuser',
+        email: 'test@example.com',
         password: 'password123',
       });
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
     });
 
     it('should set step to 2 on success with 2FA', () => {
-      exposedComponent.form.controls.name.setValue('testuser');
+      exposedComponent.form.controls.email.setValue('test@example.com');
       exposedComponent.form.controls.password.setValue('password123');
       mockAuthService.login.mockReturnValue(of({ requires2fa: true, tempToken: 'temp_token_1' }));
 
@@ -133,7 +133,7 @@ describe('Login Component', () => {
     });
 
     it('should set error message on login failure', () => {
-      exposedComponent.form.controls.name.setValue('testuser');
+      exposedComponent.form.controls.email.setValue('test@example.com');
       exposedComponent.form.controls.password.setValue('password123');
       mockAuthService.login.mockReturnValue(
         throwError(() => ({ error: { message: 'Login error' } })),

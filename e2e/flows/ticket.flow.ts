@@ -19,7 +19,7 @@ export class TicketFlow {
   async addTicket(data: { title: string, about?: string, description: string }) {
     // Explicitly login first to avoid redirect race conditions
     await this.loginPage.goto();
-    await this.loginPage.login('test-user', '12345678');
+    await this.loginPage.login('test-user@gmail.com', '12345678');
 
     // Wait for the login to complete and redirect away from /login
     await this.page.waitForURL(url => !url.toString().includes('/login'));
