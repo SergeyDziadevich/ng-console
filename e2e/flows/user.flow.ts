@@ -19,7 +19,7 @@ export class UserFlow {
   async addUser(data: { name: string, email: string, password?: string, role?: string }) {
     // Explicitly login first to avoid redirect race conditions
     await this.loginPage.goto();
-    await this.loginPage.login('test-user', '12345678');
+    await this.loginPage.login('test-user@gmail.com', '12345678');
 
     // Wait for the login to complete and redirect away from /login
     await this.page.waitForURL(url => !url.toString().includes('/login'));
@@ -51,6 +51,9 @@ export class UserFlow {
     // Force reload the page to ensure we see the updated list
     await this.page.reload();
 
+    // Select "All" page size to ensure the user is visible regardless of pagination
+    await this.page.selectOption('select', 'all');
+
     // Verify the user exists in the list using an auto-retrying locator
     const userRow = this.page.locator('table tbody tr', { hasText: data.email });
     await expect(userRow).toBeVisible({ timeout: 10000 });
@@ -61,6 +64,9 @@ export class UserFlow {
       await this.userList.goto();
       await this.page.waitForTimeout(600);
     }
+
+    // Select "All" page size to ensure the user is visible regardless of pagination
+    await this.page.selectOption('select', 'all');
 
     const userRow = this.page.locator('table tbody tr', { hasText: email });
     await expect(userRow).toBeVisible({ timeout: 10000 });
