@@ -29,4 +29,8 @@ export class PaymentsService {
       returnUrl
     });
   }
+
+  getSubscription(): Observable<{ status: string, currentPeriodStart: number, currentPeriodEnd: number, cancelAtPeriodEnd: boolean }> {
+    return this.http.get<{ status: string, currentPeriodStart: number, currentPeriodEnd: number, cancelAtPeriodEnd: boolean }>(`${this.apiUrl}/subscription`);
+  }
 }
