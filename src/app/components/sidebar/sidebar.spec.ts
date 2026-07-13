@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Sidebar } from './sidebar';
 import { ChatService } from '../../services/chat.service';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { signal } from '@angular/core';
@@ -18,7 +18,13 @@ describe('Sidebar Component', () => {
 
     await TestBed.configureTestingModule({
       imports: [Sidebar],
-      providers: [{ provide: ChatService, useValue: chatServiceSpy }, provideRouter([])],
+      providers: [
+        { provide: ChatService, useValue: chatServiceSpy },
+        provideRouter([
+          { path: 'documents/generate', component: Sidebar },
+          { path: 'payments/billing-history', component: Sidebar },
+        ]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Sidebar);
@@ -92,5 +98,22 @@ describe('Sidebar Component', () => {
 
     fixture.componentRef.setInput('currentUser', { id: '123', planId: 'some_other_plan' });
     expect(component.planName()).toBe('Subscribed');
+  });
+
+  it('should compute isItemActive correctly based on router navigation', async () => {
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/documents/generate');
+    fixture.detectChanges();
+
+    const activeMap = component.isItemActive();
+    expect(activeMap['/documents']).toBe(true);
+    expect(activeMap['/payments/subscriptions']).toBe(false);
+
+    await router.navigateByUrl('/payments/billing-history');
+    fixture.detectChanges();
+
+    const newActiveMap = component.isItemActive();
+    expect(newActiveMap['/documents']).toBe(false);
+    expect(newActiveMap['/payments/subscriptions']).toBe(true);
   });
 });
