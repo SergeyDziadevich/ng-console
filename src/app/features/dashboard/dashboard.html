@@ -136,10 +136,51 @@
         </div>
       </a>
     </div>
+    <!-- Subscription Widget -->
     <div
-      class="bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 flex items-center justify-center min-h-[160px]"
+      class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col relative overflow-hidden group"
     >
-      <span class="text-gray-400 font-medium text-sm">Widget Area</span>
+      @if (planName()) {
+        <a
+          class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 transition-colors cursor-pointer"
+          [routerLink]="['/payments/billing-history']"
+        >
+          <div
+            class="absolute -right-4 -top-4 w-24 h-24 bg-purple-50 rounded-full group-hover:scale-110 transition-transform duration-300"
+          ></div>
+          <div class="relative z-10 w-full flex flex-col items-center">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              Current Plan
+            </h3>
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-bold text-purple-600">{{ planName() }}</span>
+            </div>
+            <span
+              class="text-xs text-purple-500 mt-2 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+              >Manage subscription &rarr;</span
+            >
+          </div>
+        </a>
+      } @else {
+        <a
+          class="p-6 flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-colors cursor-pointer text-white"
+          [routerLink]="['/payments/subscriptions']"
+        >
+          <div class="relative z-10 w-full flex flex-col items-center text-center">
+            <h3 class="text-sm font-semibold text-indigo-100 uppercase tracking-wider mb-2">
+              Unlock Premium
+            </h3>
+            <div class="flex items-baseline gap-2 mb-2">
+              <span class="text-2xl font-bold">Upgrade Now</span>
+            </div>
+            <p class="text-xs text-indigo-100 mb-2">Get access to all features</p>
+            <span
+              class="text-xs font-medium bg-white/20 px-3 py-1 rounded-full group-hover:bg-white/30 transition-colors"
+              >View plans &rarr;</span
+            >
+          </div>
+        </a>
+      }
     </div>
   </div>
 
@@ -234,7 +275,7 @@
   <!-- Sounds Good (Done Tickets) Section -->
   <div class="mt-10 mb-10">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-gray-900">Sounds Good</h2>
+      <h2 class="text-xl font-bold text-gray-900">Tickets Done</h2>
       <a
         class="text-sm font-medium text-green-600 hover:text-green-800 transition-colors"
         [queryParams]="{ status: 'done' }"

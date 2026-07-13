@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TicketService } from '../../features/tickets/services/ticket.service';
 import { DocumentService } from '../../services/document.service';
+import { PaymentsService } from '../../services/payments.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,11 +17,20 @@ export class Dashboard implements OnInit {
   private authService = inject(AuthService);
   private ticketService = inject(TicketService);
   private documentService = inject(DocumentService);
+  private paymentsService = inject(PaymentsService);
 
   currentUser = this.authService.currentUser;
   ticketsResource = this.ticketService.ticketsResource;
   totalDocuments = signal<number>(0);
   isLoadingDocuments = signal<boolean>(true);
+
+  planName = computed(() => {
+    const planId = this.currentUser()?.planId;
+    if (!planId) return '';
+    if (planId === 'price_1Tsh1w3C6FGO2xjMcR62X9Po') return 'Pro';
+    if (planId === 'price_1Tsh4Y3C6FGO2xjMaTpgehz2') return 'Premium';
+    return 'Subscribed';
+  });
 
   assignedTicketsCount = computed(() => {
     const user = this.currentUser();
