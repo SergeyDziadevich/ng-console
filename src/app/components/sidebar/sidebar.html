@@ -35,6 +35,7 @@
             routerLinkActive="active"
             #rla="routerLinkActive"
             [class.active]="isItemActive(item, rla.isActive)"
+            [class.expanded]="item.children && !collapsed() && isItemActive(item, rla.isActive)"
           >
             @if (item.icon.endsWith('.svg')) {
               <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
@@ -54,6 +55,13 @@
                 <span class="sidebar-badge {{ item.badge.classes }}">
                   {{ item.badge.text }}
                 </span>
+              }
+              @if (item.children) {
+                @if (isItemActive(item, rla.isActive)) {
+                  <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronUp"></ng-icon>
+                } @else {
+                  <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronDown"></ng-icon>
+                }
               }
             }
           </a>
@@ -90,7 +98,7 @@
           A
         </div>
         <div class="sidebar-user-details">
-          <p class="sidebar-user-role">{{ currentUser()?.role }} - {{ getPlanName(currentUser()?.planId) }}</p>
+          <p class="sidebar-user-role">{{ currentUser()?.role }} {{ planName() }}</p>
           <p class="sidebar-user-email">{{ currentUser()?.email }}</p>
         </div>
       </div>
