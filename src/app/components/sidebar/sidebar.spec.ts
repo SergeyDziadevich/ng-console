@@ -81,4 +81,16 @@ describe('Sidebar Component', () => {
 
     expect(unreadDot).toBeTruthy();
   });
+  it('should compute planName correctly based on currentUser planId', () => {
+    expect(component.planName()).toBe('');
+
+    fixture.componentRef.setInput('currentUser', { id: '123', planId: 'price_1Tsh1w3C6FGO2xjMcR62X9Po' });
+    expect(component.planName()).toBe('Pro');
+
+    fixture.componentRef.setInput('currentUser', { id: '123', planId: 'price_1Tsh4Y3C6FGO2xjMaTpgehz2' });
+    expect(component.planName()).toBe('Premium');
+
+    fixture.componentRef.setInput('currentUser', { id: '123', planId: 'some_other_plan' });
+    expect(component.planName()).toBe('Subscribed');
+  });
 });
