@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-payment-cancel',
-  standalone: true,
   imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -18,8 +17,8 @@ import { RouterLink } from '@angular/router';
             You have cancelled the checkout process. You have not been charged.
           </p>
           <div class="mt-6">
-            <a routerLink="/pricing" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
-              Return to Pricing
+            <a routerLink="/payments/subscriptions" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+              Return to Subscriptions
             </a>
           </div>
         </div>

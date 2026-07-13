@@ -5,7 +5,6 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-payment-success',
-  standalone: true,
   imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -27,8 +26,8 @@ import { AuthService } from '../../services/auth.service';
               Thank you for your subscription. Your account has been upgraded.
             </p>
             <div class="mt-6">
-              <a routerLink="/dashboard" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
-                Go to Dashboard
+              <a routerLink="/payments/subscriptions" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                Go to Subscriptions
               </a>
             </div>
           }
