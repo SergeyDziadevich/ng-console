@@ -11,6 +11,19 @@
         <div class="card-body">
           <h3>{{ getCurrentPlan()?.name }} Plan</h3>
           <p class="description">{{ getCurrentPlan()?.description }}</p>
+          
+          @if (subscriptionDetails()) {
+            <div class="subscription-dates">
+              <p>
+                <span class="label">Current period:</span> 
+                <span class="value">{{ subscriptionDetails()!.currentPeriodStart * 1000 | date:'mediumDate' }} - {{ subscriptionDetails()!.currentPeriodEnd * 1000 | date:'mediumDate' }}</span>
+              </p>
+              @if (subscriptionDetails()!.cancelAtPeriodEnd) {
+                <p class="cancels-warning">Cancels at the end of the billing period.</p>
+              }
+            </div>
+          }
+
           <ul role="list" class="feature-list">
             @for (feature of getCurrentPlan()?.features; track feature) {
               <li class="feature-item">
