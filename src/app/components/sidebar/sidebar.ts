@@ -1,5 +1,7 @@
 import { Component, input, signal, inject, computed } from '@angular/core';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
 import { AuthResponse } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -27,6 +29,15 @@ interface NavItem {
 export class Sidebar {
   chatService = inject(ChatService);
   router = inject(Router);
+
+  currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map((e) => (e as NavigationEnd).urlAfterRedirects)
+    ),
+    { initialValue: this.router.url }
+  );
+
   collapsed = signal(false);
 
   currentUser = input.required<AuthResponse['user'] | null>();
@@ -99,13 +110,16 @@ export class Sidebar {
     this.collapsed.update((v) => !v);
   }
 
-  isItemActive(item: NavItem, rlaActive: boolean): boolean {
-    if (rlaActive) return true;
-    if (item.children) {
-      return item.children.some(child => this.router.url.includes(child.route));
+  isItemActive = computed(() => {
+    const url = this.currentUrl() || '';
+    const activeMap: Record<string, boolean> = {};
+    for (const item of this.navItems) {
+      activeMap[item.route] = item.children
+        ? item.children.some((child) => url.includes(child.route))
+        : false;
     }
-    return false;
-  }
+    return activeMap;
+  });
 
   planName = computed(() => {
     const planId = this.currentUser()?.planId;

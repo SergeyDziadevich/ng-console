@@ -34,8 +34,8 @@
             [routerLinkActiveOptions]="{ exact: item.route === '/' }"
             routerLinkActive="rla-active"
             #rla="routerLinkActive"
-            [class.active]="isItemActive(item, rla.isActive)"
-            [class.expanded]="item.children && !collapsed() && isItemActive(item, rla.isActive)"
+            [class.active]="rla.isActive || isItemActive()[item.route]"
+            [class.expanded]="item.children && !collapsed() && (rla.isActive || isItemActive()[item.route])"
           >
             @if (item.icon.endsWith('.svg')) {
               <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
@@ -57,7 +57,7 @@
                 </span>
               }
               @if (item.children) {
-                @if (isItemActive(item, rla.isActive)) {
+                @if (rla.isActive || isItemActive()[item.route]) {
                   <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronUp"></ng-icon>
                 } @else {
                   <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronDown"></ng-icon>
@@ -65,7 +65,7 @@
               }
             }
           </a>
-          @if (item.children && !collapsed() && isItemActive(item, rla.isActive)) {
+          @if (item.children && !collapsed() && (rla.isActive || isItemActive()[item.route])) {
             <div class="sidebar-submenu">
               @for (child of item.children; track child.route) {
                 <a
