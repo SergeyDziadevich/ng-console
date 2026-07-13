@@ -35,7 +35,11 @@
             routerLinkActive="active"
             #rla="routerLinkActive"
           >
-            <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
+            @if (item.icon.endsWith('.svg')) {
+              <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
+            } @else {
+              <ng-icon class="sidebar-icon" [name]="item.icon"></ng-icon>
+            }
             @if (!collapsed()) {
               <span class="sidebar-nav-label">
                 {{ item.label }}
@@ -85,7 +89,7 @@
           A
         </div>
         <div class="sidebar-user-details">
-          <p class="sidebar-user-role">{{ currentUser()?.role }}</p>
+          <p class="sidebar-user-role">{{ currentUser()?.role }} - {{ getPlanName(currentUser()?.planId) }}</p>
           <p class="sidebar-user-email">{{ currentUser()?.email }}</p>
         </div>
       </div>
