@@ -32,7 +32,7 @@
             class="sidebar-nav-item"
             [routerLink]="item.route"
             [routerLinkActiveOptions]="{ exact: item.route === '/' }"
-            routerLinkActive="active"
+            routerLinkActive="rla-active"
             #rla="routerLinkActive"
             [class.active]="isItemActive(item, rla.isActive)"
             [class.expanded]="item.children && !collapsed() && isItemActive(item, rla.isActive)"
