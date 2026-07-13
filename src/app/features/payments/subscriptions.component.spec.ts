@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubscriptionsComponent } from './subscriptions.component';
 import { PaymentsService } from '../../services/payments.service';
 import { AuthService } from '../../services/auth.service';
@@ -16,7 +16,7 @@ describe('SubscriptionsComponent', () => {
 
   beforeEach(async () => {
     paymentsServiceMock = {
-      getSubscription: vi.fn(),
+      getSubscription: vi.fn().mockReturnValue(of(null)),
       createCheckoutSession: vi.fn(),
       createPortalSession: vi.fn()
     };
@@ -45,7 +45,7 @@ describe('SubscriptionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load subscription details if user has active plan', fakeAsync(() => {
+  it('should load subscription details if user has active plan', async () => {
     mockUserSignal.set({ planId: 'price_1Tsh1w3C6FGO2xjMcR62X9Po' });
     const mockDetails = { status: 'active', currentPeriodStart: 123, currentPeriodEnd: 456, cancelAtPeriodEnd: false };
     paymentsServiceMock['getSubscription'].mockReturnValue(of(mockDetails));
@@ -54,24 +54,24 @@ describe('SubscriptionsComponent', () => {
     component = fixture.componentInstance;
     
     fixture.detectChanges();
-    tick();
+    await fixture.whenStable();
 
     expect(paymentsServiceMock['getSubscription']).toHaveBeenCalled();
     expect((component as unknown as { subscriptionDetails: () => unknown }).subscriptionDetails()).toEqual(mockDetails);
-  }));
+  });
 
-  it('should not load subscription details if user has no active plan', fakeAsync(() => {
+  it('should not load subscription details if user has no active plan', async () => {
     mockUserSignal.set({ planId: null });
     
     fixture = TestBed.createComponent(SubscriptionsComponent);
     component = fixture.componentInstance;
     
     fixture.detectChanges();
-    tick();
+    await fixture.whenStable();
 
     expect(paymentsServiceMock['getSubscription']).not.toHaveBeenCalled();
     expect((component as unknown as { subscriptionDetails: () => unknown }).subscriptionDetails()).toBeNull();
-  }));
+  });
 
   it('getCurrentPlan should return correct plan based on activePlan', () => {
     fixture = TestBed.createComponent(SubscriptionsComponent);
