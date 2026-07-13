@@ -120,14 +120,19 @@ export const routes: Routes = [
           import('./features/payments/subscriptions.component').then((m) => m.SubscriptionsComponent),
       },
       {
+        path: 'payments/billing-history',
+        loadComponent: () =>
+          import('./features/payments/billing-history/billing-history.component').then((m) => m.BillingHistoryComponent),
+      },
+      {
         path: 'payments/success',
         loadComponent: () =>
-          import('./features/payments/success.component').then((m) => m.PaymentSuccessComponent),
+          import('./features/payments/subscriptions-callback/success.component').then((m) => m.PaymentSuccessComponent),
       },
       {
         path: 'payments/cancel',
         loadComponent: () =>
-          import('./features/payments/cancel.component').then((m) => m.PaymentCancelComponent),
+          import('./features/payments/subscriptions-callback/cancel.component').then((m) => m.PaymentCancelComponent),
       },
       {
         path: '',

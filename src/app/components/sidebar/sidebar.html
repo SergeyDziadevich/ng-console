@@ -34,6 +34,7 @@
             [routerLinkActiveOptions]="{ exact: item.route === '/' }"
             routerLinkActive="active"
             #rla="routerLinkActive"
+            [class.active]="isItemActive(item, rla.isActive)"
           >
             @if (item.icon.endsWith('.svg')) {
               <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
@@ -56,7 +57,7 @@
               }
             }
           </a>
-          @if (item.children && !collapsed() && rla.isActive) {
+          @if (item.children && !collapsed() && isItemActive(item, rla.isActive)) {
             <div class="sidebar-submenu">
               @for (child of item.children; track child.route) {
                 <a
