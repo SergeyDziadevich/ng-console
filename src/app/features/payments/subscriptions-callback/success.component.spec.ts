@@ -76,7 +76,7 @@ describe('PaymentSuccessComponent', () => {
 
   it('should handle verification error', () => {
     mockPaymentsService.verifySession.mockReturnValue(throwError(() => new Error('Verification failed')));
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     fixture = TestBed.createComponent(PaymentSuccessComponent);
     component = fixture.componentInstance;

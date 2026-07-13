@@ -3,6 +3,22 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export interface SubscriptionData {
+  status: string;
+  currentPeriodStart: number;
+  currentPeriodEnd: number;
+  cancelAtPeriodEnd: boolean;
+}
+
+export interface InvoiceData {
+  id: string;
+  amountPaid: number;
+  status: string;
+  created: number;
+  hostedInvoiceUrl: string;
+  invoicePdf: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,11 +46,11 @@ export class PaymentsService {
     });
   }
 
-  getSubscription(): Observable<{ status: string, currentPeriodStart: number, currentPeriodEnd: number, cancelAtPeriodEnd: boolean }> {
-    return this.http.get<{ status: string, currentPeriodStart: number, currentPeriodEnd: number, cancelAtPeriodEnd: boolean }>(`${this.apiUrl}/subscription`);
+  getSubscription(): Observable<SubscriptionData> {
+    return this.http.get<SubscriptionData>(`${this.apiUrl}/subscription`);
   }
 
-  getInvoices(): Observable<Array<{ id: string, amountPaid: number, status: string, created: number, hostedInvoiceUrl: string, invoicePdf: string }>> {
-    return this.http.get<Array<{ id: string, amountPaid: number, status: string, created: number, hostedInvoiceUrl: string, invoicePdf: string }>>(`${this.apiUrl}/invoices`);
+  getInvoices(): Observable<InvoiceData[]> {
+    return this.http.get<InvoiceData[]>(`${this.apiUrl}/invoices`);
   }
 }

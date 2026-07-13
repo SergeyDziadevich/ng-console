@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { PaymentsService } from '../../../services/payments.service';
 import { AuthService } from '../../../services/auth.service';

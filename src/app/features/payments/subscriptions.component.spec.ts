@@ -116,7 +116,7 @@ describe('SubscriptionsComponent', () => {
     fixture = TestBed.createComponent(SubscriptionsComponent);
     component = fixture.componentInstance;
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     paymentsServiceMock['createCheckoutSession'].mockReturnValue(throwError(() => new Error('test error')));
     
     component.upgrade('test_price_id');
@@ -144,7 +144,7 @@ describe('SubscriptionsComponent', () => {
     fixture = TestBed.createComponent(SubscriptionsComponent);
     component = fixture.componentInstance;
 
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     paymentsServiceMock['createPortalSession'].mockReturnValue(throwError(() => new Error('test error')));
     
     component.manageBilling();
