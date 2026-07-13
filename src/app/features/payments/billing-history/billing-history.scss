@@ -65,6 +65,14 @@
     .no-invoices {
       @apply text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-200;
     }
+
+    .loading-state {
+      @apply flex flex-col items-center justify-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-200;
+
+      .spinner {
+        @apply animate-spin h-8 w-8 text-indigo-600 mb-4;
+      }
+    }
   }
 
   .no-subscription {

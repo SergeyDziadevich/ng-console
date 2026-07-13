@@ -16,18 +16,26 @@ export class BillingHistoryComponent {
   private authService = inject(AuthService);
 
   protected activePlan = computed(() => this.authService.currentUser()?.planId);
+  protected loading = signal(false);
   protected invoices = signal<Array<{ id: string, amountPaid: number, status: string, created: number, hostedInvoiceUrl: string, invoicePdf: string }>>([]);
 
   constructor() {
     effect(() => {
       if (this.activePlan()) {
+        this.loading.set(true);
         this.paymentsService.getInvoices().subscribe({
-          next: (invoices) => this.invoices.set(invoices),
-          error: (err) => console.error('Failed to load invoices', err)
+          next: (invoices) => {
+            this.invoices.set(invoices);
+            this.loading.set(false);
+          },
+          error: (err) => {
+            console.error('Failed to load invoices', err);
+            this.loading.set(false);
+          }
         });
       } else {
         this.invoices.set([]);
       }
-    });
+    }, { allowSignalWrites: true });
   }
 }
