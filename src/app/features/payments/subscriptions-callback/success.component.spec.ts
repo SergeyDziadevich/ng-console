@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaymentSuccessComponent } from './success.component';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { PaymentsService } from '../../services/payments.service';
-import { AuthService } from '../../services/auth.service';
+import { PaymentsService } from '../../../services/payments.service';
+import { AuthService } from '../../../services/auth.service';
 import { of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';

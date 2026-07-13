@@ -1,5 +1,5 @@
 import { Component, input, signal, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthResponse } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -26,6 +26,7 @@ interface NavItem {
 })
 export class Sidebar {
   chatService = inject(ChatService);
+  router = inject(Router);
   collapsed = signal(false);
 
   currentUser = input.required<AuthResponse['user'] | null>();
@@ -77,7 +78,8 @@ export class Sidebar {
       icon: 'lucideCreditCard',
       route: '/payments/subscriptions',
       children: [
-        { label: 'Subscriptions', route: '/payments/subscriptions' }
+        { label: 'Subscriptions', route: '/payments/subscriptions' },
+        { label: 'Billing History', route: '/payments/billing-history' }
       ]
     },
     {
@@ -95,6 +97,14 @@ export class Sidebar {
 
   toggle() {
     this.collapsed.update((v) => !v);
+  }
+
+  isItemActive(item: NavItem, rlaActive: boolean): boolean {
+    if (rlaActive) return true;
+    if (item.children) {
+      return item.children.some(child => this.router.url.includes(child.route));
+    }
+    return false;
   }
 
   getPlanName(planId?: string): string {

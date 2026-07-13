@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { PaymentsService } from '../../services/payments.service';
-import { AuthService } from '../../services/auth.service';
+import { PaymentsService } from '../../../services/payments.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-payment-success',
@@ -40,7 +40,7 @@ export class PaymentSuccessComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private paymentsService = inject(PaymentsService);
   private authService = inject(AuthService);
-  
+
   protected isVerifying = signal(true);
 
   ngOnInit() {
