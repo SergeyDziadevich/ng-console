@@ -1,0 +1,93 @@
+<div class="subscriptions-container">
+  <div class="content-wrapper">
+    
+    @if (activePlan()) {
+      <div class="header">
+        <h2>Your Active Subscription</h2>
+        <p>You are currently subscribed to the <strong>{{ getCurrentPlan()?.name }}</strong> plan.</p>
+      </div>
+
+      <div class="active-subscription-card">
+        <div class="card-body">
+          <h3>{{ getCurrentPlan()?.name }} Plan</h3>
+          <p class="description">{{ getCurrentPlan()?.description }}</p>
+          <ul role="list" class="feature-list">
+            @for (feature of getCurrentPlan()?.features; track feature) {
+              <li class="feature-item">
+                <div class="icon-wrapper">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p>{{ feature }}</p>
+              </li>
+            }
+          </ul>
+        </div>
+        <div class="card-footer">
+          <span class="status-text">Status: <span class="status-badge">Active</span></span>
+          <button 
+            type="button" 
+            (click)="manageBilling()" 
+            [disabled]="isProcessing()"
+            class="manage-btn"
+          >
+            @if (isProcessing()) {
+              Loading...
+            } @else {
+              Manage Billing
+            }
+          </button>
+        </div>
+      </div>
+
+    } @else {
+      <div class="header">
+        <h2>Simple, transparent pricing</h2>
+        <p>Choose the plan that best fits your needs.</p>
+      </div>
+
+      <div class="pricing-grid">
+        @for (plan of plans; track plan.priceId) {
+          <div class="pricing-card">
+            <div class="card-header">
+              <h3>{{ plan.name }}</h3>
+              <p class="price-container">
+                <span class="price">{{ plan.price }}</span>
+                <span class="period">{{ plan.period }}</span>
+              </p>
+              <p class="description">{{ plan.description }}</p>
+              <ul role="list" class="feature-list">
+                @for (feature of plan.features; track feature) {
+                  <li class="feature-item">
+                    <div class="icon-wrapper">
+                      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <p>{{ feature }}</p>
+                  </li>
+                }
+              </ul>
+            </div>
+            <div class="card-actions">
+              <button
+                type="button"
+                (click)="upgrade(plan.priceId)"
+                [disabled]="isProcessing()"
+                class="upgrade-btn"
+              >
+                @if (isProcessing()) {
+                  Processing...
+                } @else {
+                  Get started
+                }
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

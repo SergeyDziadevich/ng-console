@@ -115,6 +115,21 @@ export const routes: Routes = [
           import('./features/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),
       },
       {
+        path: 'payments/subscriptions',
+        loadComponent: () =>
+          import('./features/payments/subscriptions.component').then((m) => m.SubscriptionsComponent),
+      },
+      {
+        path: 'payments/success',
+        loadComponent: () =>
+          import('./features/payments/success.component').then((m) => m.PaymentSuccessComponent),
+      },
+      {
+        path: 'payments/cancel',
+        loadComponent: () =>
+          import('./features/payments/cancel.component').then((m) => m.PaymentCancelComponent),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

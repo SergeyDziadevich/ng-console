@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthResponse } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideFilePlus } from '@ng-icons/lucide';
+import { lucideFilePlus, lucideCreditCard } from '@ng-icons/lucide';
 
 interface NavItem {
   label: string;
@@ -22,7 +22,7 @@ interface NavItem {
   imports: [RouterLink, RouterLinkActive, NgIconComponent],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
-  viewProviders: [provideIcons({ lucideFilePlus })],
+  viewProviders: [provideIcons({ lucideFilePlus, lucideCreditCard })],
 })
 export class Sidebar {
   chatService = inject(ChatService);
@@ -73,6 +73,14 @@ export class Sidebar {
       route: '/notifications',
     },
     {
+      label: 'Payments',
+      icon: 'lucideCreditCard',
+      route: '/payments/subscriptions',
+      children: [
+        { label: 'Subscriptions', route: '/payments/subscriptions' }
+      ]
+    },
+    {
       label: 'Settings',
       icon: 'icon-settings.svg',
       route: '/settings',
@@ -87,5 +95,12 @@ export class Sidebar {
 
   toggle() {
     this.collapsed.update((v) => !v);
+  }
+
+  getPlanName(planId?: string): string {
+    if (!planId) return 'Free';
+    if (planId === 'price_1Tsh1w3C6FGO2xjMcR62X9Po') return 'Pro';
+    if (planId === 'price_1Tsh4Y3C6FGO2xjMaTpgehz2') return 'Premium';
+    return 'Subscribed';
   }
 }
