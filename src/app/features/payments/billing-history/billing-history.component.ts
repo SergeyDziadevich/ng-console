@@ -3,11 +3,13 @@ import { DatePipe, CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { PaymentsService } from '../../../services/payments.service';
 import { AuthService } from '../../../services/auth.service';
 
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { switchMap, catchError, finalize, tap, of } from 'rxjs';
+
 @Component({
   selector: 'app-billing-history',
   templateUrl: './billing-history.html',
   styleUrl: './billing-history.scss',
-  standalone: true,
   imports: [DatePipe, CurrencyPipe, TitleCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -17,25 +19,28 @@ export class BillingHistoryComponent {
 
   protected activePlan = computed(() => this.authService.currentUser()?.planId);
   protected loading = signal(false);
-  protected invoices = signal<Array<{ id: string, amountPaid: number, status: string, created: number, hostedInvoiceUrl: string, invoicePdf: string }>>([]);
+  
+  protected invoices = toSignal(
+    toObservable(this.activePlan).pipe(
+      tap(() => this.loading.set(true)),
+      switchMap(planId => {
+        if (planId) {
+          return this.paymentsService.getInvoices().pipe(
+            catchError(err => {
+              console.error('Failed to load invoices', err);
+              return of([]);
+            }),
+            finalize(() => this.loading.set(false))
+          );
+        }
+        this.loading.set(false);
+        return of([]);
+      })
+    ),
+    { initialValue: [] }
+  );
 
-  constructor() {
-    effect(() => {
-      if (this.activePlan()) {
-        this.loading.set(true);
-        this.paymentsService.getInvoices().subscribe({
-          next: (invoices) => {
-            this.invoices.set(invoices);
-            this.loading.set(false);
-          },
-          error: (err) => {
-            console.error('Failed to load invoices', err);
-            this.loading.set(false);
-          }
-        });
-      } else {
-        this.invoices.set([]);
-      }
-    }, { allowSignalWrites: true });
+  viewInvoice(url: string) {
+    window.open(url, '_blank');
   }
 }

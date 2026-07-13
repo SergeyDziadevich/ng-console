@@ -37,7 +37,7 @@
                       </span>
                     </td>
                     <td>
-                      <a [href]="invoice.hostedInvoiceUrl" target="_blank" class="invoice-link">View</a>
+                      <button (click)="viewInvoice(invoice.hostedInvoiceUrl)" class="invoice-link">View</button>
                       <span class="separator">|</span>
                       <a [href]="invoice.invoicePdf" target="_blank" class="invoice-link">Download</a>
                     </td>
