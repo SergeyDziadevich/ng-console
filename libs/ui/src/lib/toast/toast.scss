@@ -1,4 +1,4 @@
-@reference "../../../styles.scss";
+@reference "../../../../../src/styles.scss";
 
 .toast-container {
   @apply fixed top-20 right-6 z-50 text-white text-sm font-medium px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 transition-all;

@@ -10,9 +10,9 @@ import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2 } from '@ng-icons/lucide';
-import { Toast } from '../../components/toast/toast';
+import { Toast } from '@ng-console-platform/ui';
 import { environment } from '../../../environments/environment';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 @Component({

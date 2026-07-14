@@ -19,7 +19,7 @@ import SignaturePad from 'signature_pad';
 
 import { DocumentService } from '../../../services/document.service';
 import { UploadedDocument } from '../../../models/document.model';
-import { Toast } from '../../../components/toast/toast';
+import { Toast } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-document-viewer',

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { catchError, EMPTY } from 'rxjs';
-import { PaymentsService } from '../../services/payments.service';
+import { PaymentsService } from '@app/services/payments.service';
 
 @Component({
   selector: 'app-trial-banner',
