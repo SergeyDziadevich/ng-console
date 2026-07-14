@@ -57,3 +57,6 @@ AGENTS.md
 .nx/cache
 .nx/workspace-data
 .nx/migrate-runs
+.angular
+
+vitest.config.*.timestamp*
