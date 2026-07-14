@@ -5,7 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { httpResource } from '@angular/common/http';
 import { UserService } from '../../../services/user-service';
-import { Toast } from '../../../components/toast/toast';
+import { Toast } from '@ng-console-platform/ui';
 import { UserModal } from '../user-modal/user-modal';
 import { UserRole } from '../../../enums/user-role.enum';
 import { User } from '../../../models/user.model';

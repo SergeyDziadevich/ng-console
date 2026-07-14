@@ -6,7 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { TicketService } from '../../services/ticket.service';
 import { UserService } from '../../../../services/user-service';
 import { Ticket, TicketPriority, TicketStatus } from '../../models/ticket.model';
-import { Toast } from '../../../../components/toast/toast';
+import { Toast } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-create-ticket',

@@ -6,8 +6,9 @@
     "target": "ES2022",
     "module": "preserve",
     "skipLibCheck": true,
-    "paths": {
-      "ui": ["./libs/ui/src/index.ts"]
-    }
+      "paths": {
+        "@ng-console-platform/ui": ["./libs/ui/src/index.ts"],
+        "@app/*": ["./src/app/*"]
+      }
   }
 }

@@ -10,7 +10,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
 import { User, UserSettings } from '../../models/user.model';
-import { Toast } from '../../components/toast/toast';
+import { Toast } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-settings',

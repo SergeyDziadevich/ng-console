@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from '../sidebar/sidebar';
 import { TopBar } from '../top-bar/top-bar';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@app/services/auth.service';
 @Component({
   selector: 'app-shell',
   imports: [RouterOutlet, Sidebar, TopBar],

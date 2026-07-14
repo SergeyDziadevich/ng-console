@@ -15,7 +15,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    loadComponent: () => import('./components/shell/shell').then((m) => m.Shell),
+    loadComponent: () => import('@ng-console-platform/ui').then((m) => m.Shell),
     // canMatch prevents downloading the shell (and all child) bundles when not authenticated
     canMatch: [canMatchAuthGuard],
     canActivate: [authGuard],

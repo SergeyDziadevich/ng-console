@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { form, FormField, required, email, minLength } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user-service';
-import { Toast } from '../../../components/toast/toast';
+import { Toast } from '@ng-console-platform/ui';
 import { UserModal } from '../user-modal/user-modal';
 import { UserRole } from '../../../enums/user-role.enum';
 import { CreateUser } from '../../../models/user.model';
