@@ -77,7 +77,7 @@ describe('SubscriptionsComponent', () => {
     fixture = TestBed.createComponent(SubscriptionsComponent);
     component = fixture.componentInstance;
 
-    mockUserSignal.set({ planId: 'price_1Tsh4Y3C6FGO2xjMaTpgehz2' });
+    mockUserSignal.set({ planId: 'prod_Uslsp82BoehihT' });
     fixture.detectChanges();
 
     const plan = component.getCurrentPlan();
@@ -104,7 +104,7 @@ describe('SubscriptionsComponent', () => {
     
     component.upgrade('test_price_id');
 
-    expect(component['isProcessing']()).toBe(true);
+    expect(component['processingAction']()).toBe('test_price_id');
     expect(paymentsServiceMock['createCheckoutSession']).toHaveBeenCalledWith(
       'test_price_id',
       expect.any(String),
@@ -122,7 +122,7 @@ describe('SubscriptionsComponent', () => {
     component.upgrade('test_price_id');
 
     expect(consoleSpy).toHaveBeenCalledWith('Failed to create checkout session', expect.any(Error));
-    expect(component['isProcessing']()).toBe(false);
+    expect(component['processingAction']()).toBeNull();
   });
 
   it('manageBilling should call createPortalSession and open new tab', () => {
@@ -137,7 +137,7 @@ describe('SubscriptionsComponent', () => {
 
     expect(paymentsServiceMock['createPortalSession']).toHaveBeenCalledWith(expect.any(String));
     expect(windowSpy).toHaveBeenCalledWith(mockUrl, '_blank');
-    expect(component['isProcessing']()).toBe(false);
+    expect(component['processingAction']()).toBeNull();
   });
 
   it('manageBilling should handle error correctly', () => {
@@ -150,6 +150,6 @@ describe('SubscriptionsComponent', () => {
     component.manageBilling();
 
     expect(consoleSpy).toHaveBeenCalledWith('Failed to create portal session', expect.any(Error));
-    expect(component['isProcessing']()).toBe(false);
+    expect(component['processingAction']()).toBeNull();
   });
 });
