@@ -51,6 +51,10 @@
         .cancels-warning {
           @apply mt-2 text-orange-600 font-medium;
         }
+
+        .trial-warning {
+          @apply mt-2 text-blue-600 font-medium;
+        }
       }
 
       .feature-list {

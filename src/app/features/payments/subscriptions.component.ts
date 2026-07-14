@@ -16,7 +16,7 @@ import { switchMap, catchError, of } from 'rxjs';
 export class SubscriptionsComponent {
   private paymentsService = inject(PaymentsService);
   private authService = inject(AuthService);
-  protected readonly isProcessing = signal(false);
+  protected readonly processingAction = signal<string | null>(null);
 
   protected activePlan = computed(() => this.authService.currentUser()?.planId);
 
@@ -43,7 +43,7 @@ export class SubscriptionsComponent {
       price: '$15',
       period: '/mo',
       description: 'Perfect for individuals and small teams.',
-      priceId: 'price_1Tsh1w3C6FGO2xjMcR62X9Po',
+      priceId: 'prod_UslrVmFkf4aJP4',
       features: ['Up to 5 users', 'Basic analytics', '24-hour support response time']
     },
     {
@@ -51,8 +51,16 @@ export class SubscriptionsComponent {
       price: '$49',
       period: '/mo',
       description: 'Ideal for growing businesses and enterprises.',
-      priceId: 'price_1Tsh4Y3C6FGO2xjMaTpgehz2',
+      priceId: 'prod_Uslsp82BoehihT',
       features: ['All Pro features', 'Up to 50 users', 'Priority support', 'Advanced analytics']
+    },
+    {
+      name: 'Free Trial',
+      price: '$0',
+      period: 'for 5 days',
+      description: 'Experience all Premium features risk-free.',
+      priceId: 'prod_UsbPH1vWd8WShB',
+      features: ['Full platform access', 'Up to 50 users', 'Cancel anytime']
     }
   ];
 
@@ -63,7 +71,7 @@ export class SubscriptionsComponent {
   }
 
   upgrade(priceId: string) {
-    this.isProcessing.set(true);
+    this.processingAction.set(priceId);
     const successUrl = `${window.location.origin}/payments/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${window.location.origin}/payments/cancel`;
 
@@ -75,24 +83,24 @@ export class SubscriptionsComponent {
       },
       error: (err) => {
         console.error('Failed to create checkout session', err);
-        this.isProcessing.set(false);
+        this.processingAction.set(null);
       }
     });
   }
 
   manageBilling() {
-    this.isProcessing.set(true);
+    this.processingAction.set('billing');
     const returnUrl = `${window.location.origin}/payments/subscriptions`;
     this.paymentsService.createPortalSession(returnUrl).subscribe({
       next: (res) => {
         if (res.url) {
           window.open(res.url, '_blank');
         }
-        this.isProcessing.set(false);
+        this.processingAction.set(null);
       },
       error: (err) => {
         console.error('Failed to create portal session', err);
-        this.isProcessing.set(false);
+        this.processingAction.set(null);
       }
     });
   }

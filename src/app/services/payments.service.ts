@@ -8,6 +8,8 @@ export interface SubscriptionData {
   currentPeriodStart: number;
   currentPeriodEnd: number;
   cancelAtPeriodEnd: boolean;
+  trialStart: number | null;
+  trialEnd: number | null;
 }
 
 export interface InvoiceData {
