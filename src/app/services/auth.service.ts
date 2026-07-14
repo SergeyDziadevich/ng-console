@@ -22,6 +22,7 @@ export interface AuthResponse {
     name: string;
     email: string;
     role: string;
+    planId?: string;
   };
 }
 
@@ -64,6 +65,7 @@ export class AuthService {
         name: payload.name ?? payload.username ?? '',
         email: payload.email ?? '',
         role: payload.role ?? '',
+        planId: payload.planId,
       };
     } catch (e) {
       console.error('Failed to decode token', e);

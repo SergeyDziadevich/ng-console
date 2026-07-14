@@ -1,0 +1,60 @@
+<div class="billing-history-container">
+  <div class="content-wrapper">
+    <div class="header">
+      <h2>Billing History</h2>
+      <p>View your past invoices and billing statements.</p>
+    </div>
+
+    @if (activePlan()) {
+      <div class="billing-history-card">
+        @if (loading()) {
+          <div class="loading-state">
+            <div class="flex flex-1 justify-center items-center">
+              <div
+                class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+              ></div>
+            </div>
+            <p>Loading invoices...</p>
+          </div>
+        } @else if (invoices().length > 0) {
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Invoice</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (invoice of invoices(); track invoice.id) {
+                  <tr>
+                    <td>{{ invoice.created * 1000 | date:'mediumDate' }}</td>
+                    <td>{{ invoice.amountPaid | currency }}</td>
+                    <td>
+                      <span class="status-badge" [class.paid]="invoice.status === 'paid'">
+                        {{ invoice.status | titlecase }}
+                      </span>
+                    </td>
+                    <td>
+                      <button (click)="viewInvoice(invoice.hostedInvoiceUrl)" class="invoice-link">View</button>
+                      <span class="separator">|</span>
+                      <a [href]="invoice.invoicePdf" target="_blank" class="invoice-link">Download</a>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="no-invoices">No past invoices found.</p>
+        }
+      </div>
+    } @else {
+      <div class="no-subscription">
+        <p>You do not currently have an active subscription.</p>
+      </div>
+    }
+  </div>
+</div>

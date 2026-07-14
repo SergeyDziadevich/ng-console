@@ -1,0 +1,63 @@
+.trial-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 100;
+
+  .banner-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 auto;
+  }
+
+  .message {
+    font-weight: 500;
+    strong {
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+  }
+
+  .upgrade-link {
+    background: white;
+    color: #1e3a8a;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    &:hover {
+      background: #f8fafc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+
+    &:hover {
+      color: white;
+    }
+  }
+}
