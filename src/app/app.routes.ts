@@ -115,6 +115,31 @@ export const routes: Routes = [
           import('./features/audit-logs/audit-logs.component').then((m) => m.AuditLogsComponent),
       },
       {
+        path: 'payments',
+        children: [
+          {
+            path: 'subscriptions',
+            loadComponent: () =>
+              import('./features/payments/subscriptions.component').then((m) => m.SubscriptionsComponent),
+          },
+          {
+            path: 'billing-history',
+            loadComponent: () =>
+              import('./features/payments/billing-history/billing-history.component').then((m) => m.BillingHistoryComponent),
+          },
+          {
+            path: 'success',
+            loadComponent: () =>
+              import('./features/payments/subscriptions-callback/success.component').then((m) => m.PaymentSuccessComponent),
+          },
+          {
+            path: 'cancel',
+            loadComponent: () =>
+              import('./features/payments/subscriptions-callback/cancel.component').then((m) => m.PaymentCancelComponent),
+          },
+        ],
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

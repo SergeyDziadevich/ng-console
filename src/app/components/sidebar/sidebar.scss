@@ -33,6 +33,10 @@
         @apply bg-indigo-600 text-white;
       }
 
+      &.expanded {
+        @apply rounded-b-none;
+      }
+
       .sidebar-nav-label {
         @apply text-sm font-medium whitespace-nowrap flex-1 flex items-center gap-2;
 

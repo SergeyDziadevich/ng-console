@@ -1,0 +1,155 @@
+@reference "../../../styles.scss";
+
+.subscriptions-container {
+  @apply py-12 bg-gray-50 flex-grow min-h-screen;
+
+  .content-wrapper {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .header {
+    @apply text-center;
+
+    h2 {
+      @apply text-3xl font-extrabold text-gray-900 sm:text-4xl;
+    }
+
+    p {
+      @apply mt-4 text-xl text-gray-600;
+    }
+  }
+
+  .active-subscription-card {
+    @apply mt-16 bg-white rounded-lg shadow-lg overflow-hidden max-w-2xl mx-auto;
+
+    .card-body {
+      @apply p-8 lg:p-12;
+
+      h3 {
+        @apply text-2xl font-semibold text-gray-900;
+      }
+
+      .description {
+        @apply mt-4 text-gray-500;
+      }
+
+      .subscription-dates {
+        @apply mt-4 p-4 bg-blue-50 rounded-md border border-blue-100;
+        
+        p {
+          @apply text-sm text-blue-800 m-0;
+        }
+
+        .label {
+          @apply font-medium mr-2;
+        }
+
+        .value {
+          @apply font-semibold;
+        }
+
+        .cancels-warning {
+          @apply mt-2 text-orange-600 font-medium;
+        }
+
+        .trial-warning {
+          @apply mt-2 text-blue-600 font-medium;
+        }
+      }
+
+      .feature-list {
+        @apply mt-6 space-y-4;
+
+        .feature-item {
+          @apply flex items-start;
+
+          .icon-wrapper {
+            @apply flex-shrink-0;
+
+            svg {
+              @apply h-6 w-6 text-green-500;
+            }
+          }
+
+          p {
+            @apply ml-3 text-base text-gray-700;
+          }
+        }
+      }
+    }
+
+    .card-footer {
+      @apply bg-gray-50 px-8 py-6 border-t border-gray-100 flex items-center justify-between;
+
+      .status-text {
+        @apply text-gray-600;
+        .status-badge {
+          @apply font-semibold text-green-600;
+        }
+      }
+
+      .manage-btn {
+        @apply px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50;
+      }
+    }
+  }
+
+  .pricing-grid {
+    @apply mt-16 bg-white rounded-lg shadow-lg overflow-hidden lg:flex;
+
+    .pricing-card {
+      @apply flex-1 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col justify-between;
+
+      .card-header {
+        h3 {
+          @apply text-2xl font-semibold text-gray-900;
+        }
+
+        .price-container {
+          @apply mt-4 flex items-baseline text-gray-900;
+
+          .price {
+            @apply text-5xl font-extrabold tracking-tight;
+          }
+
+          .period {
+            @apply ml-1 text-xl font-semibold;
+          }
+        }
+
+        .description {
+          @apply mt-6 text-gray-500;
+        }
+
+        .feature-list {
+          @apply mt-6 space-y-4;
+
+          .feature-item {
+            @apply flex items-start;
+
+            .icon-wrapper {
+              @apply flex-shrink-0;
+
+              svg {
+                @apply h-6 w-6 text-green-500;
+              }
+            }
+
+            p {
+              @apply ml-3 text-base text-gray-700;
+            }
+          }
+        }
+      }
+
+      .card-actions {
+        @apply mt-8;
+
+        .upgrade-btn {
+          @apply w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50;
+        }
+      }
+    }
+  }
+
+}

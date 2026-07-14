@@ -32,10 +32,16 @@
             class="sidebar-nav-item"
             [routerLink]="item.route"
             [routerLinkActiveOptions]="{ exact: item.route === '/' }"
-            routerLinkActive="active"
+            routerLinkActive="rla-active"
             #rla="routerLinkActive"
+            [class.active]="rla.isActive || isItemActive()[item.route]"
+            [class.expanded]="item.children && !collapsed() && (rla.isActive || isItemActive()[item.route])"
           >
-            <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
+            @if (item.icon.endsWith('.svg')) {
+              <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
+            } @else {
+              <ng-icon class="sidebar-icon" [name]="item.icon"></ng-icon>
+            }
             @if (!collapsed()) {
               <span class="sidebar-nav-label">
                 {{ item.label }}
@@ -50,9 +56,16 @@
                   {{ item.badge.text }}
                 </span>
               }
+              @if (item.children) {
+                @if (rla.isActive || isItemActive()[item.route]) {
+                  <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronUp"></ng-icon>
+                } @else {
+                  <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronDown"></ng-icon>
+                }
+              }
             }
           </a>
-          @if (item.children && !collapsed() && rla.isActive) {
+          @if (item.children && !collapsed() && (rla.isActive || isItemActive()[item.route])) {
             <div class="sidebar-submenu">
               @for (child of item.children; track child.route) {
                 <a
@@ -85,7 +98,7 @@
           A
         </div>
         <div class="sidebar-user-details">
-          <p class="sidebar-user-role">{{ currentUser()?.role }}</p>
+          <p class="sidebar-user-role">{{ currentUser()?.role }} {{ planName() }}</p>
           <p class="sidebar-user-email">{{ currentUser()?.email }}</p>
         </div>
       </div>
