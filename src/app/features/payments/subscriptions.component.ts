@@ -67,11 +67,11 @@ export class SubscriptionsComponent {
     }
   ];
 
-  getCurrentPlan() {
+  readonly currentPlan = computed(() => {
     const planId = this.subscriptionDetails()?.productId || this.activePlan();
     if (!planId) return null;
     return this.plans.find(p => p.priceId === planId || p.legacyProductIds?.includes(planId)) || null;
-  }
+  });
 
   upgrade(priceId: string) {
     this.processingAction.set(priceId);
