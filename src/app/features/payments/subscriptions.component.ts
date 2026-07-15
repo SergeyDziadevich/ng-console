@@ -44,6 +44,7 @@ export class SubscriptionsComponent {
       period: '/mo',
       description: 'Perfect for individuals and small teams.',
       priceId: 'prod_UslrVmFkf4aJP4',
+      legacyProductIds: ['prod_UsRvdBSVty1VzW'],
       features: ['Up to 5 users', 'Basic analytics', '24-hour support response time']
     },
     {
@@ -52,6 +53,7 @@ export class SubscriptionsComponent {
       period: '/mo',
       description: 'Ideal for growing businesses and enterprises.',
       priceId: 'prod_Uslsp82BoehihT',
+      legacyProductIds: ['prod_UsRyuBESD2VCNb'],
       features: ['All Pro features', 'Up to 50 users', 'Priority support', 'Advanced analytics']
     },
     {
@@ -60,14 +62,15 @@ export class SubscriptionsComponent {
       period: 'for 5 days',
       description: 'Experience all Premium features risk-free.',
       priceId: 'prod_UsbPH1vWd8WShB',
+      legacyProductIds: [],
       features: ['Full platform access', 'Up to 50 users', 'Cancel anytime']
     }
   ];
 
   getCurrentPlan() {
-    const planId = this.activePlan();
+    const planId = this.subscriptionDetails()?.productId || this.activePlan();
     if (!planId) return null;
-    return this.plans.find(p => p.priceId === planId) || null;
+    return this.plans.find(p => p.priceId === planId || p.legacyProductIds?.includes(planId)) || null;
   }
 
   upgrade(priceId: string) {
