@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 
 export interface SubscriptionData {
   status: string;
+  productId?: string;
   currentPeriodStart: number;
   currentPeriodEnd: number;
   cancelAtPeriodEnd: boolean;

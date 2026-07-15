@@ -80,7 +80,7 @@ describe('SubscriptionsComponent', () => {
     mockUserSignal.set({ planId: 'prod_Uslsp82BoehihT' });
     fixture.detectChanges();
 
-    const plan = component.getCurrentPlan();
+    const plan = component.currentPlan();
     expect(plan?.name).toBe('Premium');
   });
 
@@ -91,7 +91,7 @@ describe('SubscriptionsComponent', () => {
     mockUserSignal.set({ planId: null });
     fixture.detectChanges();
 
-    const plan = component.getCurrentPlan();
+    const plan = component.currentPlan();
     expect(plan).toBeNull();
   });
 
