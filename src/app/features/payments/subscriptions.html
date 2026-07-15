@@ -4,13 +4,13 @@
     @if (activePlan()) {
       <div class="header">
         <h2>Your Active Subscription</h2>
-        <p>You are currently subscribed to the <strong>{{ getCurrentPlan()?.name }}</strong> plan.</p>
+        <p>You are currently subscribed to the <strong>{{ currentPlan()?.name }}</strong> plan.</p>
       </div>
 
       <div class="active-subscription-card">
         <div class="card-body">
-          <h3>{{ getCurrentPlan()?.name }} Plan</h3>
-          <p class="description">{{ getCurrentPlan()?.description }}</p>
+          <h3>{{ currentPlan()?.name }} Plan</h3>
+          <p class="description">{{ currentPlan()?.description }}</p>
           
           @if (subscriptionDetails()) {
             <div class="subscription-dates">
@@ -32,7 +32,7 @@
           }
 
           <ul role="list" class="feature-list">
-            @for (feature of getCurrentPlan()?.features; track feature) {
+            @for (feature of currentPlan()?.features; track feature) {
               <li class="feature-item">
                 <div class="icon-wrapper">
                   <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
