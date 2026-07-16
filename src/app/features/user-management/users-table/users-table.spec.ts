@@ -39,6 +39,75 @@ describe('UsersTable', () => {
     await fixture.whenStable();
   });
 
+  it('should handle sorting', () => {
+    const user1 = { ...mockUser, _id: '1', username: 'Zebra', email: 'a@example.com', isTwoFactorEnabled: false };
+    const user2 = { ...mockUser, _id: '2', username: 'Apple', email: 'z@example.com', isTwoFactorEnabled: true };
+    fixture.componentRef.setInput('users', [user1, user2]);
+    fixture.detectChanges();
+
+    // Sort by username (asc)
+    component.sortBy('username');
+    expect(component.sortColumn()).toBe('username');
+    expect(component.sortDirection()).toBe('asc');
+    expect(component.paginatedUsers()[0].username).toBe('Apple');
+
+    // Sort by username (desc)
+    component.sortBy('username');
+    expect(component.sortDirection()).toBe('desc');
+    expect(component.paginatedUsers()[0].username).toBe('Zebra');
+
+    // Sort by email (asc)
+    component.sortBy('email');
+    expect(component.sortColumn()).toBe('email');
+    expect(component.sortDirection()).toBe('asc');
+    expect(component.paginatedUsers()[0].email).toBe('a@example.com');
+  });
+
+  it('should handle searching by name and email', () => {
+    const user1 = { ...mockUser, _id: '1', username: 'Alpha', email: 'hello@world.com' };
+    const user2 = { ...mockUser, _id: '2', username: 'Beta', email: 'test@example.com' };
+    fixture.componentRef.setInput('users', [user1, user2]);
+    fixture.detectChanges();
+
+    // Search Name
+    const eventName = new Event('input');
+    Object.defineProperty(eventName, 'target', { writable: false, value: { value: 'alp' } });
+    component.updateSearchName(eventName);
+    
+    expect(component.searchName()).toBe('alp');
+    expect(component.paginatedUsers().length).toBe(1);
+    expect(component.paginatedUsers()[0].username).toBe('Alpha');
+
+    // Clear search name
+    const eventName2 = new Event('input');
+    Object.defineProperty(eventName2, 'target', { writable: false, value: { value: '' } });
+    component.updateSearchName(eventName2);
+
+    // Search Email
+    const eventEmail = new Event('input');
+    Object.defineProperty(eventEmail, 'target', { writable: false, value: { value: 'test@ex' } });
+    component.updateSearchEmail(eventEmail);
+    
+    expect(component.searchEmail()).toBe('test@ex');
+    expect(component.paginatedUsers().length).toBe(1);
+    expect(component.paginatedUsers()[0].username).toBe('Beta');
+  });
+
+  it('should toggle search visibility', () => {
+    component.onNameTitleClick();
+    expect(component.isNameSearchVisible()).toBe(true);
+    
+    component.searchName.set('');
+    component.onNameSearchBlur();
+    expect(component.isNameSearchVisible()).toBe(false);
+
+    component.onEmailTitleClick();
+    expect(component.isEmailSearchVisible()).toBe(true);
+    
+    component.searchEmail.set('');
+    component.onEmailSearchBlur();
+    expect(component.isEmailSearchVisible()).toBe(false);
+  });
   it('should create', () => {
     expect(component).toBeTruthy();
   });

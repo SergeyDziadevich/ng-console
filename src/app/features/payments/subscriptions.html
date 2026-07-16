@@ -12,7 +12,11 @@
           <h3>{{ currentPlan()?.name }} Plan</h3>
           <p class="description">{{ currentPlan()?.description }}</p>
           
-          @if (subscriptionDetails()) {
+          @if (subscriptionDetails() === undefined) {
+            <div class="subscription-dates flex justify-center py-4">
+              <app-spinner size="md" color="blue" direction="row" loadingText="Loading details..."></app-spinner>
+            </div>
+          } @else if (subscriptionDetails()) {
             <div class="subscription-dates">
               @if (subscriptionDetails()!.status === 'trialing' && subscriptionDetails()!.trialEnd) {
                 <p class="trial-warning">
