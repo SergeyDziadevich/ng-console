@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { DatePipe, CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { PaymentsService } from '../../../services/payments.service';
 import { AuthService } from '../../../services/auth.service';
+import { SpinnerComponent } from '@ng-console-platform/ui';
 
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, catchError, finalize, tap, of } from 'rxjs';
@@ -10,7 +11,7 @@ import { switchMap, catchError, finalize, tap, of } from 'rxjs';
   selector: 'app-billing-history',
   templateUrl: './billing-history.html',
   styleUrl: './billing-history.scss',
-  imports: [DatePipe, CurrencyPipe, TitleCasePipe],
+  imports: [DatePipe, CurrencyPipe, TitleCasePipe, SpinnerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BillingHistoryComponent {

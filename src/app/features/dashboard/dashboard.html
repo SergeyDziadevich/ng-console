@@ -42,12 +42,7 @@
               My Assigned Tickets
             </h3>
             @if (ticketsResource.isLoading()) {
-              <div class="flex gap-2 items-center">
-                <div
-                  class="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
-                ></div>
-                <span class="text-gray-400 font-medium">Loading...</span>
-              </div>
+              <app-spinner size="sm" color="blue" loadingText="Loading..." direction="row"></app-spinner>
             } @else {
               <div class="flex items-baseline gap-2">
                 <span class="text-4xl font-bold text-blue-600">0</span>
@@ -117,12 +112,7 @@
             Total Documents
           </h3>
           @if (isLoadingDocuments()) {
-            <div class="flex gap-2 items-center">
-              <div
-                class="w-5 h-5 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"
-              ></div>
-              <span class="text-gray-400 font-medium">Loading...</span>
-            </div>
+            <app-spinner size="sm" color="yellow" loadingText="Loading..." direction="row"></app-spinner>
           } @else {
             <div class="flex items-baseline gap-2">
               <span class="text-4xl font-bold text-yellow-600">{{ totalDocuments() }}</span>
@@ -199,10 +189,7 @@
 
     @if (ticketsResource.isLoading()) {
       <div class="flex gap-3 items-center justify-center py-10 text-gray-500">
-        <div
-          class="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"
-        ></div>
-        <span class="font-medium">Loading tickets...</span>
+        <app-spinner size="sm" color="blue" loadingText="Loading tickets..." direction="row"></app-spinner>
       </div>
     } @else if (inProgressTickets().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -287,10 +274,7 @@
 
     @if (ticketsResource.isLoading()) {
       <div class="flex gap-3 items-center justify-center py-10 text-gray-500">
-        <div
-          class="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin"
-        ></div>
-        <span class="font-medium">Loading tickets...</span>
+        <app-spinner size="sm" color="green" loadingText="Loading tickets..." direction="row"></app-spinner>
       </div>
     } @else if (doneTickets().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

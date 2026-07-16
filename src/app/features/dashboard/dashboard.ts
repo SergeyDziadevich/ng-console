@@ -1,6 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { SpinnerComponent } from '@ng-console-platform/ui';
 import { AuthService } from '../../services/auth.service';
 import { TicketService } from '../../features/tickets/services/ticket.service';
 import { DocumentService } from '../../services/document.service';
@@ -9,7 +10,7 @@ import { PaymentsService } from '../../services/payments.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SpinnerComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

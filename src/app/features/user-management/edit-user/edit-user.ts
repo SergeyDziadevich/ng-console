@@ -5,7 +5,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { httpResource } from '@angular/common/http';
 import { UserService } from '../../../services/user-service';
-import { Toast } from '@ng-console-platform/ui';
+import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { UserModal } from '../user-modal/user-modal';
 import { UserRole } from '../../../enums/user-role.enum';
 import { User } from '../../../models/user.model';
@@ -14,7 +14,7 @@ import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-user',
-  imports: [FormField, Toast, UserModal],
+  imports: [FormField, Toast, UserModal, SpinnerComponent],
   templateUrl: './edit-user.html',
   styleUrl: './edit-user.scss',
 })
