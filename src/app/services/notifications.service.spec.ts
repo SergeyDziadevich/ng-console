@@ -4,7 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { NotificationsService, NotificationPayload } from './notifications.service';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
-import { io } from 'socket.io-client';
+import * as socketIo from 'socket.io-client';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { signal } from '@angular/core';
 
@@ -23,8 +23,6 @@ const { mockSocket, handlers } = vi.hoisted(() => {
 });
 
 vi.mock('socket.io-client');
-
-
 describe('NotificationsService', () => {
   let service: NotificationsService;
   let httpTestingController: HttpTestingController;
@@ -39,7 +37,7 @@ describe('NotificationsService', () => {
     mockSocket.recovered = false;
     
     // Explicitly re-apply implementations in case of global mock resets
-    vi.mocked(io).mockImplementation(() => mockSocket as unknown as ReturnType<typeof io>);
+    vi.spyOn(socketIo, 'io').mockReturnValue(mockSocket as unknown as ReturnType<typeof socketIo.io>);
     mockSocket.on.mockImplementation((event: string, cb: (...args: unknown[]) => void) => {
       handlers[event] = cb;
     });
@@ -48,7 +46,7 @@ describe('NotificationsService', () => {
     vi.mocked(mockSocket.disconnect).mockClear();
     vi.mocked(mockSocket.io.engine.close).mockClear();
 
-    vi.mocked(io).mockClear();
+    vi.mocked(socketIo.io).mockClear();
 
     authServiceMock = {
       currentUser: signal({ id: 'user-123', name: 'Test User' }),
