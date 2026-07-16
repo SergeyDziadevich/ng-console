@@ -19,8 +19,7 @@
     <div class="document-viewer-content">
       @if (isLoading()) {
         <div class="document-viewer-loading">
-          <div class="loading-spinner"></div>
-          <p class="loading-text">Loading document...</p>
+          <app-spinner loadingText="Loading document..."></app-spinner>
         </div>
       }
 
@@ -67,7 +66,7 @@
           (click)="executeSign()"
         >
           @if (isActionLoading()) {
-            <div class="btn-spinner"></div>
+            <app-spinner size="sm" color="white"></app-spinner>
             Signing...
           } @else {
             <ng-icon class="btn-icon" name="lucideFileSignature"></ng-icon>

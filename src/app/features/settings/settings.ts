@@ -10,11 +10,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
 import { User, UserSettings } from '../../models/user.model';
-import { Toast } from '@ng-console-platform/ui';
+import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-settings',
-  imports: [ReactiveFormsModule, Toast],
+  imports: [ReactiveFormsModule, Toast, SpinnerComponent],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -10,7 +10,7 @@ import { SvgIconComponent } from '@ng-console-platform/ui';
 import { firstValueFrom } from 'rxjs';
 import { form, FormField, FormRoot, required, min } from '@angular/forms/signals';
 import { AuthService } from '../../../../services/auth.service';
-import { ConfirmDialogComponent } from '@ng-console-platform/ui';
+import { ConfirmDialogComponent, SpinnerComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -24,6 +24,7 @@ import { ConfirmDialogComponent } from '@ng-console-platform/ui';
     FormField,
     FormRoot,
     ConfirmDialogComponent,
+    SpinnerComponent,
   ],
   templateUrl: './ticket-detail.component.html',
 })

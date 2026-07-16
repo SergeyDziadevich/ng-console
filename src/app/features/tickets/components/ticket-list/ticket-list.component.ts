@@ -6,11 +6,12 @@ import { UserService } from '../../../../services/user-service';
 import { AuthService } from '../../../../services/auth.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TicketStatus } from '../../models/ticket.model';
+import { SpinnerComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-ticket-list',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, SpinnerComponent],
   templateUrl: './ticket-list.component.html',
 })
 export class TicketListComponent implements OnInit {

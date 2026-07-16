@@ -9,12 +9,7 @@
       <div class="billing-history-card">
         @if (loading()) {
           <div class="loading-state">
-            <div class="flex flex-1 justify-center items-center">
-              <div
-                class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
-              ></div>
-            </div>
-            <p>Loading invoices...</p>
+            <app-spinner size="lg" loadingText="Loading invoices..."></app-spinner>
           </div>
         } @else if (invoices().length > 0) {
           <div class="table-container">

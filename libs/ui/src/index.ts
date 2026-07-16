@@ -3,6 +3,7 @@ export * from './confirm-dialog/confirm-dialog.component';
 export * from './icons/svg-icon.component';
 export * from './shell/shell';
 export * from './sidebar/sidebar';
+export * from './spinner/spinner.component';
 export * from './toast/toast';
 export * from './top-bar/top-bar';
 export * from './trial-banner/trial-banner';
