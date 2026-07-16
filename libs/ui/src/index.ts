@@ -1,3 +1,4 @@
+export * from './constants';
 export * from './command-palette/command-palette';
 export * from './confirm-dialog/confirm-dialog.component';
 export * from './icons/svg-icon.component';
