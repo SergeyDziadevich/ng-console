@@ -8,9 +8,23 @@ import { io } from 'socket.io-client';
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 import { signal } from '@angular/core';
 
+const { mockSocket, handlers } = vi.hoisted(() => {
+  const handlers: Record<string, (...args: unknown[]) => void> = {};
+  const mockSocket = {
+    on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
+      handlers[event] = cb;
+    }),
+    io: { engine: { close: vi.fn() } },
+    connect: vi.fn(),
+    disconnect: vi.fn(),
+    recovered: false,
+  };
+  return { mockSocket, handlers };
+});
+
 vi.mock('socket.io-client', () => {
   return {
-    io: vi.fn(),
+    io: vi.fn(() => mockSocket),
   };
 });
 
@@ -21,29 +35,17 @@ describe('NotificationsService', () => {
   let authServiceMock: {
     currentUser: import('@angular/core').WritableSignal<{ id: string; name: string } | null>;
   };
-  let mockSocket: {
-    on: Mock;
-    io: { engine: { close: Mock } };
-    connect: Mock;
-    disconnect: Mock;
-    recovered: boolean;
-  };
-  let handlers: Record<string, (...args: unknown[]) => void>;
 
   beforeEach(() => {
-    handlers = {};
-    mockSocket = {
-      on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
-        handlers[event] = cb;
-      }),
-      io: { engine: { close: vi.fn() } },
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      recovered: false,
-    };
+    for (const key of Object.keys(handlers)) {
+      delete handlers[key];
+    }
+    mockSocket.recovered = false;
+    vi.mocked(mockSocket.connect).mockClear();
+    vi.mocked(mockSocket.disconnect).mockClear();
+    vi.mocked(mockSocket.io.engine.close).mockClear();
 
     vi.mocked(io).mockClear();
-    vi.mocked(io).mockReturnValue(mockSocket as unknown as ReturnType<typeof io>);
 
     authServiceMock = {
       currentUser: signal({ id: 'user-123', name: 'Test User' }),
