@@ -22,11 +22,7 @@ const { mockSocket, handlers } = vi.hoisted(() => {
   return { mockSocket, handlers };
 });
 
-vi.mock('socket.io-client', () => {
-  return {
-    io: vi.fn(() => mockSocket),
-  };
-});
+vi.mock('socket.io-client');
 
 
 describe('NotificationsService', () => {
@@ -43,7 +39,7 @@ describe('NotificationsService', () => {
     mockSocket.recovered = false;
     
     // Explicitly re-apply implementations in case of global mock resets
-    vi.mocked(io).mockImplementation(() => mockSocket as any);
+    vi.mocked(io).mockImplementation(() => mockSocket as unknown as ReturnType<typeof io>);
     mockSocket.on.mockImplementation((event: string, cb: (...args: unknown[]) => void) => {
       handlers[event] = cb;
     });
