@@ -8,7 +8,11 @@ import { io } from 'socket.io-client';
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 import { signal } from '@angular/core';
 
-vi.mock('socket.io-client');
+vi.mock('socket.io-client', () => {
+  return {
+    io: vi.fn(),
+  };
+});
 
 
 describe('NotificationsService', () => {
