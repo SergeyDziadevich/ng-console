@@ -63,10 +63,10 @@ describe('Dashboard', () => {
 
   describe('Computed Signals', () => {
     const mockTickets: Partial<Ticket>[] = [
-      { id: 1, status: TicketStatus.TODO, assignedPersonId: 'user1' },
-      { id: 2, status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user1' },
-      { id: 3, status: TicketStatus.DONE, assignedPersonId: 'user2' },
-      { id: 4, status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user2' },
+      { id: '1', status: TicketStatus.TODO, assignedPersonId: 'user1' },
+      { id: '2', status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user1' },
+      { id: '3', status: TicketStatus.DONE, assignedPersonId: 'user2' },
+      { id: '4', status: TicketStatus.IN_PROGRESS, assignedPersonId: 'user2' },
     ];
 
     beforeEach(() => {

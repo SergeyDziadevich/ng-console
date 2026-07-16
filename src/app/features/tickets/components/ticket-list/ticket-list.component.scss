@@ -1,0 +1,129 @@
+@reference "tailwindcss/index.css";
+
+.ticket-list-container {
+  @apply h-full flex flex-col gap-4 p-4;
+
+  .ticket-list-toolbar {
+    @apply flex flex-wrap items-center justify-between gap-3;
+
+    .toolbar-toggle-btn {
+      @apply flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors;
+    }
+
+    .toolbar-filter-group {
+      @apply flex items-center gap-2 bg-white px-2 py-1.5 rounded-md border border-gray-200 shadow-sm;
+
+      .status-filter-label {
+        @apply flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors;
+      }
+    }
+
+    .epic-select {
+      @apply bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500;
+    }
+
+    .add-ticket-btn {
+      @apply flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-md font-medium text-sm hover:bg-blue-700 transition-colors border-none cursor-pointer;
+    }
+  }
+
+  .kanban-board {
+    @apply flex flex-1 gap-6 overflow-x-auto pb-4 items-start;
+
+    .kanban-column {
+      @apply flex flex-col flex-1 min-w-[320px] rounded-xl p-4 border max-h-full;
+      
+      &.col-todo {
+        @apply bg-gray-50 border-gray-200;
+      }
+      
+      &.col-in-progress {
+        @apply bg-blue-50/50 border-blue-100;
+      }
+      
+      &.col-done {
+        @apply bg-green-50/50 border-green-100;
+      }
+
+      .kanban-column-header {
+        @apply flex items-center justify-between mb-4 px-1;
+      }
+
+      .kanban-column-content {
+        @apply flex flex-col gap-3 flex-1 overflow-y-auto min-h-[150px];
+
+        .ticket-card {
+          @apply bg-white rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100 relative flex;
+
+          &.is-standard {
+            @apply p-4 flex-col;
+
+            .ticket-header-standard {
+              @apply flex justify-between items-start mb-3 pl-5;
+            }
+
+            .ticket-about-standard {
+              @apply text-sm text-gray-600 mb-4 line-clamp-2 pl-5;
+            }
+
+            .ticket-footer-standard {
+              @apply flex justify-between items-center pt-3 mt-auto border-t border-gray-100 text-xs font-medium text-gray-500;
+            }
+          }
+
+          &.is-compact {
+            @apply p-3 items-center justify-between;
+
+            .ticket-content-compact {
+              @apply flex items-center gap-4 min-w-0 pl-6;
+            }
+
+            .ticket-meta-compact {
+              @apply flex items-center gap-4 shrink-0 text-xs font-medium text-gray-500;
+            }
+          }
+
+          .ticket-drag-handle {
+            @apply absolute opacity-0 group-hover:opacity-100 cursor-grab text-gray-400 z-10;
+
+            &.is-standard {
+              @apply top-2 left-2;
+            }
+
+            &.is-compact {
+              @apply top-1/2 -translate-y-1/2 left-3;
+            }
+          }
+
+          .badge {
+            @apply px-2 py-0.5 text-[10px] font-bold rounded-full border;
+            
+            &.badge-epic {
+              @apply bg-purple-100 text-purple-700 border-purple-200;
+            }
+
+            &.badge-low {
+              @apply bg-gray-50 text-gray-700 border-gray-200;
+            }
+
+            &.badge-medium {
+              @apply bg-yellow-50 text-yellow-700 border-yellow-200;
+            }
+
+            &.badge-high {
+              @apply bg-orange-50 text-orange-700 border-orange-200;
+            }
+
+            &.badge-critical {
+              @apply bg-red-50 text-red-700 border-red-200;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .error-state {
+    @apply flex flex-1 flex-col items-center justify-center gap-4 text-center px-4 bg-white rounded-lg shadow-sm border border-gray-100 py-12;
+  }
+}

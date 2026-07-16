@@ -1,6 +1,6 @@
-<div class="h-full flex flex-col gap-4 p-4">
+<div class="ticket-list-container">
   <!-- Toolbar -->
-  <div class="flex flex-wrap items-center justify-between gap-3">
+  <div class="ticket-list-toolbar">
     <div class="flex items-center gap-4">
       <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
         <img
@@ -11,7 +11,7 @@
         Tickets
       </h1>
       <label
-        class="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+        class="toolbar-toggle-btn"
       >
         <input
           class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
@@ -23,13 +23,13 @@
       </label>
 
       <div
-        class="flex items-center gap-2 bg-white px-2 py-1.5 rounded-md border border-gray-200 shadow-sm"
+        class="toolbar-filter-group"
       >
         <span class="text-sm font-medium text-gray-500 px-1 border-r border-gray-200 mr-1"
           >Status</span
         >
         <label
-          class="flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors"
+          class="status-filter-label"
         >
           <input
             class="rounded text-gray-500 focus:ring-gray-500 w-3.5 h-3.5 cursor-pointer"
@@ -40,7 +40,7 @@
           <span class="text-sm font-medium text-gray-700">To Do</span>
         </label>
         <label
-          class="flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors"
+          class="status-filter-label"
         >
           <input
             class="rounded text-blue-500 focus:ring-blue-500 w-3.5 h-3.5 cursor-pointer"
@@ -51,7 +51,7 @@
           <span class="text-sm font-medium text-blue-700">In Progress</span>
         </label>
         <label
-          class="flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors"
+          class="status-filter-label"
         >
           <input
             class="rounded text-green-500 focus:ring-green-500 w-3.5 h-3.5 cursor-pointer"
@@ -64,7 +64,7 @@
       </div>
 
       <select
-        class="bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="epic-select"
         (change)="onEpicChange($event)"
       >
         <option value="">All Epics</option>
@@ -75,7 +75,7 @@
         }
       </select>
       <label
-        class="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors"
+        class="toolbar-toggle-btn"
       >
         <input
           class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
@@ -87,7 +87,7 @@
       </label>
     </div>
     <button
-      class="flex items-center gap-2 px-3 py-2 bg-[#007bff] text-white rounded-[6px] font-medium text-[0.9rem] hover:bg-[#0056b3] transition-colors border-none cursor-pointer"
+      class="add-ticket-btn"
       routerLink="/tickets/new"
     >
       <svg
@@ -114,187 +114,364 @@
   }
 
   @if (!ticketsResource.isLoading() && ticketsResource.value()) {
-    @if (isCompactView()) {
-      <div class="flex flex-col gap-2">
-        @for (ticket of filteredTickets(); track ticket.id) {
-          <div
-            class="bg-white rounded-lg shadow-sm p-3 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow border border-gray-100"
-            [routerLink]="['/tickets', ticket.id]"
-          >
-            <div class="flex items-center gap-4 min-w-0">
-              <h3 class="text-base font-semibold text-gray-900 truncate">{{ ticket.title }}</h3>
-              <div class="flex items-center gap-2 shrink-0">
-                @if (ticket.epic) {
-                  <span
-                    class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-purple-100 text-purple-700 border border-purple-200"
-                  >
-                    {{ ticket.epic.name }}
-                  </span>
-                }
-                <span
-                  class="px-2 py-0.5 text-[10px] font-bold rounded-full border"
-                  [class.bg-gray-50]="ticket.priority === 'low'"
-                  [class.text-gray-700]="ticket.priority === 'low'"
-                  [class.border-gray-200]="ticket.priority === 'low'"
-                  [class.bg-yellow-50]="ticket.priority === 'medium'"
-                  [class.text-yellow-700]="ticket.priority === 'medium'"
-                  [class.border-yellow-200]="ticket.priority === 'medium'"
-                  [class.bg-orange-50]="ticket.priority === 'high'"
-                  [class.text-orange-700]="ticket.priority === 'high'"
-                  [class.border-orange-200]="ticket.priority === 'high'"
-                  [class.bg-red-50]="ticket.priority === 'critical'"
-                  [class.text-red-700]="ticket.priority === 'critical'"
-                  [class.border-red-200]="ticket.priority === 'critical'"
-                >
-                  {{ ticket.priority || 'medium' | uppercase }}
-                </span>
-                <span
-                  class="px-2 py-0.5 text-[10px] font-bold rounded-full border"
-                  [class.bg-gray-50]="ticket.status === 'todo'"
-                  [class.text-gray-700]="ticket.status === 'todo'"
-                  [class.border-gray-200]="ticket.status === 'todo'"
-                  [class.bg-blue-50]="ticket.status === 'in progress'"
-                  [class.text-blue-700]="ticket.status === 'in progress'"
-                  [class.border-blue-200]="ticket.status === 'in progress'"
-                  [class.bg-green-50]="ticket.status === 'done'"
-                  [class.text-green-700]="ticket.status === 'done'"
-                  [class.border-green-200]="ticket.status === 'done'"
-                >
-                  {{ ticket.status | uppercase }}
-                </span>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 shrink-0 text-xs font-medium text-gray-500 pl-4">
-              <span class="flex items-center">
-                <img
-                  class="h-4 w-4 mr-1 text-gray-400 shrink-0"
-                  src="/assets/icons/icon-c4287b80.svg"
-                  alt="icon"
-                />
-                {{ getAssignedPersonName(ticket.assignedPersonId) }}
-              </span>
-              @if (ticket.estimations) {
-                <span class="flex items-center w-12 justify-end">
-                  <img
-                    class="h-4 w-4 mr-1 text-gray-400 shrink-0"
-                    src="/assets/icons/icon-d0f846d4.svg"
-                    alt="icon"
-                  />
-                  {{ ticket.estimations }}h
-                </span>
-              }
-            </div>
-          </div>
-        } @empty {
-          <div
-            class="text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-100"
-          >
-            <img
-              class="h-12 w-12 mx-auto text-gray-300 mb-3 shrink-0"
-              src="/assets/icons/icon-31bd8793.svg"
-              alt="icon"
-            />
-            <p class="text-lg">No tickets found.</p>
-            <p class="text-sm mt-1">Create a new ticket to get started.</p>
-          </div>
-        }
-      </div>
-    } @else {
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      @for (ticket of filteredTickets(); track ticket.id) {
-        <div
-          class="bg-white rounded-lg shadow p-5 cursor-pointer hover:shadow-md transition-shadow border border-gray-100"
-          [routerLink]="['/tickets', ticket.id]"
+    
+      <div class="kanban-board" cdkDropListGroup>
+        <!-- TODO Column -->
+        <div 
+          class="kanban-column col-todo"
         >
-          <div class="flex justify-between items-start mb-3">
-            <h3 class="text-lg font-semibold text-gray-900">{{ ticket.title }}</h3>
-            <div class="flex items-center gap-2">
-              @if (ticket.epic) {
-                <span
-                  class="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-700 border border-purple-200"
-                >
-                  {{ ticket.epic.name }}
-                </span>
-              }
-              <span
-                class="px-2.5 py-1 text-xs font-bold rounded-full border"
-                [class.bg-gray-50]="ticket.priority === 'low'"
-                [class.text-gray-700]="ticket.priority === 'low'"
-                [class.border-gray-200]="ticket.priority === 'low'"
-                [class.bg-yellow-50]="ticket.priority === 'medium'"
-                [class.text-yellow-700]="ticket.priority === 'medium'"
-                [class.border-yellow-200]="ticket.priority === 'medium'"
-                [class.bg-orange-50]="ticket.priority === 'high'"
-                [class.text-orange-700]="ticket.priority === 'high'"
-                [class.border-orange-200]="ticket.priority === 'high'"
-                [class.bg-red-50]="ticket.priority === 'critical'"
-                [class.text-red-700]="ticket.priority === 'critical'"
-                [class.border-red-200]="ticket.priority === 'critical'"
-              >
-                {{ ticket.priority || 'medium' | uppercase }}
-              </span>
-              <span
-                class="px-2.5 py-1 text-xs font-bold rounded-full border"
-                [class.bg-gray-50]="ticket.status === 'todo'"
-                [class.text-gray-700]="ticket.status === 'todo'"
-                [class.border-gray-200]="ticket.status === 'todo'"
-                [class.bg-blue-50]="ticket.status === 'in progress'"
-                [class.text-blue-700]="ticket.status === 'in progress'"
-                [class.border-blue-200]="ticket.status === 'in progress'"
-                [class.bg-green-50]="ticket.status === 'done'"
-                [class.text-green-700]="ticket.status === 'done'"
-                [class.border-green-200]="ticket.status === 'done'"
-              >
-                {{ ticket.status | uppercase }}
-              </span>
-            </div>
+          <div class="kanban-column-header">
+            <h2 class="font-semibold text-gray-700 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span>
+              To Do
+            </h2>
           </div>
-          <p class="text-sm text-gray-600 mb-5 line-clamp-3">
-            {{ ticket.about || 'No additional information.' }}
-          </p>
-          <div
-            class="flex justify-between items-center pt-3 border-t border-gray-100 text-xs font-medium text-gray-500"
+          <div 
+            class="kanban-column-content"
+            cdkDropList
+            [cdkDropListData]="todoTickets"
+            (cdkDropListDropped)="onDrop($event, TicketStatus.TODO)"
           >
-            <span>
-              <img
-                class="h-4 w-4 inline mr-1 text-gray-400 shrink-0"
-                src="/assets/icons/icon-c4287b80.svg"
-                alt="icon"
-              />
-              {{ getAssignedPersonName(ticket.assignedPersonId) }}
-            </span>
-            @if (ticket.estimations) {
-              <span>
-                <img
-                  class="h-4 w-4 inline mr-1 text-gray-400 shrink-0"
-                  src="/assets/icons/icon-d0f846d4.svg"
-                  alt="icon"
-                />
-                {{ ticket.estimations }}h
-              </span>
+            @for (ticket of todoTickets; track ticket.id) {
+              <div
+                class="ticket-card group"
+                [class.is-standard]="!isCompactView()"
+                [class.is-compact]="isCompactView()"
+                [routerLink]="['/tickets', ticket.id]"
+                cdkDrag
+                [cdkDragData]="ticket"
+              >
+                <!-- Drag Handle -->
+                <div 
+                  class="ticket-drag-handle" 
+                  [class.is-standard]="!isCompactView()" 
+                  [class.is-compact]="isCompactView()"
+                  cdkDragHandle
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </div>
+
+                @if (isCompactView()) {
+                  <div class="ticket-content-compact">
+                    <h3 class="text-base font-semibold text-gray-900">
+                      {{ ticket.title }}
+                    </h3>
+                    <div class="flex items-center gap-2 shrink-0">
+                      @if (ticket.epic) {
+                        <span class="badge badge-epic">
+                          {{ ticket.epic.name }}
+                        </span>
+                      }
+                      <span
+                        class="badge"
+                        [class.badge-low]="ticket.priority === 'low'"
+                        [class.badge-medium]="ticket.priority === 'medium' || !ticket.priority"
+                        [class.badge-high]="ticket.priority === 'high'"
+                        [class.badge-critical]="ticket.priority === 'critical'"
+                      >
+                        {{ ticket.priority || 'medium' | uppercase }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="ticket-meta-compact">
+                    <span class="flex items-center">
+                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      {{ getAssignedPersonName(ticket.assignedPersonId) }}
+                    </span>
+                    @if (ticket.estimations) {
+                      <span class="flex items-center justify-end">
+                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        {{ ticket.estimations }}h
+                      </span>
+                    }
+                  </div>
+                } @else {
+                  <div class="ticket-header-standard">
+                    <div class="flex flex-col">
+                      <h3 class="text-lg font-semibold text-gray-900 mb-0.5">
+                        {{ ticket.title }}
+                      </h3>
+                      <span class="text-gray-400 font-normal text-xs">#{{ ticket.id }}</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 justify-end">
+                      @if (ticket.epic) {
+                        <span class="badge badge-epic">
+                          {{ ticket.epic.name }}
+                        </span>
+                      }
+                      <span
+                        class="badge"
+                        [class.badge-low]="ticket.priority === 'low'"
+                        [class.badge-medium]="ticket.priority === 'medium' || !ticket.priority"
+                        [class.badge-high]="ticket.priority === 'high'"
+                        [class.badge-critical]="ticket.priority === 'critical'"
+                      >
+                        {{ ticket.priority || 'medium' | uppercase }}
+                      </span>
+                    </div>
+                  </div>
+                  <p class="ticket-about-standard">
+                    {{ ticket.about || 'No additional information.' }}
+                  </p>
+                  <div class="ticket-footer-standard">
+                    <span>
+                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      {{ getAssignedPersonName(ticket.assignedPersonId) }}
+                    </span>
+                    @if (ticket.estimations) {
+                      <span>
+                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        {{ ticket.estimations }}h
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            } @empty {
+              <div class="text-center text-sm text-gray-400 py-6">No tickets</div>
             }
           </div>
         </div>
-      } @empty {
-        <div
-          class="col-span-full text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-100"
+
+        <!-- IN PROGRESS Column -->
+        <div 
+          class="kanban-column col-in-progress"
         >
-          <img
-            class="h-12 w-12 mx-auto text-gray-300 mb-3 shrink-0"
-            src="/assets/icons/icon-31bd8793.svg"
-            alt="icon"
-          />
-          <p class="text-lg">No tickets found.</p>
-          <p class="text-sm mt-1">Create a new ticket to get started.</p>
+          <div class="kanban-column-header">
+            <h2 class="font-semibold text-blue-800 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+              In Progress
+            </h2>
+          </div>
+          <div 
+            class="kanban-column-content"
+            cdkDropList
+            [cdkDropListData]="inProgressTickets"
+            (cdkDropListDropped)="onDrop($event, TicketStatus.IN_PROGRESS)"
+          >
+            @for (ticket of inProgressTickets; track ticket.id) {
+              <div
+                class="ticket-card group"
+                [class.is-standard]="!isCompactView()"
+                [class.is-compact]="isCompactView()"
+                [routerLink]="['/tickets', ticket.id]"
+                cdkDrag
+                [cdkDragData]="ticket"
+              >
+                <!-- Drag Handle -->
+                <div 
+                  class="ticket-drag-handle" 
+                  [class.is-standard]="!isCompactView()" 
+                  [class.is-compact]="isCompactView()"
+                  cdkDragHandle
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </div>
+
+                @if (isCompactView()) {
+                  <div class="ticket-content-compact">
+                    <h3 class="text-base font-semibold text-gray-900">
+                      {{ ticket.title }}
+                    </h3>
+                    <div class="flex items-center gap-2 shrink-0">
+                      @if (ticket.epic) {
+                        <span class="badge badge-epic">
+                          {{ ticket.epic.name }}
+                        </span>
+                      }
+                      <span
+                        class="badge"
+                        [class.badge-low]="ticket.priority === 'low'"
+                        [class.badge-medium]="ticket.priority === 'medium' || !ticket.priority"
+                        [class.badge-high]="ticket.priority === 'high'"
+                        [class.badge-critical]="ticket.priority === 'critical'"
+                      >
+                        {{ ticket.priority || 'medium' | uppercase }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="ticket-meta-compact">
+                    <span class="flex items-center">
+                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      {{ getAssignedPersonName(ticket.assignedPersonId) }}
+                    </span>
+                    @if (ticket.estimations) {
+                      <span class="flex items-center justify-end">
+                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        {{ ticket.estimations }}h
+                      </span>
+                    }
+                  </div>
+                } @else {
+                  <div class="ticket-header-standard">
+                    <div class="flex flex-col">
+                      <h3 class="text-lg font-semibold text-gray-900 mb-0.5">
+                        {{ ticket.title }}
+                      </h3>
+                      <span class="text-gray-400 font-normal text-xs">#{{ ticket.id }}</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 justify-end">
+                      @if (ticket.epic) {
+                        <span class="badge badge-epic">
+                          {{ ticket.epic.name }}
+                        </span>
+                      }
+                      <span
+                        class="badge"
+                        [class.badge-low]="ticket.priority === 'low'"
+                        [class.badge-medium]="ticket.priority === 'medium' || !ticket.priority"
+                        [class.badge-high]="ticket.priority === 'high'"
+                        [class.badge-critical]="ticket.priority === 'critical'"
+                      >
+                        {{ ticket.priority || 'medium' | uppercase }}
+                      </span>
+                    </div>
+                  </div>
+                  <p class="ticket-about-standard">
+                    {{ ticket.about || 'No additional information.' }}
+                  </p>
+                  <div class="ticket-footer-standard">
+                    <span>
+                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      {{ getAssignedPersonName(ticket.assignedPersonId) }}
+                    </span>
+                    @if (ticket.estimations) {
+                      <span>
+                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        {{ ticket.estimations }}h
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            } @empty {
+              <div class="text-center text-sm text-blue-300 py-6">No tickets</div>
+            }
+          </div>
         </div>
+
+        <!-- DONE Column -->
+        <div 
+          class="kanban-column col-done"
+        >
+          <div class="kanban-column-header">
+            <h2 class="font-semibold text-green-800 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+              Done
+            </h2>
+          </div>
+          <div 
+            class="kanban-column-content"
+            cdkDropList
+            [cdkDropListData]="doneTickets"
+            (cdkDropListDropped)="onDrop($event, TicketStatus.DONE)"
+          >
+            @for (ticket of doneTickets; track ticket.id) {
+              <div
+                class="ticket-card group"
+                [class.is-standard]="!isCompactView()"
+                [class.is-compact]="isCompactView()"
+                [routerLink]="['/tickets', ticket.id]"
+                cdkDrag
+                [cdkDragData]="ticket"
+              >
+                <!-- Drag Handle -->
+                <div 
+                  class="ticket-drag-handle" 
+                  [class.is-standard]="!isCompactView()" 
+                  [class.is-compact]="isCompactView()"
+                  cdkDragHandle
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+                </div>
+
+                @if (isCompactView()) {
+                  <div class="ticket-content-compact">
+                    <h3 class="text-base font-semibold text-gray-900">
+                      {{ ticket.title }}
+                    </h3>
+                    <div class="flex items-center gap-2 shrink-0">
+                      @if (ticket.epic) {
+                        <span class="badge badge-epic">
+                          {{ ticket.epic.name }}
+                        </span>
+                      }
+                      <span
+                        class="badge"
+                        [class.badge-low]="ticket.priority === 'low'"
+                        [class.badge-medium]="ticket.priority === 'medium' || !ticket.priority"
+                        [class.badge-high]="ticket.priority === 'high'"
+                        [class.badge-critical]="ticket.priority === 'critical'"
+                      >
+                        {{ ticket.priority || 'medium' | uppercase }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="ticket-meta-compact">
+                    <span class="flex items-center">
+                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      {{ getAssignedPersonName(ticket.assignedPersonId) }}
+                    </span>
+                    @if (ticket.estimations) {
+                      <span class="flex items-center justify-end">
+                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        {{ ticket.estimations }}h
+                      </span>
+                    }
+                  </div>
+                } @else {
+                  <div class="ticket-header-standard">
+                    <div class="flex flex-col">
+                      <h3 class="text-lg font-semibold text-gray-900 truncate mb-0.5">
+                        {{ ticket.title }}
+                      </h3>
+                      <span class="text-gray-400 font-normal text-xs">#{{ ticket.id }}</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 justify-end">
+                      @if (ticket.epic) {
+                        <span class="badge badge-epic">
+                          {{ ticket.epic.name }}
+                        </span>
+                      }
+                      <span
+                        class="badge"
+                        [class.badge-low]="ticket.priority === 'low'"
+                        [class.badge-medium]="ticket.priority === 'medium' || !ticket.priority"
+                        [class.badge-high]="ticket.priority === 'high'"
+                        [class.badge-critical]="ticket.priority === 'critical'"
+                      >
+                        {{ ticket.priority || 'medium' | uppercase }}
+                      </span>
+                    </div>
+                  </div>
+                  <p class="ticket-about-standard">
+                    {{ ticket.about || 'No additional information.' }}
+                  </p>
+                  <div class="ticket-footer-standard">
+                    <span>
+                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      {{ getAssignedPersonName(ticket.assignedPersonId) }}
+                    </span>
+                    @if (ticket.estimations) {
+                      <span>
+                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        {{ ticket.estimations }}h
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            } @empty {
+              <div class="text-center text-sm text-green-300 py-6">No tickets</div>
+            }
+          </div>
+        </div>
+      </div>
       }
-    </div>
-    }
-  }
 
   @if (ticketsResource.error()) {
     <div
-      class="flex flex-1 flex-col items-center justify-center gap-4 text-center px-4 bg-white rounded-lg shadow-sm border border-gray-100 py-12"
+      class="error-state"
     >
       <img
         class="w-16 h-16 text-red-400 shrink-0"

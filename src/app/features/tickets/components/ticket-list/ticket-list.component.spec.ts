@@ -108,21 +108,21 @@ describe('TicketListComponent', () => {
   describe('Filtering', () => {
     const mockTickets: Partial<Ticket>[] = [
       {
-        id: 1,
+        id: '1',
         title: 'T1',
         status: TicketStatus.TODO,
         assignedPersonId: 'user1',
         epic: { id: 10, name: 'Epic 1' },
       },
       {
-        id: 2,
+        id: '2',
         title: 'T2',
         status: TicketStatus.IN_PROGRESS,
         assignedPersonId: 'user2',
         epic: { id: 20, name: 'Epic 2' },
       },
       {
-        id: 3,
+        id: '3',
         title: 'T3',
         status: TicketStatus.DONE,
         assignedPersonId: 'user1',
@@ -158,8 +158,8 @@ describe('TicketListComponent', () => {
       component.selectedStatuses.set(new Set([TicketStatus.IN_PROGRESS, TicketStatus.DONE]));
       const filtered = component.filteredTickets();
       expect(filtered.length).toBe(2);
-      expect(filtered.find((t) => t.id === 2)).toBeTruthy();
-      expect(filtered.find((t) => t.id === 3)).toBeTruthy();
+      expect(filtered.find((t) => t.id === '2')).toBeTruthy();
+      expect(filtered.find((t) => t.id === '3')).toBeTruthy();
     });
 
     it('should combine filters correctly', () => {
@@ -168,7 +168,7 @@ describe('TicketListComponent', () => {
       component.selectedStatuses.set(new Set([TicketStatus.TODO]));
       const filtered = component.filteredTickets();
       expect(filtered.length).toBe(1);
-      expect(filtered[0].id).toBe(1);
+      expect(filtered[0].id).toBe('1');
     });
   });
 

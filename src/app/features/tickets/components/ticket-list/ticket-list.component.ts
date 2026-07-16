@@ -1,18 +1,20 @@
-import { Component, computed, inject, OnInit, signal, DestroyRef } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, DestroyRef, effect } from '@angular/core';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TicketService } from '../../services/ticket.service';
 import { UserService } from '../../../../services/user-service';
 import { AuthService } from '../../../../services/auth.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TicketStatus } from '../../models/ticket.model';
+import { TicketStatus, Ticket } from '../../models/ticket.model';
 import { SpinnerComponent } from '@ng-console-platform/ui';
+import { CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-ticket-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, SpinnerComponent],
+  imports: [RouterLink, CommonModule, SpinnerComponent, CdkDrag, CdkDropList, CdkDropListGroup],
   templateUrl: './ticket-list.component.html',
+  styleUrl: './ticket-list.component.scss'
 })
 export class TicketListComponent implements OnInit {
   TicketStatus = TicketStatus;
@@ -32,6 +34,32 @@ export class TicketListComponent implements OnInit {
   selectedEpicId = signal<string>('');
   selectedStatuses = signal<Set<TicketStatus>>(new Set());
   isCompactView = signal(false);
+
+  todoTickets: Ticket[] = [];
+  inProgressTickets: Ticket[] = [];
+  doneTickets: Ticket[] = [];
+
+  constructor() {
+    effect(() => {
+      const tickets = this.filteredTickets();
+      this.todoTickets = this.preserveOrder(this.todoTickets, tickets.filter(t => t.status === TicketStatus.TODO));
+      this.inProgressTickets = this.preserveOrder(this.inProgressTickets, tickets.filter(t => t.status === TicketStatus.IN_PROGRESS));
+      this.doneTickets = this.preserveOrder(this.doneTickets, tickets.filter(t => t.status === TicketStatus.DONE));
+    });
+  }
+
+  preserveOrder(currentList: Ticket[], newList: Ticket[]): Ticket[] {
+    const newListMap = new Map(newList.map(t => [t.id, t]));
+    const result: Ticket[] = [];
+    for (const currentTicket of currentList) {
+      if (newListMap.has(currentTicket.id)) {
+        result.push(newListMap.get(currentTicket.id)!);
+        newListMap.delete(currentTicket.id);
+      }
+    }
+    result.push(...Array.from(newListMap.values()));
+    return result;
+  }
 
   filteredTickets = computed(() => {
     const tickets = this.ticketsResource.value();
@@ -138,4 +166,49 @@ export class TicketListComponent implements OnInit {
 
     return assignedPersonId;
   }
+
+  onDrop(event: CdkDragDrop<Ticket[]>, targetStatus: TicketStatus) {
+    if (event.previousContainer === event.container) {
+      // Swap items instead of shifting them
+      const data = event.container.data;
+      const prev = event.previousIndex;
+      const curr = event.currentIndex;
+
+      if (prev !== curr) {
+        const temp = data[prev];
+        data[prev] = data[curr];
+        data[curr] = temp;
+
+        // Force Angular change detection by updating the array reference
+        if (targetStatus === TicketStatus.TODO) {
+          this.todoTickets = [...data];
+        } else if (targetStatus === TicketStatus.IN_PROGRESS) {
+          this.inProgressTickets = [...data];
+        } else if (targetStatus === TicketStatus.DONE) {
+          this.doneTickets = [...data];
+        }
+      }
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+
+      const ticket = event.container.data[event.currentIndex];
+      
+      this.ticketService.updateTicket(ticket.id, { status: targetStatus }).pipe(
+        takeUntilDestroyed(this.destroyRef)
+      ).subscribe({
+        next: () => {
+          this.ticketsResource.reload();
+        },
+        error: (err) => {
+          console.error('Failed to update ticket status', err);
+        }
+      });
+    }
+  }
 }
+
