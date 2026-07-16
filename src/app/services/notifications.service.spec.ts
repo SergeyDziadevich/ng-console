@@ -5,7 +5,7 @@ import { NotificationsService, NotificationPayload } from './notifications.servi
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { io } from 'socket.io-client';
-import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { signal } from '@angular/core';
 
 const { mockSocket, handlers } = vi.hoisted(() => {
