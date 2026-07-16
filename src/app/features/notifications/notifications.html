@@ -15,35 +15,7 @@
     </span>
   </h1>
 
-  <div class="flex gap-2 flex-wrap mb-6">
-    @if (isAdminOrModerator()) {
-      <input
-        class="px-3 py-2 rounded-md border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1 min-w-[200px]"
-        #titleInput
-        value="Deploy finished"
-      />
-      <button
-        class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm"
-        (click)="sendNotification(titleInput.value)"
-      >
-        Send
-      </button>
-    }
-    <button
-      class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm"
-      (click)="dropConnection()"
-    >
-      ⚡ Drop connection
-    </button>
-    <button
-      class="px-4 py-2 rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 font-medium transition-colors cursor-pointer shadow-sm"
-      (click)="reconnect()"
-    >
-      🔌 Reconnect
-    </button>
-  </div>
-
-  <ul class="list-none p-0 flex flex-col gap-2">
+  <ul class="list-none p-0 flex flex-col gap-2 mt-6 mb-6">
     @for (msg of messages(); track msg) {
       <li
         class="border rounded-lg px-4 py-2.5 transition-all"
@@ -99,4 +71,47 @@
       </li>
     }
   </ul>
+
+  @if (isAdmin()) {
+    <div class="bg-gradient-to-r from-slate-50 to-gray-100 border border-gray-200 rounded-xl p-4 shadow-sm">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Admin Controls</span>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <div class="flex flex-1 min-w-[250px] relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="text-gray-400 sm:text-sm">💬</span>
+          </div>
+          <input
+            class="pl-10 px-4 py-2 w-full rounded-lg border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+            #titleInput
+            value="Deploy finished"
+            placeholder="Notification message..."
+          />
+        </div>
+        <button
+          class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm cursor-pointer flex items-center gap-2"
+          (click)="sendNotification(titleInput.value)"
+        >
+          Send
+        </button>
+        <div class="w-px bg-gray-300 hidden sm:block mx-1"></div>
+        <div class="flex items-center gap-2 whitespace-nowrap shrink-0">
+          <button
+            class="px-4 py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 font-medium transition-colors cursor-pointer shadow-sm flex items-center gap-2"
+            (click)="dropConnection()"
+          >
+            🚫 Drop
+          </button>
+          <button
+            class="px-4 py-2 rounded-lg border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 font-medium transition-colors cursor-pointer shadow-sm flex items-center gap-2"
+            (click)="reconnect()"
+          >
+            🔌 Reconnect
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>
