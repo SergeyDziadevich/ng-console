@@ -5,12 +5,12 @@ import { User } from '../../models/user.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UsersTable } from './users-table/users-table';
 import { FormsModule } from '@angular/forms';
-import { Toast } from '../../components/toast/toast';
+import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { HasPermissionDirective } from '../../directives/has-permission.directive';
 
 @Component({
   selector: 'app-user-management',
-  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, HasPermissionDirective],
+  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, HasPermissionDirective, SpinnerComponent],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })

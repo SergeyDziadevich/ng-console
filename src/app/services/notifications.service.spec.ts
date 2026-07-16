@@ -1,45 +1,42 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { NotificationsService, NotificationPayload } from './notifications.service';
+import { NotificationsService, NotificationPayload, SOCKET_IO_FACTORY } from './notifications.service';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
-import { io } from 'socket.io-client';
-import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
-import { signal } from '@angular/core';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { signal, WritableSignal } from '@angular/core';
 
-vi.mock('socket.io-client');
-
+const mockSocket = {
+  on: vi.fn(),
+  io: { engine: { close: vi.fn() } },
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  recovered: false,
+};
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
   let httpTestingController: HttpTestingController;
   let authServiceMock: {
-    currentUser: import('@angular/core').WritableSignal<{ id: string; name: string } | null>;
+    currentUser: WritableSignal<{ id: string; name: string } | null>;
   };
-  let mockSocket: {
-    on: Mock;
-    io: { engine: { close: Mock } };
-    connect: Mock;
-    disconnect: Mock;
-    recovered: boolean;
-  };
-  let handlers: Record<string, (...args: unknown[]) => void>;
+
+  function getSocketHandler(eventName: string): (...args: unknown[]) => void {
+    const call = vi.mocked(mockSocket.on).mock.calls.find((c: unknown[]) => c[0] === eventName);
+    if (!call) {
+      throw new Error(`Socket handler for event '${eventName}' was not registered.`);
+    }
+    return call[1] as (...args: unknown[]) => void;
+  }
 
   beforeEach(() => {
-    handlers = {};
-    mockSocket = {
-      on: vi.fn((event: string, cb: (...args: unknown[]) => void) => {
-        handlers[event] = cb;
-      }),
-      io: { engine: { close: vi.fn() } },
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      recovered: false,
-    };
-
-    vi.mocked(io).mockClear();
-    vi.mocked(io).mockReturnValue(mockSocket as unknown as ReturnType<typeof io>);
+    mockSocket.recovered = false;
+    
+    vi.mocked(mockSocket.on).mockClear();
+    vi.mocked(mockSocket.connect).mockClear();
+    vi.mocked(mockSocket.disconnect).mockClear();
+    vi.mocked(mockSocket.io.engine.close).mockClear();
 
     authServiceMock = {
       currentUser: signal({ id: 'user-123', name: 'Test User' }),
@@ -51,6 +48,7 @@ describe('NotificationsService', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: AuthService, useValue: authServiceMock },
+        { provide: SOCKET_IO_FACTORY, useValue: () => mockSocket },
       ],
     });
 
@@ -84,13 +82,15 @@ describe('NotificationsService', () => {
     const req = httpTestingController.expectOne(`${environment.apiUrl}/api/notifications`);
     req.flush([]);
 
-    // Find the 'connect' handler and call it
-    handlers['connect']();
+    // Trigger the 'connect' handler directly
+    const connectHandler = getSocketHandler('connect');
+    connectHandler();
 
     expect(service.isOnline()).toBe(true);
 
-    // Find the 'disconnect' handler and call it
-    handlers['disconnect']();
+    // Trigger the 'disconnect' handler directly
+    const disconnectHandler = getSocketHandler('disconnect');
+    disconnectHandler();
 
     expect(service.isOnline()).toBe(false);
   });
@@ -100,7 +100,8 @@ describe('NotificationsService', () => {
     req.flush([]);
 
     mockSocket.recovered = false;
-    handlers['notification']({
+    const notificationHandler = getSocketHandler('notification');
+    notificationHandler({
       id: 'new-1',
       title: 'New Notif',
       body: 'New Body',
@@ -121,7 +122,8 @@ describe('NotificationsService', () => {
     req.flush([]);
 
     mockSocket.recovered = true;
-    handlers['notification']({
+    const notificationHandler = getSocketHandler('notification');
+    notificationHandler({
       id: 'replayed-1',
       title: 'Replayed Notif',
       body: 'Body',
@@ -137,7 +139,8 @@ describe('NotificationsService', () => {
     const req = httpTestingController.expectOne(`${environment.apiUrl}/api/notifications`);
     req.flush([{ id: 'existing-1', title: 'Existing', body: 'Body', ts: 1000 }]);
 
-    handlers['notification']({
+    const notificationHandler = getSocketHandler('notification');
+    notificationHandler({
       id: 'existing-1',
       title: 'Existing Duplicate',
       body: 'Body',

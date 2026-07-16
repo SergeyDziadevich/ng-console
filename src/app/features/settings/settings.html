@@ -18,9 +18,7 @@
 
   @if (isLoading()) {
     <div class="flex flex-1 justify-center items-center mt-20">
-      <div
-        class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"
-      ></div>
+      <app-spinner size="lg" color="indigo"></app-spinner>
     </div>
   } @else {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

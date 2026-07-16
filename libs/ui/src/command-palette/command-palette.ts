@@ -8,7 +8,7 @@ import {
   HostListener,
   effect,
 } from '@angular/core';
-import { AiService } from '../../services/ai.service';
+import { AiService } from '@app/services/ai.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

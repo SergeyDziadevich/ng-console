@@ -32,14 +32,6 @@
 
     .document-viewer-loading {
       @apply absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center;
-
-      .loading-spinner {
-        @apply w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin;
-      }
-
-      .loading-text {
-        @apply mt-4 text-gray-600 font-medium;
-      }
     }
 
     .document-viewer-pdf-wrapper {
@@ -107,10 +99,6 @@
 
       &.document-viewer-btn-primary {
         @apply bg-blue-600 text-white hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center gap-2 shadow-sm hover:shadow;
-
-        .btn-spinner {
-          @apply w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin;
-        }
 
         .btn-icon {
           @apply w-4 h-4;

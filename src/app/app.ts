@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CommandPaletteComponent } from './components/command-palette/command-palette';
+import { CommandPaletteComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-root',

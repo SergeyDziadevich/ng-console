@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { AiService } from '../../services/ai.service';
-import { NotificationsService } from '../../services/notifications.service';
+import { AuthService } from '@app/services/auth.service';
+import { AiService } from '@app/services/ai.service';
+import { NotificationsService } from '@app/services/notifications.service';
 
 @Component({
   selector: 'app-top-bar',
