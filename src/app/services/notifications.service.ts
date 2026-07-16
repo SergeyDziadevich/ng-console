@@ -1,8 +1,14 @@
-import { Injectable, signal, computed, inject, NgZone } from '@angular/core';
+import { Injectable, signal, computed, inject, NgZone, InjectionToken } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
+
+export const SOCKET_IO_FACTORY = new InjectionToken<typeof io>('SocketIOFactory', {
+  providedIn: 'root',
+  factory: () => io,
+});
 
 export interface NotificationMessage {
   id: string;
@@ -31,6 +37,7 @@ export class NotificationsService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   private zone = inject(NgZone);
+  private ioFactory = inject(SOCKET_IO_FACTORY);
   private socket!: Socket;
 
   messages = signal<NotificationMessage[]>([]);
@@ -69,7 +76,7 @@ export class NotificationsService {
     });
 
     this.zone.runOutsideAngular(() => {
-      this.socket = io(environment.apiUrl, {
+      this.socket = this.ioFactory(environment.apiUrl, {
         transports: ['websocket'],
         reconnection: false,
       });
