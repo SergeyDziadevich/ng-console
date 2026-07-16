@@ -41,6 +41,13 @@ describe('NotificationsService', () => {
       delete handlers[key];
     }
     mockSocket.recovered = false;
+    
+    // Explicitly re-apply implementations in case of global mock resets
+    vi.mocked(io).mockImplementation(() => mockSocket as any);
+    mockSocket.on.mockImplementation((event: string, cb: (...args: unknown[]) => void) => {
+      handlers[event] = cb;
+    });
+
     vi.mocked(mockSocket.connect).mockClear();
     vi.mocked(mockSocket.disconnect).mockClear();
     vi.mocked(mockSocket.io.engine.close).mockClear();
