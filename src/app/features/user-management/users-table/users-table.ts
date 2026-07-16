@@ -3,7 +3,7 @@ import { User } from '../../../models/user.model';
 import { HasPermissionDirective } from '../../../directives/has-permission.directive';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideEdit, lucideTrash2 } from '@ng-icons/lucide';
-import { ConfirmDialogComponent } from '../../../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-users-table',

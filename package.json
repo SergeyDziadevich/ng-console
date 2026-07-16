@@ -36,6 +36,8 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@analogjs/vite-plugin-angular": "~2.1.2",
+    "@analogjs/vitest-angular": "~2.1.2",
     "@angular-devkit/core": "^22.0.0",
     "@angular-devkit/schematics": "^22.0.0",
     "@angular/build": "^22.0.0",
@@ -43,12 +45,21 @@
     "@angular/compiler-cli": "^22.0.0",
     "@eslint/js": "^10.0.1",
     "@nx/angular": "23.0.1",
+    "@nx/eslint-plugin": "^23.0.1",
+    "@nx/js": "23.0.1",
+    "@nx/vite": "23.0.1",
+    "@nx/vitest": "23.0.1",
+    "@nx/web": "23.0.1",
     "@nx/workspace": "23.0.1",
+    "@oxc-project/runtime": "^0.115.0",
     "@playwright/test": "^1.60.0",
     "@schematics/angular": "^22.0.0",
+    "@swc/helpers": "~0.5.18",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^25.9.3",
+    "@typescript-eslint/utils": "^8.40.0",
     "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/ui": "~4.1.0",
     "angular-eslint": "21.4.0",
     "dotenv": "^17.4.2",
     "eslint": "^10.3.0",
@@ -58,8 +69,10 @@
     "prettier": "^3.8.1",
     "prettier-plugin-organize-attributes": "^1.0.0",
     "tailwindcss": "^4.3.0",
+    "ts-node": "10.9.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "8.59.2",
+    "vite": "^8.0.0",
     "vitest": "^4.0.8"
   }
 }

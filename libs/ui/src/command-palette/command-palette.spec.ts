@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommandPaletteComponent } from './command-palette';
-import { AiService, ChatMessage } from '../../services/ai.service';
+import { AiService, ChatMessage } from '@app/services/ai.service';
 import { signal, WritableSignal } from '@angular/core';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 

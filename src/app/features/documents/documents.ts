@@ -10,14 +10,14 @@ import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2 } from '@ng-icons/lucide';
-import { Toast } from '../../components/toast/toast';
+import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { environment } from '../../../environments/environment';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-documents',
-  imports: [CommonModule, NgIconComponent, Toast, RouterLink, ConfirmDialogComponent],
+  imports: [CommonModule, NgIconComponent, Toast, RouterLink, ConfirmDialogComponent, SpinnerComponent],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
   viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFilePlus, lucideFileSignature, lucideEye, lucideFileText, lucideLoader2 })]

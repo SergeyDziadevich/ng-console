@@ -42,8 +42,7 @@
 
     @if (isLoading() && documents().length === 0) {
       <div class="loading">
-        <ng-icon name="lucideLoader2" class="animate-spin text-blue-500 w-8 h-8 mb-2"></ng-icon>
-        <p>Loading documents...</p>
+        <app-spinner loadingText="Loading documents..."></app-spinner>
       </div>
     } @else if (documents().length === 0) {
       <div class="empty-state">

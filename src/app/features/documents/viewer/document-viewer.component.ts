@@ -19,13 +19,13 @@ import SignaturePad from 'signature_pad';
 
 import { DocumentService } from '../../../services/document.service';
 import { UploadedDocument } from '../../../models/document.model';
-import { Toast } from '../../../components/toast/toast';
+import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-document-viewer',
   templateUrl: './document-viewer.component.html',
   styleUrl: './document-viewer.component.scss',
-  imports: [CommonModule, NgIconComponent, Toast],
+  imports: [CommonModule, NgIconComponent, Toast, SpinnerComponent],
   providers: [provideIcons({ lucideFileSignature })],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

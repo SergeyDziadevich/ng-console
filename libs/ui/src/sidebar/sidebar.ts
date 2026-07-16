@@ -2,8 +2,8 @@ import { Component, input, signal, inject, computed } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
-import { AuthResponse } from '../../services/auth.service';
-import { ChatService } from '../../services/chat.service';
+import { AuthResponse } from '@app/services/auth.service';
+import { ChatService } from '@app/services/chat.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp } from '@ng-icons/lucide';
 

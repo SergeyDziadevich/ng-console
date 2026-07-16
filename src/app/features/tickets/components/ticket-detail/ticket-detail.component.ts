@@ -6,11 +6,11 @@ import { QuillModule } from 'ngx-quill';
 import { TicketService } from '../../services/ticket.service';
 import { Ticket, TicketStatus, TicketPriority } from '../../models/ticket.model';
 import { UserService } from '../../../../services/user-service';
-import { SvgIconComponent } from '../../../../components/icons/svg-icon.component';
+import { SvgIconComponent } from '@ng-console-platform/ui';
 import { firstValueFrom } from 'rxjs';
 import { form, FormField, FormRoot, required, min } from '@angular/forms/signals';
 import { AuthService } from '../../../../services/auth.service';
-import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, SpinnerComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -24,6 +24,7 @@ import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/co
     FormField,
     FormRoot,
     ConfirmDialogComponent,
+    SpinnerComponent,
   ],
   templateUrl: './ticket-detail.component.html',
 })

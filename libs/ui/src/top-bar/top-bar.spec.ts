@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TopBar } from './top-bar';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@app/services/auth.service';
 import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
