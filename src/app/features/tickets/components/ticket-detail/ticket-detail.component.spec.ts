@@ -109,7 +109,7 @@ describe('TicketDetailComponent', () => {
 
       expect(mockUserService.usersResource.reload).toHaveBeenCalled();
       expect(mockTicketService.epicsResource.reload).toHaveBeenCalled();
-      expect(mockTicketService.getTicket).toHaveBeenCalledWith(1);
+      expect(mockTicketService.getTicket).toHaveBeenCalledWith('1');
       expect(component.ticket()).toEqual(mockTicket);
       expect(component.isLoading()).toBe(false);
       expect(component.error()).toBe(false);

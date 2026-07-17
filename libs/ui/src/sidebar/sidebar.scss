@@ -53,15 +53,15 @@
         @apply px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm;
 
         &.sidebar-badge-green {
-          @apply text-green-100 bg-green-600;
+          @apply text-green-300 bg-green-500/20;
         }
 
         &.sidebar-badge-purple {
-          @apply text-purple-100 bg-purple-600;
+          @apply text-purple-300 bg-purple-500/20;
         }
 
         &.sidebar-badge-blue {
-          @apply text-blue-100 bg-blue-600;
+          @apply text-blue-300 bg-blue-500/20;
         }
       }
     }

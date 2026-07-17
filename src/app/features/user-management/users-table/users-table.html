@@ -2,11 +2,72 @@
   <table class="min-w-full divide-y divide-gray-200 bg-white text-sm">
     <thead class="bg-gray-50">
       <tr>
-        <th class="table-th w-[1%] whitespace-nowrap">ID</th>
-        <th class="table-th">Name</th>
-        <th class="table-th">Email</th>
-        <th class="table-th">Role</th>
-        <th class="table-th text-center">2FA</th>
+        <th class="table-th w-[1%] whitespace-nowrap cursor-pointer hover:bg-gray-100 select-none" (click)="sortBy('_id')">
+          <div class="flex items-center gap-1">
+            ID
+            @if (sortColumn() === '_id') {
+              <ng-icon [name]="sortDirection() === 'asc' ? 'lucideArrowUp' : 'lucideArrowDown'" class="w-3 h-3 text-gray-700"></ng-icon>
+            }
+          </div>
+        </th>
+        <th class="table-th select-none align-top pt-3 w-48" (appClickOutside)="onNameSearchBlur()">
+          <button
+            type="button"
+            class="flex items-center gap-1 cursor-pointer hover:bg-gray-100 p-1 -m-1 rounded"
+            (click)="onNameTitleClick()"
+            (keyup.enter)="onNameTitleClick()"
+          >
+            Name
+            @if (searchName()) {
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            }
+            @if (sortColumn() === 'username') {
+              <ng-icon [name]="sortDirection() === 'asc' ? 'lucideArrowUp' : 'lucideArrowDown'" class="w-3 h-3 text-gray-700"></ng-icon>
+            }
+          </button>
+          @if (isNameSearchVisible()) {
+            <div class="mt-1.5 -mx-1">
+              <input type="text" [value]="searchName()" (input)="updateSearchName($event)" (click)="$event.stopPropagation()" class="border border-gray-300 px-2 py-1 text-xs rounded font-normal text-gray-700 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Search name..." />
+            </div>
+          }
+        </th>
+        <th class="table-th select-none align-top pt-3 w-64" (appClickOutside)="onEmailSearchBlur()">
+          <button
+            type="button"
+            class="flex items-center gap-1 cursor-pointer hover:bg-gray-100 p-1 -m-1 rounded"
+            (click)="onEmailTitleClick()"
+            (keyup.enter)="onEmailTitleClick()"
+          >
+            Email
+            @if (searchEmail()) {
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            }
+            @if (sortColumn() === 'email') {
+              <ng-icon [name]="sortDirection() === 'asc' ? 'lucideArrowUp' : 'lucideArrowDown'" class="w-3 h-3 text-gray-700"></ng-icon>
+            }
+          </button>
+          @if (isEmailSearchVisible()) {
+            <div class="mt-1.5 -mx-1">
+              <input type="text" [value]="searchEmail()" (input)="updateSearchEmail($event)" (click)="$event.stopPropagation()" class="border border-gray-300 px-2 py-1 text-xs rounded font-normal text-gray-700 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Search email..." />
+            </div>
+          }
+        </th>
+        <th class="table-th cursor-pointer hover:bg-gray-100 select-none" (click)="sortBy('role')">
+          <div class="flex items-center gap-1">
+            Role
+            @if (sortColumn() === 'role') {
+              <ng-icon [name]="sortDirection() === 'asc' ? 'lucideArrowUp' : 'lucideArrowDown'" class="w-3 h-3 text-gray-700"></ng-icon>
+            }
+          </div>
+        </th>
+        <th class="table-th text-center cursor-pointer hover:bg-gray-100 select-none" (click)="sortBy('isTwoFactorEnabled')">
+          <div class="flex items-center justify-center gap-1">
+            2FA
+            @if (sortColumn() === 'isTwoFactorEnabled') {
+              <ng-icon [name]="sortDirection() === 'asc' ? 'lucideArrowUp' : 'lucideArrowDown'" class="w-3 h-3 text-gray-700"></ng-icon>
+            }
+          </div>
+        </th>
         <th class="table-th text-right">Actions</th>
       </tr>
     </thead>

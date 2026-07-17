@@ -1,16 +1,17 @@
 import { Component, input, output, signal, computed, effect } from '@angular/core';
 import { User } from '../../../models/user.model';
 import { HasPermissionDirective } from '../../../directives/has-permission.directive';
+import { ClickOutsideDirective } from '../../../directives/click-outside.directive';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideEdit, lucideTrash2 } from '@ng-icons/lucide';
+import { lucideEdit, lucideTrash2, lucideArrowUp, lucideArrowDown, lucideArrowUpDown } from '@ng-icons/lucide';
 import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-users-table',
-  imports: [HasPermissionDirective, NgIconComponent, ConfirmDialogComponent],
+  imports: [HasPermissionDirective, ClickOutsideDirective, NgIconComponent, ConfirmDialogComponent],
   templateUrl: './users-table.html',
   styleUrl: './users-table.scss',
-  viewProviders: [provideIcons({ lucideEdit, lucideTrash2 })],
+  viewProviders: [provideIcons({ lucideEdit, lucideTrash2, lucideArrowUp, lucideArrowDown, lucideArrowUpDown })],
 })
 export class UsersTable {
   users = input<User[]>([]);
@@ -23,8 +24,98 @@ export class UsersTable {
   currentPage = signal(1);
   pageSize = signal<number | 'all'>(25);
 
+
+  sortColumn = signal<keyof User | null>(null);
+  sortDirection = signal<'asc' | 'desc'>('asc');
+
+  searchName = signal<string>('');
+  searchEmail = signal<string>('');
+
+  isNameSearchVisible = signal<boolean>(false);
+  isEmailSearchVisible = signal<boolean>(false);
+
+  updateSearchName(event: Event) {
+    const val = (event.target as HTMLInputElement).value;
+    this.searchName.set(val);
+    this.currentPage.set(1);
+  }
+
+  updateSearchEmail(event: Event) {
+    const val = (event.target as HTMLInputElement).value;
+    this.searchEmail.set(val);
+    this.currentPage.set(1);
+  }
+
+  onNameTitleClick() {
+    this.isNameSearchVisible.set(true);
+    this.sortBy('username');
+  }
+
+  onEmailTitleClick() {
+    this.isEmailSearchVisible.set(true);
+    this.sortBy('email');
+  }
+
+  onNameSearchBlur() {
+    this.isNameSearchVisible.set(false);
+  }
+
+  onEmailSearchBlur() {
+    this.isEmailSearchVisible.set(false);
+  }
+
+  filteredUsers = computed(() => {
+    let result = this.users();
+    const sName = this.searchName().toLowerCase().trim();
+    const sEmail = this.searchEmail().toLowerCase().trim();
+
+    if (sName) {
+      result = result.filter(u => u.username.toLowerCase().includes(sName));
+    }
+    if (sEmail) {
+      result = result.filter(u => u.email.toLowerCase().includes(sEmail));
+    }
+    return result;
+  });
+
+  sortedUsers = computed(() => {
+    const allUsers = [...this.filteredUsers()];
+    const col = this.sortColumn();
+    const dir = this.sortDirection();
+    
+    if (!col) return allUsers;
+    
+    return allUsers.sort((a, b) => {
+      const aVal = a[col];
+      const bVal = b[col];
+      
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return dir === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      }
+      if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+        return dir === 'asc' ? (aVal === bVal ? 0 : aVal ? 1 : -1) : (aVal === bVal ? 0 : aVal ? -1 : 1);
+      }
+      
+      return 0;
+    });
+  });
+
+  sortBy(column: keyof User) {
+    if (this.sortColumn() === column) {
+      if (this.sortDirection() === 'asc') {
+        this.sortDirection.set('desc');
+      } else {
+        this.sortColumn.set(null);
+        this.sortDirection.set('asc');
+      }
+    } else {
+      this.sortColumn.set(column);
+      this.sortDirection.set('asc');
+    }
+  }
+
   paginatedUsers = computed(() => {
-    const allUsers = this.users();
+    const allUsers = this.sortedUsers();
     const size = this.pageSize();
     if (size === 'all') return allUsers;
 
@@ -40,7 +131,7 @@ export class UsersTable {
   });
 
   totalPages = computed(() => {
-    const allUsers = this.users();
+    const allUsers = this.filteredUsers();
     const size = this.pageSize();
     if (size === 'all') return 1;
     return Math.ceil(allUsers.length / size) || 1;

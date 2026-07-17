@@ -54,7 +54,7 @@ export class TicketDetailComponent implements OnInit {
   ngOnInit() {
     this.usersResource.reload();
     this.epicsResource.reload();
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadTicket(id);
     } else {
@@ -63,7 +63,7 @@ export class TicketDetailComponent implements OnInit {
     }
   }
 
-  loadTicket(id: number) {
+  loadTicket(id: string) {
     this.isLoading.set(true);
     this.ticketService.getTicket(id).subscribe({
       next: (ticket) => {
