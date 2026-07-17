@@ -463,5 +463,96 @@ describe('Chat Component', () => {
       expect(component.showDeleteConfirm()).toBe(false);
       consoleSpy.mockRestore();
     });
+
+    it('should not call deleteRoom if activeRoomId is empty', () => {
+      vi.spyOn(chatService, 'deleteRoom');
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue(null);
+      component.deleteRoom();
+      expect(chatService.deleteRoom).not.toHaveBeenCalled();
+    });
+
+    it('should not submit rename if activeRoomId or name is empty', () => {
+      vi.spyOn(chatService, 'renameRoom');
+      
+      // Empty activeRoomId
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue(null);
+      component.renameRoomName.set('New Name');
+      component.submitRenameRoom();
+      expect(chatService.renameRoom).not.toHaveBeenCalled();
+
+      // Empty name
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room-1');
+      component.renameRoomName.set('   ');
+      component.submitRenameRoom();
+      expect(chatService.renameRoom).not.toHaveBeenCalled();
+    });
+
+    it('should not start rename room if active room is not found in rooms list', () => {
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room-nonexistent');
+      vi.spyOn(chatService, 'rooms').mockReturnValue([]);
+      component.isRenamingRoom.set(false);
+      component.renameRoomName.set('');
+      
+      component.startRenameRoom();
+      
+      expect(component.isRenamingRoom()).toBe(false);
+      expect(component.renameRoomName()).toBe('');
+    });
+
+    it('should default users computed signal to empty array if usersResource is nullish', () => {
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(undefined);
+      expect(component.users()).toEqual([]);
+    });
+
+    it('should filter users by displayName or username in availableUsersToAdd', () => {
+      const room = { id: '1', members: [] } as unknown as ChatRoom;
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('1');
+      vi.spyOn(chatService, 'rooms').mockReturnValue([room]);
+      const mockUsers = [
+        { _id: 'u1', username: 'john_doe', displayName: 'John' },
+        { _id: 'u2', username: 'jane_doe', displayName: 'Jane' },
+      ];
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as unknown as User[]);
+      
+      // Search by displayName
+      component.userSearchQuery.set('John');
+      expect(component.availableUsersToAdd()).toEqual([mockUsers[0]] as unknown as User[]);
+      
+      // Search by username
+      component.userSearchQuery.set('jane');
+      expect(component.availableUsersToAdd()).toEqual([mockUsers[1]] as unknown as User[]);
+    });
+
+    it('should not filter users by query in availableUsersToAdd if query is empty', () => {
+      const room = { id: '1', members: [] } as unknown as ChatRoom;
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('1');
+      vi.spyOn(chatService, 'rooms').mockReturnValue([room]);
+      const mockUsers = [{ _id: 'u1', username: 'user1' }];
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue(mockUsers as unknown as User[]);
+      component.userSearchQuery.set('');
+      expect(component.availableUsersToAdd()).toEqual(mockUsers as unknown as User[]);
+    });
+
+    it('should handle undefined room members gracefully in availableUsersToAdd', () => {
+      const room = { id: '1' } as unknown as ChatRoom; // members is undefined
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('1');
+      vi.spyOn(chatService, 'rooms').mockReturnValue([room]);
+      vi.spyOn(component.userService.usersResource, 'value').mockReturnValue([]);
+      expect(component.availableUsersToAdd()).toEqual([]);
+    });
+
+    it('should return false from isMessageRead if other members have no lastReadAt', () => {
+      vi.spyOn(chatService, 'rooms').mockReturnValue([
+        {
+          id: '1',
+          members: [
+            { userId: 'u_curr' },
+            { userId: 'u_other', lastReadAt: undefined },
+          ],
+        } as unknown as ChatRoom,
+      ]);
+      const mockMessage = { id: 'm1', roomId: '1', createdAt: '2023-01-01T10:00:00Z' } as ChatMessage;
+      expect(component.isMessageRead(mockMessage)).toBe(false);
+    });
   });
 });
