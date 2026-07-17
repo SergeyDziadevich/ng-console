@@ -23,6 +23,7 @@ interface MockTicketService {
     error: ReturnType<typeof signal<unknown>>;
     reload: Mock;
   };
+  updateTicket: Mock;
 }
 
 interface MockUserService {
@@ -58,6 +59,7 @@ describe('TicketListComponent', () => {
         error: signal(undefined),
         reload: vi.fn(),
       },
+      updateTicket: vi.fn().mockReturnValue(of({})),
     };
 
     mockUserService = {
@@ -238,6 +240,75 @@ describe('TicketListComponent', () => {
 
     it('should return ID if user is not found', () => {
       expect(component.getAssignedPersonName('user3')).toBe('user3');
+    });
+  });
+
+  describe('Ticket Categorization', () => {
+    const mockTickets: Partial<Ticket>[] = [
+      { id: '1', title: 'T1', status: TicketStatus.TODO },
+      { id: '2', title: 'T2', status: TicketStatus.IN_PROGRESS },
+      { id: '3', title: 'T3', status: TicketStatus.DONE },
+      { id: '4', title: 'T4', status: TicketStatus.TODO },
+    ];
+
+    beforeEach(() => {
+      mockTicketService.ticketsResource.value.set(mockTickets as Ticket[]);
+      fixture.detectChanges();
+    });
+
+    it('should split filteredTickets into respective status signals', () => {
+      const todo = component.todoTickets();
+      const inProgress = component.inProgressTickets();
+      const done = component.doneTickets();
+
+      expect(todo.length).toBe(2);
+      expect(todo[0].id).toBe('1');
+      expect(todo[1].id).toBe('4');
+
+      expect(inProgress.length).toBe(1);
+      expect(inProgress[0].id).toBe('2');
+
+      expect(done.length).toBe(1);
+      expect(done[0].id).toBe('3');
+    });
+  });
+
+  describe('onDrop', () => {
+    it('should update signal when dropped in the same container', () => {
+      const mockTickets: Partial<Ticket>[] = [
+        { id: '1', title: 'T1', status: TicketStatus.TODO },
+        { id: '2', title: 'T2', status: TicketStatus.TODO },
+      ];
+      mockTicketService.ticketsResource.value.set(mockTickets as Ticket[]);
+      fixture.detectChanges();
+
+      const containerData = component.todoTickets();
+      
+      const mockEvent = {
+        previousContainer: { data: containerData },
+        container: { data: containerData },
+        previousIndex: 0,
+        currentIndex: 1,
+      } as any;
+
+      component.onDrop(mockEvent, TicketStatus.TODO);
+
+      expect(component.todoTickets()[0].id).toBe('2');
+      expect(component.todoTickets()[1].id).toBe('1');
+    });
+
+    it('should call updateTicket when dropped in a different container', () => {
+      const mockEvent = {
+        previousContainer: { data: [{ id: '1', status: TicketStatus.TODO }] },
+        container: { data: [] },
+        previousIndex: 0,
+        currentIndex: 0,
+      } as any;
+
+      component.onDrop(mockEvent, TicketStatus.IN_PROGRESS);
+
+      expect(mockTicketService.updateTicket).toHaveBeenCalledWith('1', { status: TicketStatus.IN_PROGRESS });
+      expect(mockTicketService.ticketsResource.reload).toHaveBeenCalled();
     });
   });
 });
