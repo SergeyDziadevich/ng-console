@@ -10,8 +10,8 @@ import { ConfirmDialogComponent, SvgIconComponent } from '@ng-console-platform/u
 @Component({
   selector: 'app-chat',
   imports: [DatePipe, NgClass, FormsModule, ConfirmDialogComponent, SvgIconComponent],
-  templateUrl: './chat.html',
-  styleUrl: './chat.scss',
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatComponent {
