@@ -1,0 +1,26 @@
+.status-badge {
+  @apply text-xs px-2.5 py-0.5 rounded-full text-white transition-colors;
+
+  &.online {
+    @apply bg-green-600;
+  }
+  &.offline {
+    @apply bg-red-600;
+  }
+}
+
+.notification-item {
+  @apply border rounded-lg px-4 py-2.5 transition-all;
+
+  &.standard {
+    @apply bg-white border-gray-200 text-gray-800 shadow-sm;
+  }
+
+  &.replayed {
+    @apply shadow-sm bg-yellow-50 border-yellow-400 text-yellow-900;
+  }
+
+  &.system {
+    @apply bg-transparent border-dashed border-gray-300 text-gray-500 italic text-sm shadow-none;
+  }
+}

@@ -1,4 +1,4 @@
-<div class="p-6 max-w-2xl mx-auto font-sans text-gray-900">
+<div class="p-6 max-w-2xl mx-auto font-sans text-gray-900 min-h-[calc(100vh-100px)] flex flex-col">
   <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
     <img
       class="h-7 w-7 brightness-0 shrink-0"
@@ -7,9 +7,9 @@
     />
     Notifications
     <span
-      class="text-xs px-2.5 py-0.5 rounded-full text-white transition-colors"
-      [class.bg-red-600]="!isOnline()"
-      [class.bg-green-600]="isOnline()"
+      class="status-badge"
+      [class.offline]="!isOnline()"
+      [class.online]="isOnline()"
     >
       {{ isOnline() ? 'online' : 'offline' }}
     </span>
@@ -18,20 +18,10 @@
   <ul class="list-none p-0 flex flex-col gap-2 mt-6 mb-6">
     @for (msg of messages(); track msg) {
       <li
-        class="border rounded-lg px-4 py-2.5 transition-all"
-        [class.bg-white]="!msg.isSystem && !msg.replayed"
-        [class.border-gray-200]="!msg.isSystem && !msg.replayed"
-        [class.text-gray-800]="!msg.isSystem && !msg.replayed"
-        [class.shadow-sm]="!msg.isSystem"
-        [class.bg-yellow-50]="msg.replayed"
-        [class.border-yellow-400]="msg.replayed"
-        [class.text-yellow-900]="msg.replayed"
-        [class.bg-transparent]="msg.isSystem"
-        [class.border-dashed]="msg.isSystem"
-        [class.border-gray-300]="msg.isSystem"
-        [class.text-gray-500]="msg.isSystem"
-        [class.italic]="msg.isSystem"
-        [class.text-sm]="msg.isSystem"
+        class="notification-item"
+        [class.standard]="!msg.isSystem && !msg.replayed"
+        [class.replayed]="msg.replayed"
+        [class.system]="msg.isSystem"
       >
         <div class="flex justify-between items-center gap-4">
           <div class="flex items-center gap-2">
@@ -73,7 +63,7 @@
   </ul>
 
   @if (isAdmin()) {
-    <div class="bg-gradient-to-r from-slate-50 to-gray-100 border border-gray-200 rounded-xl p-4 shadow-sm">
+    <div class="mt-auto sticky bottom-6 bg-gradient-to-r from-slate-50 to-gray-100 border border-gray-200 rounded-xl p-4 shadow-sm z-10">
       <div class="flex items-center gap-2 mb-3">
         <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Admin Controls</span>
       </div>
@@ -95,7 +85,9 @@
         >
           Send
         </button>
+        <!--
         <div class="w-px bg-gray-300 hidden sm:block mx-1"></div>
+        -->
         <div class="flex items-center gap-2 whitespace-nowrap shrink-0">
           <button
             class="px-4 py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 font-medium transition-colors cursor-pointer shadow-sm flex items-center gap-2"

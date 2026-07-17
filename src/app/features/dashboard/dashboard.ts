@@ -45,13 +45,13 @@ export class Dashboard implements OnInit {
   inProgressTickets = computed(() => {
     const tickets = this.ticketsResource.value();
     if (!tickets) return [];
-    return tickets.filter((t) => t.status === 'in progress');
+    return tickets.filter((t) => t.status === 'in progress').slice(0, 4);
   });
 
   doneTickets = computed(() => {
     const tickets = this.ticketsResource.value();
     if (!tickets) return [];
-    return tickets.filter((t) => t.status === 'done');
+    return tickets.filter((t) => t.status === 'done').slice(0, 4);
   });
 
   todoTicketsCount = computed(() => {
@@ -60,8 +60,17 @@ export class Dashboard implements OnInit {
     return tickets.filter((t) => t.status === 'todo').length;
   });
 
-  inProgressTicketsCount = computed(() => this.inProgressTickets().length);
-  doneTicketsCount = computed(() => this.doneTickets().length);
+  inProgressTicketsCount = computed(() => {
+    const tickets = this.ticketsResource.value();
+    if (!tickets) return 0;
+    return tickets.filter((t) => t.status === 'in progress').length;
+  });
+
+  doneTicketsCount = computed(() => {
+    const tickets = this.ticketsResource.value();
+    if (!tickets) return 0;
+    return tickets.filter((t) => t.status === 'done').length;
+  });
 
   totalTickets = computed(() => {
     const tickets = this.ticketsResource.value();
