@@ -1,19 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user-service';
 import { AuthService } from '../../services/auth.service';
 import { ChatMessage } from '../../models/chat.model';
+import { ConfirmDialogComponent, SvgIconComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-chat',
-  imports: [DatePipe, NgClass, FormsModule],
-  templateUrl: './chat.html',
-  styleUrl: './chat.scss',
+  imports: [DatePipe, FormsModule, ConfirmDialogComponent, SvgIconComponent],
+  templateUrl: './chat.component.html',
+  styleUrl: './chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Chat {
+export class ChatComponent {
   chatService = inject(ChatService);
   userService = inject(UserService);
   authService = inject(AuthService);
@@ -55,6 +56,17 @@ export class Chat {
   });
 
   currentUser = this.authService.currentUser;
+
+  canDeleteRoom = computed(() => {
+    const user = this.authService.currentUser();
+    return user?.role === 'admin' || user?.role === 'moderator';
+  });
+
+  showDeleteConfirm = signal(false);
+
+  // Rename Room State
+  isRenamingRoom = signal(false);
+  renameRoomName = signal('');
 
   selectRoom(roomId: string) {
     this.chatService.selectRoom(roomId);
@@ -143,6 +155,59 @@ export class Chat {
   resetAddUserForm() {
     this.userSearchQuery.set('');
     this.selectedUsersToAdd.set([]);
+  }
+
+  startRenameRoom() {
+    const roomId = this.chatService.activeRoomId();
+    const room = this.chatService.rooms().find((r) => r.id === roomId);
+    if (room) {
+      this.renameRoomName.set(room.name);
+      this.isRenamingRoom.set(true);
+    }
+  }
+
+  cancelRename() {
+    this.isRenamingRoom.set(false);
+    this.renameRoomName.set('');
+  }
+
+  submitRenameRoom() {
+    const roomId = this.chatService.activeRoomId();
+    const name = this.renameRoomName().trim();
+    if (!roomId || !name) return;
+    this.chatService.renameRoom(roomId, name).subscribe({
+      next: () => {
+        this.chatService.fetchRooms();
+        this.cancelRename();
+      },
+      error: (err: unknown) => {
+        console.error('Failed to rename room', err);
+      },
+    });
+  }
+
+  confirmDelete() {
+    this.showDeleteConfirm.set(true);
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirm.set(false);
+  }
+
+  deleteRoom() {
+    const roomId = this.chatService.activeRoomId();
+    if (!roomId) return;
+    this.chatService.deleteRoom(roomId).subscribe({
+      next: () => {
+        this.chatService.activeRoomId.set(null);
+        this.chatService.fetchRooms();
+        this.showDeleteConfirm.set(false);
+      },
+      error: (err: unknown) => {
+        console.error('Failed to delete room', err);
+        this.showDeleteConfirm.set(false);
+      },
+    });
   }
 
   isMessageRead(message: ChatMessage): boolean {
