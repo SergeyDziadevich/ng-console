@@ -1,6 +1,6 @@
-import { Component, computed, inject, OnInit, signal, DestroyRef, effect } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, DestroyRef, ChangeDetectionStrategy, linkedSignal } from '@angular/core';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { TicketService } from '../../services/ticket.service';
 import { UserService } from '../../../../services/user-service';
 import { AuthService } from '../../../../services/auth.service';
@@ -11,10 +11,10 @@ import { CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, CdkDropListGroup 
 
 @Component({
   selector: 'app-ticket-list',
-  standalone: true,
-  imports: [RouterLink, CommonModule, SpinnerComponent, CdkDrag, CdkDropList, CdkDropListGroup],
+  imports: [RouterLink, CommonModule, NgOptimizedImage, SpinnerComponent, CdkDrag, CdkDropList, CdkDropListGroup],
   templateUrl: './ticket-list.component.html',
-  styleUrl: './ticket-list.component.scss'
+  styleUrl: './ticket-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TicketListComponent implements OnInit {
   TicketStatus = TicketStatus;
@@ -35,18 +35,29 @@ export class TicketListComponent implements OnInit {
   selectedStatuses = signal<Set<TicketStatus>>(new Set());
   isCompactView = signal(false);
 
-  todoTickets: Ticket[] = [];
-  inProgressTickets: Ticket[] = [];
-  doneTickets: Ticket[] = [];
+  todoTickets = linkedSignal<Ticket[], Ticket[]>({
+    source: () => this.filteredTickets(),
+    computation: (tickets, previous) => {
+      const filtered = tickets.filter(t => t.status === TicketStatus.TODO);
+      return previous ? this.preserveOrder(previous.value, filtered) : filtered;
+    }
+  });
 
-  constructor() {
-    effect(() => {
-      const tickets = this.filteredTickets();
-      this.todoTickets = this.preserveOrder(this.todoTickets, tickets.filter(t => t.status === TicketStatus.TODO));
-      this.inProgressTickets = this.preserveOrder(this.inProgressTickets, tickets.filter(t => t.status === TicketStatus.IN_PROGRESS));
-      this.doneTickets = this.preserveOrder(this.doneTickets, tickets.filter(t => t.status === TicketStatus.DONE));
-    });
-  }
+  inProgressTickets = linkedSignal<Ticket[], Ticket[]>({
+    source: () => this.filteredTickets(),
+    computation: (tickets, previous) => {
+      const filtered = tickets.filter(t => t.status === TicketStatus.IN_PROGRESS);
+      return previous ? this.preserveOrder(previous.value, filtered) : filtered;
+    }
+  });
+
+  doneTickets = linkedSignal<Ticket[], Ticket[]>({
+    source: () => this.filteredTickets(),
+    computation: (tickets, previous) => {
+      const filtered = tickets.filter(t => t.status === TicketStatus.DONE);
+      return previous ? this.preserveOrder(previous.value, filtered) : filtered;
+    }
+  });
 
   preserveOrder(currentList: Ticket[], newList: Ticket[]): Ticket[] {
     const newListMap = new Map(newList.map(t => [t.id, t]));
@@ -181,11 +192,11 @@ export class TicketListComponent implements OnInit {
 
         // Force Angular change detection by updating the array reference
         if (targetStatus === TicketStatus.TODO) {
-          this.todoTickets = [...data];
+          this.todoTickets.set([...data]);
         } else if (targetStatus === TicketStatus.IN_PROGRESS) {
-          this.inProgressTickets = [...data];
+          this.inProgressTickets.set([...data]);
         } else if (targetStatus === TicketStatus.DONE) {
-          this.doneTickets = [...data];
+          this.doneTickets.set([...data]);
         }
       }
     } else {

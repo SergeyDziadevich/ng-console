@@ -5,7 +5,9 @@
       <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
         <img
           class="h-7 w-7 brightness-0 shrink-0"
-          src="/assets/icons/icon-tickets.svg"
+          ngSrc="/assets/icons/icon-tickets.svg"
+          width="28"
+          height="28"
           alt="icon"
         />
         Tickets
@@ -129,10 +131,10 @@
           <div 
             class="kanban-column-content"
             cdkDropList
-            [cdkDropListData]="todoTickets"
+            [cdkDropListData]="todoTickets()"
             (cdkDropListDropped)="onDrop($event, TicketStatus.TODO)"
           >
-            @for (ticket of todoTickets; track ticket.id) {
+            @for (ticket of todoTickets(); track ticket.id) {
               <div
                 class="ticket-card group"
                 [class.is-standard]="!isCompactView()"
@@ -175,12 +177,12 @@
                   </div>
                   <div class="ticket-meta-compact">
                     <span class="flex items-center">
-                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-c4287b80.svg" width="16" height="16" alt="icon" />
                       {{ getAssignedPersonName(ticket.assignedPersonId) }}
                     </span>
                     @if (ticket.estimations) {
                       <span class="flex items-center justify-end">
-                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-d0f846d4.svg" width="16" height="16" alt="icon" />
                         {{ ticket.estimations }}h
                       </span>
                     }
@@ -215,12 +217,12 @@
                   </p>
                   <div class="ticket-footer-standard">
                     <span>
-                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-c4287b80.svg" width="16" height="16" alt="icon" />
                       {{ getAssignedPersonName(ticket.assignedPersonId) }}
                     </span>
                     @if (ticket.estimations) {
                       <span>
-                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-d0f846d4.svg" width="16" height="16" alt="icon" />
                         {{ ticket.estimations }}h
                       </span>
                     }
@@ -246,10 +248,10 @@
           <div 
             class="kanban-column-content"
             cdkDropList
-            [cdkDropListData]="inProgressTickets"
+            [cdkDropListData]="inProgressTickets()"
             (cdkDropListDropped)="onDrop($event, TicketStatus.IN_PROGRESS)"
           >
-            @for (ticket of inProgressTickets; track ticket.id) {
+            @for (ticket of inProgressTickets(); track ticket.id) {
               <div
                 class="ticket-card group"
                 [class.is-standard]="!isCompactView()"
@@ -292,12 +294,12 @@
                   </div>
                   <div class="ticket-meta-compact">
                     <span class="flex items-center">
-                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-c4287b80.svg" width="16" height="16" alt="icon" />
                       {{ getAssignedPersonName(ticket.assignedPersonId) }}
                     </span>
                     @if (ticket.estimations) {
                       <span class="flex items-center justify-end">
-                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-d0f846d4.svg" width="16" height="16" alt="icon" />
                         {{ ticket.estimations }}h
                       </span>
                     }
@@ -332,12 +334,12 @@
                   </p>
                   <div class="ticket-footer-standard">
                     <span>
-                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-c4287b80.svg" width="16" height="16" alt="icon" />
                       {{ getAssignedPersonName(ticket.assignedPersonId) }}
                     </span>
                     @if (ticket.estimations) {
                       <span>
-                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-d0f846d4.svg" width="16" height="16" alt="icon" />
                         {{ ticket.estimations }}h
                       </span>
                     }
@@ -363,10 +365,10 @@
           <div 
             class="kanban-column-content"
             cdkDropList
-            [cdkDropListData]="doneTickets"
+            [cdkDropListData]="doneTickets()"
             (cdkDropListDropped)="onDrop($event, TicketStatus.DONE)"
           >
-            @for (ticket of doneTickets; track ticket.id) {
+            @for (ticket of doneTickets(); track ticket.id) {
               <div
                 class="ticket-card group"
                 [class.is-standard]="!isCompactView()"
@@ -409,12 +411,12 @@
                   </div>
                   <div class="ticket-meta-compact">
                     <span class="flex items-center">
-                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-c4287b80.svg" width="16" height="16" alt="icon" />
                       {{ getAssignedPersonName(ticket.assignedPersonId) }}
                     </span>
                     @if (ticket.estimations) {
                       <span class="flex items-center justify-end">
-                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        <img class="h-4 w-4 mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-d0f846d4.svg" width="16" height="16" alt="icon" />
                         {{ ticket.estimations }}h
                       </span>
                     }
@@ -449,12 +451,12 @@
                   </p>
                   <div class="ticket-footer-standard">
                     <span>
-                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-c4287b80.svg" alt="icon" />
+                      <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-c4287b80.svg" width="16" height="16" alt="icon" />
                       {{ getAssignedPersonName(ticket.assignedPersonId) }}
                     </span>
                     @if (ticket.estimations) {
                       <span>
-                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" src="/assets/icons/icon-d0f846d4.svg" alt="icon" />
+                        <img class="h-4 w-4 inline mr-1 text-gray-400 shrink-0" ngSrc="/assets/icons/icon-d0f846d4.svg" width="16" height="16" alt="icon" />
                         {{ ticket.estimations }}h
                       </span>
                     }
@@ -475,7 +477,9 @@
     >
       <img
         class="w-16 h-16 text-red-400 shrink-0"
-        src="/assets/icons/icon-f83bba3f.svg"
+        ngSrc="/assets/icons/icon-f83bba3f.svg"
+        width="64"
+        height="64"
         alt="icon"
       />
       <div>
