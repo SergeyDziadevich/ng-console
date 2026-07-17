@@ -347,4 +347,121 @@ describe('Chat Component', () => {
       expect(component.isMessageRead(mockMessage)).toBe(true);
     });
   });
+
+  describe('Chat Management (Rename and Delete)', () => {
+    let authService: AuthService;
+
+    beforeEach(() => {
+      authService = TestBed.inject(AuthService);
+    });
+
+    it('should compute canDeleteRoom based on user role', () => {
+      // Admin
+      // @ts-expect-error mocking currentUser property for tests
+      authService.currentUser = signal({ id: 'u1', role: 'admin' });
+      fixture.destroy();
+      fixture = TestBed.createComponent(ChatComponent);
+      component = fixture.componentInstance;
+      expect(component.canDeleteRoom()).toBe(true);
+
+      // Moderator
+      // @ts-expect-error mocking currentUser property for tests
+      authService.currentUser = signal({ id: 'u1', role: 'moderator' });
+      fixture.destroy();
+      fixture = TestBed.createComponent(ChatComponent);
+      component = fixture.componentInstance;
+      expect(component.canDeleteRoom()).toBe(true);
+
+      // User
+      // @ts-expect-error mocking currentUser property for tests
+      authService.currentUser = signal({ id: 'u1', role: 'user' });
+      fixture.destroy();
+      fixture = TestBed.createComponent(ChatComponent);
+      component = fixture.componentInstance;
+      expect(component.canDeleteRoom()).toBe(false);
+    });
+
+    it('should start rename room and set name state', () => {
+      const room = { id: 'room-1', name: 'Original Name' } as ChatRoom;
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room-1');
+      vi.spyOn(chatService, 'rooms').mockReturnValue([room]);
+
+      component.startRenameRoom();
+
+      expect(component.isRenamingRoom()).toBe(true);
+      expect(component.renameRoomName()).toBe('Original Name');
+    });
+
+    it('should cancel rename and reset state', () => {
+      component.isRenamingRoom.set(true);
+      component.renameRoomName.set('Some Name');
+
+      component.cancelRename();
+
+      expect(component.isRenamingRoom()).toBe(false);
+      expect(component.renameRoomName()).toBe('');
+    });
+
+    it('should submit rename room and handle success', () => {
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room-1');
+      vi.spyOn(chatService, 'renameRoom').mockReturnValue(of({} as ChatRoom));
+      vi.spyOn(chatService, 'fetchRooms');
+      vi.spyOn(component, 'cancelRename');
+
+      component.renameRoomName.set('New Name');
+      component.submitRenameRoom();
+
+      expect(chatService.renameRoom).toHaveBeenCalledWith('room-1', 'New Name');
+      expect(chatService.fetchRooms).toHaveBeenCalled();
+      expect(component.cancelRename).toHaveBeenCalled();
+    });
+
+    it('should submit rename room and log error on failure', () => {
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room-1');
+      vi.spyOn(chatService, 'renameRoom').mockReturnValue(throwError(() => new Error('test')));
+
+      component.renameRoomName.set('New Name');
+      component.submitRenameRoom();
+
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to rename room', expect.any(Error));
+      consoleSpy.mockRestore();
+    });
+
+    it('should toggle showDeleteConfirm state', () => {
+      expect(component.showDeleteConfirm()).toBe(false);
+      component.confirmDelete();
+      expect(component.showDeleteConfirm()).toBe(true);
+      component.cancelDelete();
+      expect(component.showDeleteConfirm()).toBe(false);
+    });
+
+    it('should call deleteRoom and handle success', () => {
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room-1');
+      vi.spyOn(chatService.activeRoomId, 'set');
+      vi.spyOn(chatService, 'deleteRoom').mockReturnValue(of(undefined));
+      vi.spyOn(chatService, 'fetchRooms');
+      component.showDeleteConfirm.set(true);
+
+      component.deleteRoom();
+
+      expect(chatService.deleteRoom).toHaveBeenCalledWith('room-1');
+      expect(chatService.activeRoomId.set).toHaveBeenCalledWith(null);
+      expect(chatService.fetchRooms).toHaveBeenCalled();
+      expect(component.showDeleteConfirm()).toBe(false);
+    });
+
+    it('should call deleteRoom and log error on failure', () => {
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      vi.spyOn(chatService, 'activeRoomId').mockReturnValue('room-1');
+      vi.spyOn(chatService, 'deleteRoom').mockReturnValue(throwError(() => new Error('test')));
+      component.showDeleteConfirm.set(true);
+
+      component.deleteRoom();
+
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to delete room', expect.any(Error));
+      expect(component.showDeleteConfirm()).toBe(false);
+      consoleSpy.mockRestore();
+    });
+  });
 });
