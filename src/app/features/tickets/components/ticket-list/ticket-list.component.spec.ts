@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 import { TicketListComponent } from './ticket-list.component';
 import { TicketService } from '../../services/ticket.service';
@@ -289,7 +290,7 @@ describe('TicketListComponent', () => {
         container: { data: containerData },
         previousIndex: 0,
         currentIndex: 1,
-      } as any;
+      } as unknown as CdkDragDrop<Ticket[]>;
 
       component.onDrop(mockEvent, TicketStatus.TODO);
 
@@ -303,7 +304,7 @@ describe('TicketListComponent', () => {
         container: { data: [] },
         previousIndex: 0,
         currentIndex: 0,
-      } as any;
+      } as unknown as CdkDragDrop<Ticket[]>;
 
       component.onDrop(mockEvent, TicketStatus.IN_PROGRESS);
 

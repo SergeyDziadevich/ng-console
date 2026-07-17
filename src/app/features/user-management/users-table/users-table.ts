@@ -86,8 +86,8 @@ export class UsersTable {
     if (!col) return allUsers;
     
     return allUsers.sort((a, b) => {
-      let aVal = a[col];
-      let bVal = b[col];
+      const aVal = a[col];
+      const bVal = b[col];
       
       if (typeof aVal === 'string' && typeof bVal === 'string') {
         return dir === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
