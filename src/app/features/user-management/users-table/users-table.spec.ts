@@ -89,7 +89,7 @@ describe('UsersTable', () => {
     const eventName = new Event('input');
     Object.defineProperty(eventName, 'target', { writable: false, value: { value: 'alp' } });
     component.updateSearchName(eventName);
-    
+
     expect(component.searchName()).toBe('alp');
     expect(component.paginatedUsers().length).toBe(1);
     expect(component.paginatedUsers()[0].username).toBe('Alpha');
@@ -103,7 +103,7 @@ describe('UsersTable', () => {
     const eventEmail = new Event('input');
     Object.defineProperty(eventEmail, 'target', { writable: false, value: { value: 'test@ex' } });
     component.updateSearchEmail(eventEmail);
-    
+
     expect(component.searchEmail()).toBe('test@ex');
     expect(component.paginatedUsers().length).toBe(1);
     expect(component.paginatedUsers()[0].username).toBe('Beta');
@@ -112,14 +112,14 @@ describe('UsersTable', () => {
   it('should toggle search visibility', () => {
     component.onNameTitleClick();
     expect(component.isNameSearchVisible()).toBe(true);
-    
+
     component.searchName.set('');
     component.onNameSearchBlur();
     expect(component.isNameSearchVisible()).toBe(false);
 
     component.onEmailTitleClick();
     expect(component.isEmailSearchVisible()).toBe(true);
-    
+
     component.searchEmail.set('');
     component.onEmailSearchBlur();
     expect(component.isEmailSearchVisible()).toBe(false);
@@ -276,5 +276,24 @@ describe('UsersTable', () => {
     expect(component.currentPage()).toBe(1);
     expect(component.totalPages()).toBe(1);
     expect(component.paginatedUsers().length).toBe(10);
+  });
+
+  it('should clamp page when currentPage exceeds total after pageSize reduction', () => {
+    const manyUsers = Array.from({ length: 60 }, (_, i) => ({
+      ...mockUser,
+      _id: `id-${i}`,
+    }));
+    fixture.componentRef.setInput('users', manyUsers);
+    fixture.detectChanges();
+
+    // Manually force page to 3 (total pages = 3 for 60 users at size 25)
+    component.currentPage.set(3);
+    // Increase page size so total pages becomes 2 — current (3) > total (2) triggers clamping
+    component.pageSize.set(30);
+
+    // Accessing paginatedUsers triggers the clamp
+    const paginated = component.paginatedUsers();
+    // Should clamp to page 2 (30 users on page 2 = 30)
+    expect(paginated.length).toBe(30);
   });
 });
