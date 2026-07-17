@@ -148,6 +148,14 @@ export class ChatService {
     });
   }
 
+  renameRoom(roomId: string, name: string): Observable<ChatRoom> {
+    return this.http.patch<ChatRoom>(`${environment.apiUrl}/api/chats/rooms/${roomId}`, { name });
+  }
+
+  deleteRoom(roomId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/api/chats/rooms/${roomId}`);
+  }
+
   selectRoom(roomId: string): void {
     this.activeRoomId.set(roomId);
     this.activeRoomMessages.set([]);

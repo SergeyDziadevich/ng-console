@@ -17,7 +17,8 @@ NgConsole is the frontend Angular application that serves as the administrative 
 - **Profile & Settings:** Personalized user settings allowing for account configuration and security management.
 - **Document Management:** Upload, delete, securely share documents via short public links without requiring user authentication, digitally sign PDF documents, and dynamically generate new PDFs using customizable templates (such invoices, contract) with live preview capabilities.
 - **Subscription Management:** Full Stripe payment integration for upgrading plans, viewing current subscription status (with start/end dates), and accessing the Stripe billing portal.
-- **Real-Time Chat & Notifications:** Live messaging system and instant push notifications to keep users connected and informed.
+- **Real-Time Chat:** Live messaging system to keep users connected.
+- **Notifications:** Notifications system to keep users informed.
 - **Support Ticketing:** Integrated ticketing system for users to submit requests and for administrators to manage and resolve support issues.
 - **Audit Logs:** A dedicated interface for administrators to view, filter (by date, action, actor), and export comprehensive audit trails, with customizable data retention settings.
 

@@ -5,7 +5,7 @@ import { of, throwError } from 'rxjs';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { signal } from '@angular/core';
 
-import { Chat } from './chat';
+import { ChatComponent } from './chat.component';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../services/auth.service';
 import { provideRouter } from '@angular/router';
@@ -13,21 +13,21 @@ import { ChatRoom, ChatMessage } from '../../models/chat.model';
 import { User } from '../../models/user.model';
 
 describe('Chat Component', () => {
-  let component: Chat;
-  let fixture: ComponentFixture<Chat>;
+  let component: ChatComponent;
+  let fixture: ComponentFixture<ChatComponent>;
   let chatService: ChatService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Chat],
+      imports: [ChatComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([{ path: 'login', component: Chat }]),
+        provideRouter([{ path: 'login', component: ChatComponent }]),
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Chat);
+    fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
     chatService = TestBed.inject(ChatService);
   });

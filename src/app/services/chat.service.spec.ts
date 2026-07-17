@@ -290,6 +290,34 @@ describe('ChatService', () => {
       expect(req.request.body).toEqual({ userIds: ['user2'] });
       req.flush(updatedRoom);
     });
+
+    it('should rename room', () => {
+      const updatedRoom: ChatRoom = {
+        id: '1',
+        name: 'Renamed Room',
+        hasUnread: false,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      };
+      service.renameRoom('1', 'Renamed Room').subscribe((room) => {
+        expect(room).toEqual(updatedRoom);
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/chats/rooms/1`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual({ name: 'Renamed Room' });
+      req.flush(updatedRoom);
+    });
+
+    it('should delete room', () => {
+      service.deleteRoom('1').subscribe((res) => {
+        expect(res).toBeNull();
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/chats/rooms/1`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null);
+    });
   });
 
   describe('selectRoom and fetch messages', () => {
