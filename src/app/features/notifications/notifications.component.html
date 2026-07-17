@@ -1,7 +1,7 @@
-<div class="p-6 max-w-2xl mx-auto font-sans text-gray-900 min-h-[calc(100vh-100px)] flex flex-col">
-  <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+<div class="notifications-wrapper">
+  <h1 class="notifications-header">
     <img
-      class="h-7 w-7 brightness-0 shrink-0"
+      class="header-icon"
       src="/assets/icons/icon-notifications.svg"
       alt="icon"
     />
@@ -15,7 +15,7 @@
     </span>
   </h1>
 
-  <ul class="list-none p-0 flex flex-col gap-2 mt-6 mb-6">
+  <ul class="notifications-list">
     @for (msg of messages(); track msg) {
       <li
         class="notification-item"
@@ -23,36 +23,36 @@
         [class.replayed]="msg.replayed"
         [class.system]="msg.isSystem"
       >
-        <div class="flex justify-between items-center gap-4">
-          <div class="flex items-center gap-2">
+        <div class="notification-content">
+          <div class="notification-left">
             @if (!msg.isRead) {
-              <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+              <span class="unread-dot"></span>
             }
             <div>
               @if (msg.isSystem) {
                 <span [class.font-medium]="!msg.isRead">{{ msg.title }}</span>
               } @else {
-                <b class="font-semibold">{{ msg.title }}</b>
+                <b class="notification-title">{{ msg.title }}</b>
                 @if (msg.replayed) {
-                  <small class="text-yellow-700 font-medium ml-2 text-xs">🔁 REPLAYED</small>
+                  <small class="replayed-badge">🔁 REPLAYED</small>
                 }
                 @if (msg.body) {
-                  <div class="text-sm text-gray-600 mt-0.5">{{ msg.body }}</div>
+                  <div class="notification-body">{{ msg.body }}</div>
                 }
               }
             </div>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="notification-right">
             @if (!msg.isRead) {
               <button
-                class="text-xs bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-md text-blue-700 transition-colors cursor-pointer shadow-sm"
+                class="btn-mark-read"
                 (click)="markAsRead(msg.id)"
               >
                 Mark as read
               </button>
             }
             @if (msg.timestamp) {
-              <span class="text-xs text-gray-500 whitespace-nowrap">{{
+              <span class="notification-timestamp">{{
                 msg.timestamp | date: 'short'
               }}</span>
             }
@@ -63,24 +63,24 @@
   </ul>
 
   @if (isAdmin()) {
-    <div class="mt-auto sticky bottom-6 bg-gradient-to-r from-slate-50 to-gray-100 border border-gray-200 rounded-xl p-4 shadow-sm z-10">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Admin Controls</span>
+    <div class="admin-panel">
+      <div class="admin-header">
+        <span class="admin-title">Admin Controls</span>
       </div>
-      <div class="flex flex-wrap gap-3">
-        <div class="flex flex-1 min-w-[250px] relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="text-gray-400 sm:text-sm">💬</span>
+      <div class="admin-controls">
+        <div class="input-wrapper">
+          <div class="input-icon-wrapper">
+            <span class="input-icon">💬</span>
           </div>
           <input
-            class="pl-10 px-4 py-2 w-full rounded-lg border border-gray-300 bg-white text-gray-800 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+            class="notification-input"
             #titleInput
             value="Deploy finished"
             placeholder="Notification message..."
           />
         </div>
         <button
-          class="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm cursor-pointer flex items-center gap-2"
+          class="btn-send"
           (click)="sendNotification(titleInput.value)"
         >
           Send
@@ -88,15 +88,15 @@
         <!--
         <div class="w-px bg-gray-300 hidden sm:block mx-1"></div>
         -->
-        <div class="flex items-center gap-2 whitespace-nowrap shrink-0">
+        <div class="connection-controls">
           <button
-            class="px-4 py-2 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 font-medium transition-colors cursor-pointer shadow-sm flex items-center gap-2"
+            class="btn-drop"
             (click)="dropConnection()"
           >
             🚫 Drop
           </button>
           <button
-            class="px-4 py-2 rounded-lg border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 font-medium transition-colors cursor-pointer shadow-sm flex items-center gap-2"
+            class="btn-reconnect"
             (click)="reconnect()"
           >
             🔌 Reconnect
