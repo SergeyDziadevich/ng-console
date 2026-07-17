@@ -30,9 +30,9 @@ describe('TicketService', () => {
 
   describe('CRUD operations', () => {
     it('should get a ticket by ID', () => {
-      const mockTicket: Partial<Ticket> = { id: 1, title: 'Test Ticket' };
+      const mockTicket: Partial<Ticket> = { id: '1', title: 'Test Ticket' };
 
-      service.getTicket(1).subscribe((ticket) => {
+      service.getTicket('1').subscribe((ticket) => {
         expect(ticket).toEqual(mockTicket);
       });
 
@@ -43,7 +43,7 @@ describe('TicketService', () => {
 
     it('should create a new ticket', () => {
       const mockTicket: Partial<Ticket> = { title: 'New Ticket', status: TicketStatus.TODO };
-      const createdTicket: Partial<Ticket> = { id: 1, ...mockTicket };
+      const createdTicket: Partial<Ticket> = { id: '1', ...mockTicket };
 
       service.createTicket(mockTicket).subscribe((ticket) => {
         expect(ticket).toEqual(createdTicket);
@@ -57,9 +57,9 @@ describe('TicketService', () => {
 
     it('should update an existing ticket', () => {
       const mockTicket: Partial<Ticket> = { title: 'Updated Ticket' };
-      const updatedTicket: Partial<Ticket> = { id: 1, ...mockTicket };
+      const updatedTicket: Partial<Ticket> = { id: '1', ...mockTicket };
 
-      service.updateTicket(1, mockTicket).subscribe((ticket) => {
+      service.updateTicket('1', mockTicket).subscribe((ticket) => {
         expect(ticket).toEqual(updatedTicket);
       });
 
@@ -70,7 +70,7 @@ describe('TicketService', () => {
     });
 
     it('should delete a ticket', () => {
-      service.deleteTicket(1).subscribe();
+      service.deleteTicket('1').subscribe();
 
       const req = httpMock.expectOne(`${apiUrl}/1`);
       expect(req.request.method).toBe('DELETE');
@@ -80,7 +80,7 @@ describe('TicketService', () => {
     it('should add a comment to a ticket', () => {
       const mockComment: Partial<Comment> = { id: 10, text: 'New Comment' };
 
-      service.addComment(1, 'New Comment').subscribe((comment) => {
+      service.addComment('1', 'New Comment').subscribe((comment) => {
         expect(comment).toEqual(mockComment);
       });
 

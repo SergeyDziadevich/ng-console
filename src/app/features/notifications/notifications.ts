@@ -17,6 +17,11 @@ export class Notifications {
   messages = this.notificationsService.messages;
   isOnline = this.notificationsService.isOnline;
 
+  isAdmin = computed(() => {
+    const role = this.authService.currentUser()?.role;
+    return role === 'admin';
+  });
+
   isAdminOrModerator = computed(() => {
     const role = this.authService.currentUser()?.role;
     return role === 'admin' || role === 'moderator';

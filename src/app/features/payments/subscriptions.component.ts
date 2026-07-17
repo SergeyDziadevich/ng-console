@@ -5,12 +5,13 @@ import { AuthService } from '../../services/auth.service';
 
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, catchError, of } from 'rxjs';
+import { SpinnerComponent } from '@ng-console-platform/ui';
 
 @Component({
   selector: 'app-subscriptions',
   templateUrl: './subscriptions.html',
   styleUrl: './subscriptions.scss',
-  imports: [DatePipe],
+  imports: [DatePipe, SpinnerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionsComponent {
@@ -33,8 +34,7 @@ export class SubscriptionsComponent {
         }
         return of(null);
       })
-    ),
-    { initialValue: null }
+    )
   );
 
   protected readonly plans = [

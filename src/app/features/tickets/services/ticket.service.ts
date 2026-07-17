@@ -14,7 +14,7 @@ export class TicketService {
   ticketsResource = httpResource<Ticket[]>(() => this.apiUrl);
   epicsResource = httpResource<EpicTag[]>(() => `${this.apiUrl}/epics`);
 
-  getTicket(id: number): Observable<Ticket> {
+  getTicket(id: string): Observable<Ticket> {
     return this.http.get<Ticket>(`${this.apiUrl}/${id}`);
   }
 
@@ -22,15 +22,15 @@ export class TicketService {
     return this.http.post<Ticket>(this.apiUrl, ticket);
   }
 
-  updateTicket(id: number, ticket: Partial<Ticket>): Observable<Ticket> {
+  updateTicket(id: string, ticket: Partial<Ticket>): Observable<Ticket> {
     return this.http.put<Ticket>(`${this.apiUrl}/${id}`, ticket);
   }
 
-  deleteTicket(id: number): Observable<void> {
+  deleteTicket(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  addComment(ticketId: number, text: string): Observable<Comment> {
+  addComment(ticketId: string, text: string): Observable<Comment> {
     return this.http.post<Comment>(`${this.apiUrl}/${ticketId}/comments`, { text });
   }
 }
