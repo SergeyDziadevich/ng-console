@@ -403,7 +403,7 @@ describe('TicketListComponent', () => {
 
     it('should log error when updateTicket fails on cross-container drop', () => {
       mockTicketService.updateTicket.mockReturnValue(throwError(() => new Error('Network error')));
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn());
 
       const mockEvent = {
         previousContainer: { data: [{ id: '1', status: TicketStatus.TODO }] },
