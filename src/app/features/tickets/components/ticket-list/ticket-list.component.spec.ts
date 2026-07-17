@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
@@ -217,6 +217,28 @@ describe('TicketListComponent', () => {
         }),
       );
     });
+
+    it('should navigate on toggleCompactView (enable)', () => {
+      component.isCompactView.set(false);
+      component.toggleCompactView();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { view: 'compact' },
+        }),
+      );
+    });
+
+    it('should navigate on toggleCompactView (disable)', () => {
+      component.isCompactView.set(true);
+      component.toggleCompactView();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { view: undefined },
+        }),
+      );
+    });
   });
 
   describe('getAssignedPersonName', () => {
@@ -284,7 +306,7 @@ describe('TicketListComponent', () => {
       fixture.detectChanges();
 
       const containerData = component.todoTickets();
-      
+
       const mockEvent = {
         previousContainer: { data: containerData },
         container: { data: containerData },
@@ -310,6 +332,90 @@ describe('TicketListComponent', () => {
 
       expect(mockTicketService.updateTicket).toHaveBeenCalledWith('1', { status: TicketStatus.IN_PROGRESS });
       expect(mockTicketService.ticketsResource.reload).toHaveBeenCalled();
+    });
+
+    it('should update inProgressTickets signal when swapped in same container', () => {
+      const mockTickets: Partial<Ticket>[] = [
+        { id: '1', title: 'T1', status: TicketStatus.IN_PROGRESS },
+        { id: '2', title: 'T2', status: TicketStatus.IN_PROGRESS },
+      ];
+      mockTicketService.ticketsResource.value.set(mockTickets as Ticket[]);
+      fixture.detectChanges();
+
+      const containerData = component.inProgressTickets();
+      const mockEvent = {
+        previousContainer: { data: containerData },
+        container: { data: containerData },
+        previousIndex: 0,
+        currentIndex: 1,
+      } as unknown as CdkDragDrop<Ticket[]>;
+
+      component.onDrop(mockEvent, TicketStatus.IN_PROGRESS);
+
+      expect(component.inProgressTickets()[0].id).toBe('2');
+      expect(component.inProgressTickets()[1].id).toBe('1');
+    });
+
+    it('should update doneTickets signal when swapped in same container', () => {
+      const mockTickets: Partial<Ticket>[] = [
+        { id: '1', title: 'T1', status: TicketStatus.DONE },
+        { id: '2', title: 'T2', status: TicketStatus.DONE },
+      ];
+      mockTicketService.ticketsResource.value.set(mockTickets as Ticket[]);
+      fixture.detectChanges();
+
+      const containerData = component.doneTickets();
+      const mockEvent = {
+        previousContainer: { data: containerData },
+        container: { data: containerData },
+        previousIndex: 0,
+        currentIndex: 1,
+      } as unknown as CdkDragDrop<Ticket[]>;
+
+      component.onDrop(mockEvent, TicketStatus.DONE);
+
+      expect(component.doneTickets()[0].id).toBe('2');
+      expect(component.doneTickets()[1].id).toBe('1');
+    });
+
+    it('should not swap if previousIndex equals currentIndex in same container', () => {
+      const mockTickets: Partial<Ticket>[] = [
+        { id: '1', title: 'T1', status: TicketStatus.TODO },
+        { id: '2', title: 'T2', status: TicketStatus.TODO },
+      ];
+      mockTicketService.ticketsResource.value.set(mockTickets as Ticket[]);
+      fixture.detectChanges();
+
+      const containerData = component.todoTickets();
+      const mockEvent = {
+        previousContainer: { data: containerData },
+        container: { data: containerData },
+        previousIndex: 0,
+        currentIndex: 0,
+      } as unknown as CdkDragDrop<Ticket[]>;
+
+      component.onDrop(mockEvent, TicketStatus.TODO);
+
+      // Order unchanged
+      expect(component.todoTickets()[0].id).toBe('1');
+      expect(component.todoTickets()[1].id).toBe('2');
+    });
+
+    it('should log error when updateTicket fails on cross-container drop', () => {
+      mockTicketService.updateTicket.mockReturnValue(throwError(() => new Error('Network error')));
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const mockEvent = {
+        previousContainer: { data: [{ id: '1', status: TicketStatus.TODO }] },
+        container: { data: [] },
+        previousIndex: 0,
+        currentIndex: 0,
+      } as unknown as CdkDragDrop<Ticket[]>;
+
+      component.onDrop(mockEvent, TicketStatus.IN_PROGRESS);
+
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to update ticket status', expect.any(Error));
+      consoleSpy.mockRestore();
     });
   });
 });

@@ -56,11 +56,27 @@ describe('UsersTable', () => {
     expect(component.sortDirection()).toBe('desc');
     expect(component.paginatedUsers()[0].username).toBe('Zebra');
 
+    // Third click resets sort column to null
+    component.sortBy('username');
+    expect(component.sortColumn()).toBeNull();
+    expect(component.sortDirection()).toBe('asc');
+
     // Sort by email (asc)
     component.sortBy('email');
     expect(component.sortColumn()).toBe('email');
     expect(component.sortDirection()).toBe('asc');
     expect(component.paginatedUsers()[0].email).toBe('a@example.com');
+
+    // Sort by boolean field (isTwoFactorEnabled) asc: false before true
+    component.sortBy('isTwoFactorEnabled');
+    expect(component.sortColumn()).toBe('isTwoFactorEnabled');
+    expect(component.sortDirection()).toBe('asc');
+    expect(component.paginatedUsers()[0].isTwoFactorEnabled).toBe(false);
+
+    // Sort by boolean field desc: true before false
+    component.sortBy('isTwoFactorEnabled');
+    expect(component.sortDirection()).toBe('desc');
+    expect(component.paginatedUsers()[0].isTwoFactorEnabled).toBe(true);
   });
 
   it('should handle searching by name and email', () => {
@@ -182,6 +198,14 @@ describe('UsersTable', () => {
     component.prevPage();
     component.prevPage();
     expect(component.currentPage()).toBe(1);
+
+    // Clamp page: shrink data to 1 user while on page 2
+    component.nextPage();
+    expect(component.currentPage()).toBe(2);
+    fixture.componentRef.setInput('users', [mockUser]);
+    fixture.detectChanges();
+    // paginatedUsers should clamp to page 1
+    expect(component.paginatedUsers().length).toBe(1);
   });
 
   it('should update page size', () => {
