@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { UserService } from '../../services/user-service';
@@ -9,7 +9,7 @@ import { ConfirmDialogComponent, SvgIconComponent } from '@ng-console-platform/u
 
 @Component({
   selector: 'app-chat',
-  imports: [DatePipe, NgClass, FormsModule, ConfirmDialogComponent, SvgIconComponent],
+  imports: [DatePipe, FormsModule, ConfirmDialogComponent, SvgIconComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
