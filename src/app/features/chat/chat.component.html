@@ -1,0 +1,310 @@
+<div class="chat-container">
+  <!-- Page Title -->
+  <div class="page-title">
+    <h1>
+      <img src="/assets/icons/icon-4519bc59.svg" alt="icon" />
+      Chats
+    </h1>
+  </div>
+
+  <!-- ChatComponent Panel -->
+  <div class="chat-panel">
+    <!-- Sidebar / Room List -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>Chats</h2>
+        <button (click)="toggleCreateRoom()">
+          <img src="/assets/icons/icon-3874dbd4.svg" alt="icon" />
+        </button>
+      </div>
+
+      <!-- Create Room Form -->
+      @if (isCreatingRoom()) {
+        <div class="create-room-form">
+          <h3>Create New Room</h3>
+          <input
+            [ngModel]="newRoomName()"
+            (ngModelChange)="newRoomName.set($event)"
+            type="text"
+            placeholder="Room Name"
+          />
+
+          <div class="user-list custom-scrollbar">
+            @for (user of users(); track user._id) {
+              @if (user._id !== currentUser()?.id) {
+                <label class="user-label">
+                  <input
+                    [checked]="selectedUserIds().includes(user._id)"
+                    (change)="toggleUserSelection(user._id)"
+                    type="checkbox"
+                  />
+                  <span>{{ user.displayName || user.username }}</span>
+                </label>
+              }
+            }
+          </div>
+
+          <div class="actions">
+            <button
+              class="btn-create"
+              [disabled]="!newRoomName() || selectedUserIds().length === 0"
+              (click)="createRoom()"
+            >
+              Create
+            </button>
+            <button class="btn-cancel" (click)="toggleCreateRoom()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Room List -->
+      <div class="room-list custom-scrollbar">
+        @if (chatService.rooms().length === 0 && !isCreatingRoom()) {
+          <div class="empty-state">
+            <img src="/assets/icons/icon-4519bc59.svg" alt="icon" />
+            <p>No chats yet.</p>
+            <p class="sub-text">Create a room to start chatting.</p>
+          </div>
+        }
+
+        @for (room of chatService.rooms(); track room.id) {
+          <div
+            class="room-item"
+            [class.active]="chatService.activeRoomId() === room.id"
+            (click)="selectRoom(room.id)"
+            (keydown.enter)="selectRoom(room.id)"
+            tabindex="0"
+          >
+            <div class="room-header">
+              <div class="room-title-group">
+                <h4>{{ room.name }}</h4>
+                @if (room.hasUnread) {
+                  <span class="unread-dot"></span>
+                }
+              </div>
+              @if (canDeleteRoom()) {
+                <div class="room-actions">
+                  <button
+                    class="btn-edit"
+                    (click)="$event.stopPropagation(); chatService.activeRoomId.set(room.id); startRenameRoom()"
+                    type="button"
+                    title="Rename room"
+                  >
+                    <app-svg-icon name="edit" customClass="h-3.5 w-3.5"></app-svg-icon>
+                  </button>
+                  <button
+                    class="btn-delete"
+                    (click)="$event.stopPropagation(); chatService.activeRoomId.set(room.id); confirmDelete()"
+                    type="button"
+                    title="Remove room"
+                  >
+                    <app-svg-icon name="trash" customClass="h-3.5 w-3.5"></app-svg-icon>
+                  </button>
+                </div>
+              }
+            </div>
+            <p class="member-count">{{ room.members?.length || 0 }} members</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Main ChatComponent Area -->
+    <div class="main-chat">
+      @if (chatService.activeRoomId()) {
+        <!-- ChatComponent Header -->
+        <div class="chat-header">
+          <div class="header-info">
+            <h3>
+              <span class="status-indicator">
+                @if (chatService.isOnline()) {
+                  <span class="ping"></span>
+                  <span class="dot-online"></span>
+                } @else {
+                  <span class="dot-offline"></span>
+                }
+              </span>
+              @if (isRenamingRoom()) {
+                <form class="rename-form" (submit)="$event.preventDefault(); submitRenameRoom()">
+                  <input
+                    [ngModel]="renameRoomName()"
+                    (ngModelChange)="renameRoomName.set($event)"
+                    type="text"
+                    name="roomName"
+                    autocomplete="off"
+                  />
+                  <button class="btn-save" [disabled]="!renameRoomName().trim()" type="submit">
+                    Save
+                  </button>
+                  <button class="btn-cancel" (click)="cancelRename()" type="button">
+                    Cancel
+                  </button>
+                </form>
+              } @else {
+                <!-- Find the active room name -->
+                @for (room of chatService.rooms(); track room.id) {
+                  @if (room.id === chatService.activeRoomId()) {
+                    <span>{{ room.name }}</span>
+                  }
+                }
+              }
+            </h3>
+            <!-- Find the active room members -->
+            @for (room of chatService.rooms(); track room.id) {
+              @if (room.id === chatService.activeRoomId()) {
+                <div class="member-badges">
+                  @for (member of room.members; track member.userId) {
+                    <span class="badge">
+                      {{ member.displayName || member.username }}
+                    </span>
+                  }
+                  <!-- Add User Button -->
+                  <button class="btn-add-user" (click)="toggleAddUser()" title="Add User">
+                    <img src="/assets/icons/icon-ef9344c2.svg" alt="icon" />
+                  </button>
+                </div>
+              }
+            }
+          </div>
+          @if (canDeleteRoom()) {
+            <div class="header-actions">
+              <button class="btn-edit" (click)="startRenameRoom()" type="button" title="Rename room">
+                <app-svg-icon name="edit" customClass="h-4 w-4"></app-svg-icon>
+              </button>
+              <button class="btn-delete" (click)="confirmDelete()" type="button" title="Remove room">
+                <app-svg-icon name="trash" customClass="h-4 w-4"></app-svg-icon>
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Add User Modal -->
+        @if (isAddingUser()) {
+          <div class="add-user-modal">
+            <div class="modal-header">
+              <h4>Add to Room</h4>
+              <button (click)="toggleAddUser()">
+                <img src="/assets/icons/icon-ee52a4fc.svg" alt="icon" />
+              </button>
+            </div>
+            <div class="modal-body">
+              <input
+                [ngModel]="userSearchQuery()"
+                (ngModelChange)="userSearchQuery.set($event)"
+                type="text"
+                placeholder="Search users..."
+              />
+              <div class="user-list custom-scrollbar">
+                @for (user of availableUsersToAdd(); track user._id) {
+                  <label class="user-label">
+                    <input
+                      [checked]="selectedUsersToAdd().includes(user._id)"
+                      (change)="toggleAddUserSelection(user._id)"
+                      type="checkbox"
+                    />
+                    <span>{{ user.displayName || user.username }}</span>
+                  </label>
+                }
+                @if (availableUsersToAdd().length === 0) {
+                  <p class="empty-text">No users found.</p>
+                }
+              </div>
+              <button class="btn-add" [disabled]="selectedUsersToAdd().length === 0" (click)="addUsersToRoom()">
+                Add Selected Users
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Messages Area -->
+        <div class="messages-area custom-scrollbar">
+          @for (msg of chatService.activeRoomMessages(); track msg.id) {
+            <div class="message-wrapper" [class.sent]="msg.senderId === currentUser()?.id" [class.received]="msg.senderId !== currentUser()?.id">
+              <div class="message-group" [class.reverse]="msg.senderId === currentUser()?.id">
+                <!-- Avatar placeholder -->
+                <div class="avatar">
+                  {{ (msg.senderDisplayName || msg.senderName || '?').charAt(0).toUpperCase() }}
+                </div>
+
+                <div class="message-content" [class.sent]="msg.senderId === currentUser()?.id" [class.received]="msg.senderId !== currentUser()?.id">
+                  <span class="sender-name">{{ msg.senderDisplayName || msg.senderName }}</span>
+                  <div class="message-bubble" [class.sent]="msg.senderId === currentUser()?.id" [class.received]="msg.senderId !== currentUser()?.id">
+                    <p>{{ msg.content }}</p>
+                  </div>
+                  <div class="message-meta">
+                    <span class="time">{{ msg.createdAt | date: 'shortTime' }}</span>
+                    @if (msg.senderId === currentUser()?.id) {
+                      <span class="read-status">
+                        @if (isMessageRead(msg)) {
+                          <!-- Double Blue Check for Read -->
+                          <img class="read" src="/assets/icons/icon-d360db07.svg" alt="icon" />
+                        } @else {
+                          <!-- Single Gray Check for Sent/Delivered -->
+                          <img class="unread" src="/assets/icons/icon-587193e3.svg" alt="icon" />
+                        }
+                      </span>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+          @if (chatService.activeRoomMessages().length === 0) {
+            <div class="empty-messages">
+              No messages yet. Say hello!
+            </div>
+          }
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+          <form (submit)="$event.preventDefault(); sendMessage()">
+            <input
+              [ngModel]="newMessage()"
+              (ngModelChange)="newMessage.set($event)"
+              type="text"
+              name="message"
+              placeholder="Type a message..."
+              autocomplete="off"
+            />
+            <button [disabled]="!newMessage().trim() || !chatService.isOnline()" type="submit">
+              <img src="/assets/icons/icon-12caada6.svg" alt="icon" />
+            </button>
+          </form>
+        </div>
+      } @else {
+        <!-- Empty State -->
+        <div class="empty-state">
+          <div class="icon-wrapper">
+            <img src="/assets/icons/icon-566eb6cf.svg" alt="icon" />
+          </div>
+          <h3>Your Messages</h3>
+          <p>
+            Select a chat from the sidebar or create a new room to start communicating with your team.
+          </p>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if (showDeleteConfirm()) {
+  <app-confirm-dialog
+    (confirmAction)="deleteRoom()"
+    (cancelAction)="cancelDelete()"
+    title="Remove ChatComponent Room"
+    type="danger"
+    confirmText="Remove"
+    cancelText="Cancel"
+  >
+    @for (room of chatService.rooms(); track room.id) {
+      @if (room.id === chatService.activeRoomId()) {
+        Are you sure you want to remove
+        <span class="font-medium text-gray-800">"{{ room.name }}"</span>? This action cannot be
+        undone.
+      }
+    }
+  </app-confirm-dialog>
+}
