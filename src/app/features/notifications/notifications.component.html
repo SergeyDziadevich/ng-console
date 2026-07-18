@@ -1,0 +1,109 @@
+<div class="notifications-wrapper">
+  <h1 class="notifications-header">
+    <img
+      class="header-icon"
+      src="/assets/icons/icon-notifications.svg"
+      alt="icon"
+    />
+    Notifications
+    <span
+      class="status-badge"
+      [class.offline]="!isOnline()"
+      [class.online]="isOnline()"
+    >
+      {{ isOnline() ? 'online' : 'offline' }}
+    </span>
+  </h1>
+
+  <ul class="notifications-list">
+    @for (msg of messages(); track msg) {
+      <li
+        class="notification-item"
+        [class.standard]="!msg.isSystem && !msg.replayed"
+        [class.replayed]="msg.replayed"
+        [class.system]="msg.isSystem"
+      >
+        <div class="notification-content">
+          <div class="notification-left">
+            @if (!msg.isRead) {
+              <span class="unread-dot"></span>
+            }
+            <div>
+              @if (msg.isSystem) {
+                <span [class.font-medium]="!msg.isRead">{{ msg.title }}</span>
+              } @else {
+                <b class="notification-title">{{ msg.title }}</b>
+                @if (msg.replayed) {
+                  <small class="replayed-badge">🔁 REPLAYED</small>
+                }
+                @if (msg.body) {
+                  <div class="notification-body">{{ msg.body }}</div>
+                }
+              }
+            </div>
+          </div>
+          <div class="notification-right">
+            @if (!msg.isRead) {
+              <button
+                class="btn-mark-read"
+                (click)="markAsRead(msg.id)"
+              >
+                Mark as read
+              </button>
+            }
+            @if (msg.timestamp) {
+              <span class="notification-timestamp">{{
+                msg.timestamp | date: 'short'
+              }}</span>
+            }
+          </div>
+        </div>
+      </li>
+    }
+  </ul>
+
+  @if (isAdmin()) {
+    <div class="admin-panel">
+      <div class="admin-header">
+        <span class="admin-title">Admin Controls</span>
+      </div>
+      <div class="admin-controls">
+        <div class="input-wrapper">
+          <div class="input-icon-wrapper">
+            <span class="input-icon">💬</span>
+          </div>
+          <input
+            class="notification-input"
+            #titleInput
+            value="Deploy finished"
+            placeholder="Notification message..."
+          />
+        </div>
+        <button
+          class="btn-send"
+          (click)="sendNotification(titleInput.value)"
+        >
+          Send
+        </button>
+        <!--
+        <div class="w-px bg-gray-300 hidden sm:block mx-1"></div>
+        -->
+        <div class="connection-controls">
+          <button
+            class="btn-drop"
+            (click)="dropConnection()"
+          >
+            🚫 Drop
+          </button>
+          <button
+            class="btn-reconnect"
+            (click)="reconnect()"
+          >
+            🔌 Reconnect
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
