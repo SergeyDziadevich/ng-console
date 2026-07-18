@@ -1,16 +1,17 @@
 import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { NotificationsService } from '../../services/notifications.service';
+import { AuthService } from '@app/services/auth.service';
+import { NotificationsService } from '@app/services/notifications.service';
+
 
 @Component({
   selector: 'app-notifications',
   imports: [DatePipe],
-  templateUrl: './notifications.html',
-  styleUrl: './notifications.scss',
+  templateUrl: './notifications.component.html',
+  styleUrl: './notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Notifications {
+export class NotificationsComponent {
   private authService = inject(AuthService);
   private notificationsService = inject(NotificationsService);
 

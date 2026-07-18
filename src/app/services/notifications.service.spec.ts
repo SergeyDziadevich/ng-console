@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { NotificationsService, NotificationPayload, SOCKET_IO_FACTORY } from './notifications.service';
+import { NotificationsService, SOCKET_IO_FACTORY } from './notifications.service';
+import { NotificationPayload } from '@app/models/notification.model';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';

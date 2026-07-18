@@ -4,31 +4,13 @@ import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
+import { NotificationMessage, NotificationPayload } from '@app/models/notification.model';
 
 export const SOCKET_IO_FACTORY = new InjectionToken<typeof io>('SocketIOFactory', {
   providedIn: 'root',
   factory: () => io,
 });
 
-export interface NotificationMessage {
-  id: string;
-  title: string;
-  body?: string;
-  replayed: boolean;
-  isSystem?: boolean;
-  timestamp?: number;
-  isRead?: boolean;
-}
-
-export interface NotificationPayload {
-  id: string;
-  title: string;
-  body: string;
-  ts: number;
-  isSystem?: boolean;
-  type?: string;
-  isRead?: boolean;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -91,6 +73,12 @@ export class NotificationsService {
 
       this.socket.on('notification', (n: NotificationPayload) => {
         this.zone.run(() => {
+          const user = this.authService.currentUser();
+          const currentUserId = user ? user.id : null;
+          if (n.userId && currentUserId && n.userId !== currentUserId) {
+            return;
+          }
+
           const replayed = this.socket.recovered;
 
           this.messages.update((msgs) => {
