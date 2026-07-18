@@ -77,7 +77,7 @@ describe('Notifications', () => {
 describe('Notifications - Roles', () => {
   let component: NotificationsComponent;
   let fixture: ComponentFixture<NotificationsComponent>;
-  let mockAuthService: { currentUser: WritableSignal<any> };
+  let mockAuthService: { currentUser: WritableSignal<unknown> };
 
   beforeEach(async () => {
     mockAuthService = {
