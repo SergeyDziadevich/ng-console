@@ -74,9 +74,23 @@
                 }
                 <div class="flex flex-col">
                   <span class="line-clamp-2 break-words" title="{{ doc.filename }}">{{ doc.filename }}</span>
-                  @if (doc.isSigned) {
-                    <span class="text-xs text-green-600 font-medium">Signed</span>
-                  }
+                  <div class="flex gap-2 items-center mt-1">
+                    @if (doc.isSigned) {
+                      <span class="text-xs text-green-600 font-medium">Signed</span>
+                    }
+                    @if (doc.isRagProcessed) {
+                      <span class="group relative flex items-center cursor-help">
+                        <ng-icon 
+                          name="lucideSparkles" 
+                          class="w-4 h-4 text-indigo-600">
+                        </ng-icon>
+                        <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2.5 py-1.5 bg-gray-800 text-white text-[11px] font-medium rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-max max-w-xs z-50 pointer-events-none shadow-lg">
+                          This document is indexed and ready for AI Assistant search and Q&A
+                          <div class="absolute right-full top-1/2 -translate-y-1/2 border-[5px] border-transparent border-r-gray-800"></div>
+                        </div>
+                      </span>
+                    }
+                  </div>
                 </div>
               </td>
               <td>{{ doc.mimeType }}</td>
