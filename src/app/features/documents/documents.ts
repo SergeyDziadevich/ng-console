@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2 } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2, lucideSparkles } from '@ng-icons/lucide';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { environment } from '../../../environments/environment';
 import { ConfirmDialogComponent } from '@ng-console-platform/ui';
@@ -20,7 +20,7 @@ import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/rout
   imports: [CommonModule, NgIconComponent, Toast, RouterLink, ConfirmDialogComponent, SpinnerComponent],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
-  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFilePlus, lucideFileSignature, lucideEye, lucideFileText, lucideLoader2 })]
+  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFilePlus, lucideFileSignature, lucideEye, lucideFileText, lucideLoader2, lucideSparkles })]
 })
 export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);
