@@ -41,17 +41,17 @@ describe('DocumentWidget', () => {
 
   describe('parseDocuments', () => {
     it('should parse pure JSON', () => {
-      component.text = JSON.stringify({
+      fixture.componentRef.setInput('text', JSON.stringify({
         type: 'documentWidget',
         documents: [{ id: '1', filename: 'test.pdf', snippet: 'test snippet' }]
-      });
+      }));
       component.parseDocuments();
       expect(component.documents().length).toBe(1);
       expect(component.conversationalText()).toBe('');
     });
 
     it('should parse JSON inside markdown block', () => {
-      component.text = '```json\n{"type": "documentWidget", "documents": [{"id": "2", "filename": "test2.pdf", "snippet": "snippet2"}]}\n```';
+      fixture.componentRef.setInput('text', '```json\n{"type": "documentWidget", "documents": [{"id": "2", "filename": "test2.pdf", "snippet": "snippet2"}]}\n```');
       component.parseDocuments();
       expect(component.documents().length).toBe(1);
       expect(component.documents()[0].id).toBe('2');
@@ -60,7 +60,7 @@ describe('DocumentWidget', () => {
 
     it('should extract conversational text and parse JSON', () => {
       const conversational = 'Here are the documents you requested:';
-      component.text = `${conversational}\n\n\`\`\`json\n{"type": "documentWidget", "documents": [{"id": "3", "filename": "doc.pdf", "snippet": "..."}]}\n\`\`\``;
+      fixture.componentRef.setInput('text', `${conversational}\n\n\`\`\`json\n{"type": "documentWidget", "documents": [{"id": "3", "filename": "doc.pdf", "snippet": "..."}]}\n\`\`\``);
       component.parseDocuments();
       expect(component.documents().length).toBe(1);
       expect(component.conversationalText()).toBe(conversational);
@@ -68,7 +68,7 @@ describe('DocumentWidget', () => {
 
     it('should handle malformed JSON gracefully', () => {
       vi.spyOn(console, 'error').mockImplementation(() => undefined);
-      component.text = '```json\n{invalid json}\n```';
+      fixture.componentRef.setInput('text', '```json\n{invalid json}\n```');
       component.parseDocuments();
       expect(component.documents().length).toBe(0);
       expect(console.error).toHaveBeenCalled();

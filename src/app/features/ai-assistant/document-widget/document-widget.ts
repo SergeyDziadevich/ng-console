@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, input, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DocumentService } from '../../../services/document.service';
@@ -22,7 +22,7 @@ interface DocumentWidgetData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentWidget implements OnInit {
-  @Input() text = '';
+  text = input<string>('');
 
   documents = signal<DocumentSnippet[]>([]);
   isDownloading = signal<string | null>(null);
@@ -37,12 +37,12 @@ export class DocumentWidget implements OnInit {
 
   parseDocuments() {
     try {
-      const match = this.text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/i);
-      let jsonToParse = this.text;
+      const match = this.text().match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/i);
+      let jsonToParse = this.text();
       
       if (match) {
         jsonToParse = match[1];
-        this.conversationalText.set(this.text.replace(match[0], '').trim());
+        this.conversationalText.set(this.text().replace(match[0], '').trim());
       } else {
         this.conversationalText.set('');
       }
