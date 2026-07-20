@@ -5,6 +5,7 @@ export interface UploadedDocument {
   size: number;
   uploadedBy: string | { _id: string, username: string, email: string, displayName?: string };
   isSigned?: boolean;
+  isRagProcessed?: boolean;
   signedAt?: string;
   createdAt: string;
   updatedAt: string;
