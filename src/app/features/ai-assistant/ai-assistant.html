@@ -7,7 +7,9 @@
     />
     AI Assistant
   </h1>
-
+  <p class="text-gray-600 text-sm mb-4">
+    Ask me anything about registered users, manage support tickets, or search through your uploaded documents!
+  </p>
   <!-- Message list -->
   <div
     class="flex-1 overflow-y-auto flex flex-col gap-3 bg-white rounded-xl p-4 shadow-sm min-h-0"
@@ -32,6 +34,8 @@
           <app-weather-widget [text]="msg.text"></app-weather-widget>
         } @else if (isUsersMessage(msg.text)) {
           <app-users-widget [text]="msg.text"></app-users-widget>
+        } @else if (isDocumentMessage(msg.text)) {
+          <app-document-widget [text]="msg.text"></app-document-widget>
         } @else {
           <span class="text-sm leading-relaxed whitespace-pre-wrap">{{ msg.text }}</span>
         }

@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 
 import { WeatherWidget } from './weather-widget/weather-widget';
 import { UsersWidget } from './users-widget/users-widget';
+import { DocumentWidget } from './document-widget/document-widget';
 
 interface Message {
   role: 'user' | 'model';
@@ -13,7 +14,7 @@ interface Message {
 
 @Component({
   selector: 'app-ai-assistant',
-  imports: [FormsModule, WeatherWidget, UsersWidget],
+  imports: [FormsModule, WeatherWidget, UsersWidget, DocumentWidget],
   templateUrl: './ai-assistant.html',
   styleUrl: './ai-assistant.scss',
 })
@@ -41,6 +42,17 @@ export class AiAssistant {
 
   isUsersMessage(text: string): boolean {
     return text.includes('Here is the list of all users:');
+  }
+
+  isDocumentMessage(text: string): boolean {
+    try {
+      const match = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/i);
+      const jsonStr = match ? match[1] : text.replace(/^```(json)?\n?/i, '').replace(/\n?```$/i, '').trim();
+      const parsed = JSON.parse(jsonStr);
+      return parsed?.type === 'documentWidget';
+    } catch {
+      return false;
+    }
   }
 
   updatePrompt(value: string) {
