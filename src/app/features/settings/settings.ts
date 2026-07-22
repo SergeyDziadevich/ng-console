@@ -14,12 +14,15 @@ import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { IntegrationService } from '../../services/integration.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ThemeService, Theme } from '../../services/theme.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideHardDrive } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-settings',
-  imports: [ReactiveFormsModule, Toast, SpinnerComponent],
+  imports: [ReactiveFormsModule, Toast, SpinnerComponent, NgIconComponent],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
+  viewProviders: [provideIcons({ lucideHardDrive })],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Settings implements OnInit, OnDestroy {
