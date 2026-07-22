@@ -9,8 +9,9 @@ import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2, lucideSparkles } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2, lucideSparkles, lucideHardDrive } from '@ng-icons/lucide';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
+import { UserService } from '../../services/user-service';
 import { environment } from '../../../environments/environment';
 import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
@@ -20,11 +21,12 @@ import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/rout
   imports: [CommonModule, NgIconComponent, Toast, RouterLink, ConfirmDialogComponent, SpinnerComponent],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
-  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFilePlus, lucideFileSignature, lucideEye, lucideFileText, lucideLoader2, lucideSparkles })]
+  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFilePlus, lucideFileSignature, lucideEye, lucideFileText, lucideLoader2, lucideSparkles, lucideHardDrive })]
 })
 export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private sanitizer = inject(DomSanitizer);
 
   private router = inject(Router);
@@ -40,6 +42,7 @@ export class DocumentsComponent implements OnInit {
   toast = signal<string | null>(null);
   isActionLoading = signal<boolean>(false);
   documentToDelete = signal<UploadedDocument | null>(null);
+  isGoogleDriveConnected = signal<boolean>(false);
 
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -65,6 +68,17 @@ export class DocumentsComponent implements OnInit {
 
   ngOnInit() {
     this.loadDocuments();
+    
+    const user = this.authService.currentUser();
+    if (user?.id) {
+      this.userService.getUserById(user.id).subscribe({
+        next: (u) => {
+          const settings = typeof u.settings === 'object' ? (u.settings ?? {}) : {};
+          this.isGoogleDriveConnected.set(settings.googleDriveSyncEnabled ?? false);
+        }
+      });
+    }
+
     this.route.queryParams.subscribe(params => {
       if (params['generated']) {
         this.showToast('Document generated successfully');
@@ -157,6 +171,17 @@ export class DocumentsComponent implements OnInit {
       a.download = doc.filename;
       a.click();
       window.URL.revokeObjectURL(url);
+    });
+  }
+
+  syncToDrive(doc: UploadedDocument) {
+    this.documentService.syncToGoogleDrive(doc._id).subscribe({
+      next: (res) => {
+        this.showToast('Document synced to Google Drive successfully!');
+      },
+      error: () => {
+        this.showToast('Failed to sync document to Google Drive.');
+      }
     });
   }
 
