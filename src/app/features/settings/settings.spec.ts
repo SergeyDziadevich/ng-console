@@ -8,6 +8,8 @@ import { Settings } from './settings';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
 import { ThemeService } from '../../services/theme.service';
+import { IntegrationService } from '../../services/integration.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 describe('Settings', () => {
   let component: Settings;
@@ -25,6 +27,13 @@ describe('Settings', () => {
     currentTheme: WritableSignal<string>;
     setTheme: Mock;
   };
+  let mockIntegrationService: {
+    getGoogleDriveAuthUrl: Mock;
+    handleGoogleDriveCallback: Mock;
+    disconnectGoogleDrive: Mock;
+  };
+  let mockActivatedRoute: any;
+  let mockRouter: any;
 
   beforeEach(async () => {
     mockAuthService = {
@@ -37,7 +46,7 @@ describe('Settings', () => {
       getUserById: vi
         .fn()
         .mockReturnValue(
-          of({ settings: { receiveNotifications: true, receiveEmails: false, receiveSMS: true } }),
+          of({ settings: { receiveNotifications: true, receiveEmails: false, receiveSMS: true, googleDriveSyncEnabled: false } }),
         ),
       updateUser: vi.fn().mockReturnValue(of({})),
     };
@@ -47,6 +56,20 @@ describe('Settings', () => {
       setTheme: vi.fn(),
     };
 
+    mockIntegrationService = {
+      getGoogleDriveAuthUrl: vi.fn().mockReturnValue(of({ url: 'http://auth-url' })),
+      handleGoogleDriveCallback: vi.fn().mockReturnValue(of({})),
+      disconnectGoogleDrive: vi.fn().mockReturnValue(of({})),
+    };
+
+    mockActivatedRoute = {
+      queryParams: of({})
+    };
+
+    mockRouter = {
+      navigate: vi.fn()
+    };
+
     await TestBed.configureTestingModule({
       imports: [Settings],
       providers: [
@@ -54,6 +77,9 @@ describe('Settings', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: UserService, useValue: mockUserService },
         { provide: ThemeService, useValue: mockThemeService },
+        { provide: IntegrationService, useValue: mockIntegrationService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        { provide: Router, useValue: mockRouter },
       ],
     }).compileComponents();
 
@@ -176,7 +202,47 @@ describe('Settings', () => {
     vi.advanceTimersByTime(3000);
     // Even if time passes, it won't crash if we cleared it properly,
     // actually, we can just spy on clearTimeout to be absolutely sure.
-    // The test is enough to reach the coverage of ngOnDestroy.
     expect(component.toast()).toBe('Test Toast'); // It doesn't reset because it was cleared
+  });
+
+  describe('Google Drive Integration', () => {
+    it('should connect to Google Drive successfully', () => {
+      // Mock window.location.href
+      const originalWindow = { ...window };
+      const windowLocationMock = { href: '' };
+      Object.defineProperty(window, 'location', { value: windowLocationMock, writable: true });
+
+      component.connectGoogleDrive();
+      expect(component.isGoogleDriveConnecting()).toBe(true);
+      expect(mockIntegrationService.getGoogleDriveAuthUrl).toHaveBeenCalled();
+      expect(window.location.href).toBe('http://auth-url');
+
+      // Restore window
+      Object.defineProperty(window, 'location', { value: originalWindow.location, writable: true });
+    });
+
+    it('should handle connect to Google Drive error', () => {
+      mockIntegrationService.getGoogleDriveAuthUrl.mockReturnValue(throwError(() => new Error('Error')));
+      component.connectGoogleDrive();
+      expect(component.errorMessage()).toBe('Failed to initiate Google Drive connection.');
+      expect(component.isGoogleDriveConnecting()).toBe(false);
+    });
+
+    it('should disconnect from Google Drive successfully', () => {
+      component.googleDriveSyncEnabled.set(true);
+      component.disconnectGoogleDrive();
+      expect(mockIntegrationService.disconnectGoogleDrive).toHaveBeenCalled();
+      expect(component.googleDriveSyncEnabled()).toBe(false);
+      expect(component.toast()).toBe('Google Drive disconnected.');
+      expect(component.isGoogleDriveConnecting()).toBe(false);
+    });
+
+    it('should handle disconnect from Google Drive error', () => {
+      mockIntegrationService.disconnectGoogleDrive.mockReturnValue(throwError(() => new Error('Error')));
+      component.googleDriveSyncEnabled.set(true);
+      component.disconnectGoogleDrive();
+      expect(component.errorMessage()).toBe('Failed to disconnect Google Drive.');
+      expect(component.isGoogleDriveConnecting()).toBe(false);
+    });
   });
 });
