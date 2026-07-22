@@ -11,6 +11,8 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
 import { User, UserSettings } from '../../models/user.model';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
+import { IntegrationService } from '../../services/integration.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ThemeService, Theme } from '../../services/theme.service';
 
 @Component({
@@ -23,6 +25,9 @@ import { ThemeService, Theme } from '../../services/theme.service';
 export class Settings implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
+  private readonly integrationService = inject(IntegrationService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly themeService = inject(ThemeService);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -38,6 +43,8 @@ export class Settings implements OnInit, OnDestroy {
   receiveNotifications = signal<boolean>(true);
   receiveEmails = signal<boolean>(false);
   receiveSMS = signal<boolean>(false);
+  googleDriveSyncEnabled = signal<boolean>(false);
+  isGoogleDriveConnecting = signal<boolean>(false);
   currentTheme = this.themeService.currentTheme;
 
   twoFactorForm = this.fb.group({
@@ -71,7 +78,30 @@ export class Settings implements OnInit, OnDestroy {
         if (settings.theme && settings.theme !== this.themeService.currentTheme()) {
            this.themeService.setTheme(settings.theme as Theme);
         }
+        this.googleDriveSyncEnabled.set(settings.googleDriveSyncEnabled ?? false);
         this.finishLoading();
+
+        this.route.queryParams.subscribe(params => {
+          if (params['code']) {
+            this.isGoogleDriveConnecting.set(true);
+            this.integrationService.handleGoogleDriveCallback(params['code']).subscribe({
+              next: () => {
+                this.googleDriveSyncEnabled.set(true);
+                this.showToast('Google Drive connected successfully!');
+                this.isGoogleDriveConnecting.set(false);
+                // Remove code from URL
+                this.router.navigate([], {
+                  queryParams: { code: null },
+                  queryParamsHandling: 'merge'
+                });
+              },
+              error: () => {
+                this.errorMessage.set('Failed to connect Google Drive.');
+                this.isGoogleDriveConnecting.set(false);
+              }
+            });
+          }
+        });
       },
       error: () => this.finishLoading(),
     });
@@ -88,7 +118,7 @@ export class Settings implements OnInit, OnDestroy {
     const select = event.target as HTMLSelectElement;
     const newTheme = select.value as Theme;
     this.themeService.setTheme(newTheme);
-    
+
     const user = this.authService.currentUser();
     if (user?.id) {
       this.userService
@@ -164,6 +194,34 @@ export class Settings implements OnInit, OnDestroy {
         this.errorMessage.set('Failed to verify 2FA code. Please try again.');
         this.isSubmitting.set(false);
       },
+    });
+  }
+
+  connectGoogleDrive() {
+    this.isGoogleDriveConnecting.set(true);
+    this.integrationService.getGoogleDriveAuthUrl().subscribe({
+      next: (res) => {
+        window.location.href = res.url;
+      },
+      error: () => {
+        this.errorMessage.set('Failed to initiate Google Drive connection.');
+        this.isGoogleDriveConnecting.set(false);
+      }
+    });
+  }
+
+  disconnectGoogleDrive() {
+    this.isGoogleDriveConnecting.set(true);
+    this.integrationService.disconnectGoogleDrive().subscribe({
+      next: () => {
+        this.googleDriveSyncEnabled.set(false);
+        this.showToast('Google Drive disconnected.');
+        this.isGoogleDriveConnecting.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Failed to disconnect Google Drive.');
+        this.isGoogleDriveConnecting.set(false);
+      }
     });
   }
 }
