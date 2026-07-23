@@ -1,9 +1,20 @@
+@reference "../../../styles.scss";
+
 .audit-logs-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: 1rem;
   gap: 1rem;
+
+  :host-context(:where(.dark, .dark *)), html.dark & {
+    --bg-surface: var(--color-gray-800, oklch(27.8% 0.033 256.848));
+    --bg-subtle: var(--color-gray-900, oklch(20.5% 0.02 256.848));
+    --border-color: var(--color-gray-700, oklch(35.5% 0.04 256.848));
+    --text-primary: var(--color-gray-100, #f3f4f6);
+    --text-secondary: var(--color-gray-400, #9ca3af);
+    --text-muted: var(--color-gray-500, #6b7280);
+  }
 
   header {
     display: flex;
@@ -26,6 +37,7 @@
       label {
         font-weight: 500;
         color: var(--text-secondary, #666);
+        @apply dark:text-gray-400;
       }
 
       .info-tooltip {
@@ -43,6 +55,7 @@
         .tooltip-text {
           visibility: hidden;
           background-color: #333;
+        @apply dark:text-gray-300;
           color: #fff;
           text-align: center;
           border-radius: 6px;
@@ -83,12 +96,14 @@
         border-radius: 4px;
         border: 1px solid var(--border-color, #ccc);
         background: var(--bg-surface, #fff);
+        @apply dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200;
       }
 
       .separator {
         width: 1px;
         height: 1.5rem;
         background-color: var(--border-color, #ccc);
+        @apply dark:bg-gray-700;
       }
 
       .export-btn {
@@ -135,6 +150,7 @@
       background: var(--bg-surface, #fff);
       font-size: 0.9rem;
       color: var(--text-primary, #333);
+      @apply dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200;
       outline: none;
       transition:
         border-color 0.2s,
@@ -159,6 +175,7 @@
         label {
           font-weight: 500;
           color: var(--text-secondary, #666);
+        @apply dark:text-gray-400;
         }
 
         .date-picker {
@@ -170,6 +187,7 @@
           font-size: 0.9rem;
           background: var(--bg-surface, #fff);
           color: var(--text-primary, #333);
+          @apply dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200;
         }
       }
     }
@@ -184,6 +202,7 @@
         border: 1px solid var(--border-color, #ccc);
         border-radius: 6px;
         background: var(--bg-surface, #fff);
+        @apply dark:border-gray-600 dark:bg-gray-800;
         padding: 0.25rem 0.5rem;
         min-height: 2.25rem;
         cursor: text;
@@ -212,6 +231,7 @@
           background: var(--bg-subtle, #f1f3f4);
           border: 1px solid var(--border-color, #e0e0e0);
           color: var(--text-primary, #333);
+          @apply dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200;
           padding: 0.15rem 0.4rem;
           border-radius: 4px;
           font-size: 0.8rem;
@@ -253,6 +273,7 @@
         min-width: 100%;
         background: #fff;
         border: 1px solid var(--border-color, #eaeaea);
+        @apply dark:bg-gray-800 dark:border-gray-700;
         border-radius: 6px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         z-index: 20;
@@ -271,9 +292,11 @@
           cursor: pointer;
           user-select: none;
           color: var(--text-primary, #333);
+          @apply dark:text-gray-200;
 
           &:hover {
             background: var(--bg-subtle, #f8f9fa);
+            @apply dark:bg-gray-700;
           }
         }
       }
@@ -289,6 +312,7 @@
         gap: 0.5rem;
         font-weight: 500;
         color: var(--text-primary, #333);
+        @apply dark:text-gray-200;
         cursor: pointer;
         user-select: none;
 
@@ -351,6 +375,7 @@
 
         &:hover {
           background: rgba(0, 0, 0, 0.02);
+          @apply dark:bg-white/5;
         }
 
         .header-left {
@@ -371,6 +396,7 @@
 
         .time {
           color: var(--text-secondary, #666);
+        @apply dark:text-gray-400;
           white-space: nowrap;
           flex-shrink: 0;
         }
@@ -407,6 +433,7 @@
           align-items: center;
           gap: 0.5rem;
           color: var(--text-primary, #333);
+          @apply dark:text-gray-200;
           flex: 1;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -424,6 +451,7 @@
           .entity {
             font-weight: 500;
             color: var(--text-secondary, #444);
+            @apply dark:text-gray-300;
           }
 
           .entity-id {
@@ -447,10 +475,12 @@
         padding: 0.75rem 1rem 0.5rem;
         font-size: 0.9rem;
         color: var(--text-primary, #333);
+        @apply dark:text-gray-200;
 
         .label {
           font-weight: 600;
           color: var(--text-secondary, #666);
+        @apply dark:text-gray-400;
           margin-right: 0.25rem;
         }
       }
@@ -464,6 +494,7 @@
         white-space: pre-wrap;
         overflow-x: auto;
         color: #333;
+        @apply dark:text-gray-300;
       }
     }
 
@@ -475,6 +506,7 @@
       padding: 4rem 2rem;
       text-align: center;
       background: var(--bg-surface, #fff);
+      @apply dark:bg-gray-800;
 
       .no-logs-icon {
         width: 3rem;
@@ -487,6 +519,7 @@
       .no-logs-text {
         font-size: 0.95rem;
         color: var(--text-secondary, #666);
+        @apply dark:text-gray-400;
         font-weight: 500;
       }
     }

@@ -8,32 +8,33 @@
       </div>
 
       <div class="active-subscription-card">
-        <div class="card-body">
-          <h3>{{ currentPlan()?.name }} Plan</h3>
-          <p class="description">{{ currentPlan()?.description }}</p>
-          
-          @if (subscriptionDetails() === undefined) {
-            <div class="subscription-dates flex justify-center py-4">
-              <app-spinner size="md" color="blue" direction="row" loadingText="Loading details..."></app-spinner>
-            </div>
-          } @else if (subscriptionDetails()) {
-            <div class="subscription-dates">
-              @if (subscriptionDetails()!.status === 'trialing' && subscriptionDetails()!.trialEnd) {
-                <p class="trial-warning">
-                  <span class="label">Trial period ends:</span> 
-                  <span class="value">{{ subscriptionDetails()!.trialEnd! * 1000 | date:'mediumDate' }}</span>
-                </p>
-              } @else {
-                <p>
-                  <span class="label">Current period:</span> 
-                  <span class="value">{{ subscriptionDetails()!.currentPeriodStart * 1000 | date:'mediumDate' }} - {{ subscriptionDetails()!.currentPeriodEnd * 1000 | date:'mediumDate' }}</span>
-                </p>
-              }
-              @if (subscriptionDetails()!.cancelAtPeriodEnd) {
-                <p class="cancels-warning">Cancels at the end of the billing period.</p>
-              }
-            </div>
-          }
+        @if (subscriptionDetails() === undefined) {
+          <div class="flex items-center justify-center min-h-[400px]">
+            <app-spinner size="lg" color="blue" direction="column" loadingText="Loading details..."></app-spinner>
+          </div>
+        } @else {
+          <div class="card-body">
+            <h3>{{ currentPlan()?.name }} Plan</h3>
+            <p class="description">{{ currentPlan()?.description }}</p>
+            
+            @if (subscriptionDetails()) {
+              <div class="subscription-dates">
+                @if (subscriptionDetails()!.status === 'trialing' && subscriptionDetails()!.trialEnd) {
+                  <p class="trial-warning">
+                    <span class="label">Trial period ends:</span> 
+                    <span class="value">{{ subscriptionDetails()!.trialEnd! * 1000 | date:'mediumDate' }}</span>
+                  </p>
+                } @else {
+                  <p>
+                    <span class="label">Current period:</span> 
+                    <span class="value">{{ subscriptionDetails()!.currentPeriodStart * 1000 | date:'mediumDate' }} - {{ subscriptionDetails()!.currentPeriodEnd * 1000 | date:'mediumDate' }}</span>
+                  </p>
+                }
+                @if (subscriptionDetails()!.cancelAtPeriodEnd) {
+                  <p class="cancels-warning">Cancels at the end of the billing period.</p>
+                }
+              </div>
+            }
 
           <ul role="list" class="feature-list">
             @for (feature of currentPlan()?.features; track feature) {
@@ -63,6 +64,7 @@
             }
           </button>
         </div>
+        }
       </div>
 
     } @else {

@@ -1,3 +1,4 @@
+@reference "../../../styles.scss";
 .documents-container {
   padding: 2rem;
   margin: 0 auto;
@@ -10,7 +11,7 @@
     border-radius: 12px;
     padding: 3rem 2rem;
     text-align: center;
-    background-color: #f9fafb;
+    background-color: #f9fafb; @apply dark:bg-gray-900;
     transition: all 0.2s ease-in-out;
     margin-bottom: 2rem;
     display: flex;
@@ -32,12 +33,12 @@
     p {
       margin-bottom: 0.5rem;
       font-size: 1.1rem;
-      color: #374151;
+      color: #374151; @apply dark:text-gray-300;
     }
 
     .restrictions {
       font-size: 0.85rem;
-      color: #6b7280;
+      color: #6b7280; @apply dark:text-gray-400;
     }
 
     input[type="file"] {
@@ -81,7 +82,7 @@
   }
 
   .documents-list {
-    background-color: #ffffff;
+    background-color: #ffffff; @apply dark:bg-gray-800 dark:border-gray-700;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -105,7 +106,7 @@
       align-items: center;
       justify-content: center;
       padding: 3rem;
-      color: #6b7280;
+      color: #6b7280; @apply dark:text-gray-400;
 
       ng-icon {
         animation: spin 1s linear infinite;
@@ -118,7 +119,7 @@
     .empty-state {
       text-align: center;
       padding: 3rem;
-      color: #6b7280;
+      color: #6b7280; @apply dark:text-gray-400;
       
       ng-icon {
         font-size: 2.5rem;
@@ -134,17 +135,17 @@
       th {
         text-align: left;
         padding: 1rem;
-        color: #6b7280;
+        color: #6b7280; @apply dark:text-gray-400;
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb; @apply dark:border-gray-700;
       }
 
       td {
         padding: 1rem;
-        border-bottom: 1px solid #e5e7eb;
-        color: #374151;
+        border-bottom: 1px solid #e5e7eb; @apply dark:border-gray-700;
+        color: #374151; @apply dark:text-gray-300;
         vertical-align: middle;
         height: 5rem;
       }
@@ -154,7 +155,7 @@
       }
 
       tr:hover td {
-        background-color: #f9fafb;
+        background-color: #f9fafb; @apply dark:bg-gray-900;
       }
 
       .filename-cell {
@@ -179,8 +180,8 @@
       border-top: 1px solid #e5e7eb;
 
       button {
-        background-color: #f3f4f6;
-        color: #374151;
+        background-color: #f3f4f6; @apply dark:bg-gray-800;
+        color: #374151; @apply dark:text-gray-300;
         border: none;
         padding: 0.5rem 1rem;
         border-radius: 6px;
@@ -199,7 +200,7 @@
       }
 
       span {
-        color: #6b7280;
+        color: #6b7280; @apply dark:text-gray-400;
         font-size: 0.9rem;
       }
     }

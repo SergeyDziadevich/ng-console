@@ -1,7 +1,7 @@
 <div class="max-w-3xl mx-auto my-8">
   <div class="mb-4">
     <a
-      class="inline-flex text-sm font-medium text-gray-500 hover:text-gray-700 items-center gap-1 transition-colors"
+      class="inline-flex text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 items-center gap-1 transition-colors"
       routerLink="/tickets"
     >
       <img class="h-4 w-4 shrink-0" src="/assets/icons/icon-ccdbfa9e.svg" alt="icon" />
@@ -9,11 +9,11 @@
     </a>
   </div>
 
-  <div class="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
+  <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
     <div class="mb-6">
-      <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+      <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 dark:text-white">
         <img
-          class="h-7 w-7 brightness-0 shrink-0"
+          class="h-7 w-7 brightness-0 shrink-0 dark:invert"
           src="/assets/icons/icon-tickets.svg"
           alt="icon"
         />
@@ -24,9 +24,9 @@
     <form class="space-y-6" [formRoot]="ticketForm">
       <!-- Title -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="title">Title *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="title">Title *</label>
         <input
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
           id="title"
           [formField]="ticketForm.title"
           type="text"
@@ -39,9 +39,9 @@
 
       <!-- About -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="about">About</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="about">About</label>
         <textarea
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
           id="about"
           [formField]="ticketForm.about"
           rows="2"
@@ -51,11 +51,11 @@
 
       <!-- Description -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="description"
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="description"
           >Description *</label
         >
         <textarea
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
           id="description"
           [formField]="ticketForm.description"
           rows="4"
@@ -69,9 +69,9 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Status -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="status">Status</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="status">Status</label>
           <select
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
             id="status"
             [formField]="ticketForm.status"
           >
@@ -83,11 +83,11 @@
 
         <!-- Priority -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="priority"
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="priority"
             >Priority</label
           >
           <select
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
             id="priority"
             [formField]="ticketForm.priority"
           >
@@ -100,11 +100,11 @@
 
         <!-- Assignee -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="assignedPersonId"
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="assignedPersonId"
             >Assign To</label
           >
           <select
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
             id="assignedPersonId"
             [formField]="ticketForm.assignedPersonId"
           >
@@ -116,9 +116,9 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="epicId">Epic</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="epicId">Epic</label>
           <select
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
             id="epicId"
             [formField]="ticketForm.epicId"
           >
@@ -130,11 +130,11 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1" for="estimations"
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="estimations"
             >Estimation (hours)</label
           >
           <input
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
             id="estimations"
             [formField]="ticketForm.estimations"
             type="number"
@@ -145,9 +145,9 @@
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-end pt-4 border-t border-gray-100 gap-3">
+      <div class="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-700 gap-3">
         <button
-          class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+          class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
           type="button"
           routerLink="/tickets"
         >

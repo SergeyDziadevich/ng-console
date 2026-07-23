@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
 import { User, UserSettings } from '../../models/user.model';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
+import { ThemeService, Theme } from '../../services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -23,6 +24,7 @@ export class Settings implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
+  private readonly themeService = inject(ThemeService);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   qrCodeUrl = signal<string | null>(null);
@@ -36,6 +38,7 @@ export class Settings implements OnInit, OnDestroy {
   receiveNotifications = signal<boolean>(true);
   receiveEmails = signal<boolean>(false);
   receiveSMS = signal<boolean>(false);
+  currentTheme = this.themeService.currentTheme;
 
   twoFactorForm = this.fb.group({
     code: ['', [Validators.required, Validators.minLength(6)]],
@@ -65,6 +68,9 @@ export class Settings implements OnInit, OnDestroy {
         this.receiveNotifications.set(settings.receiveNotifications ?? true);
         this.receiveEmails.set(settings.receiveEmails ?? false);
         this.receiveSMS.set(settings.receiveSMS ?? false);
+        if (settings.theme && settings.theme !== this.themeService.currentTheme()) {
+           this.themeService.setTheme(settings.theme as Theme);
+        }
         this.finishLoading();
       },
       error: () => this.finishLoading(),
@@ -76,6 +82,22 @@ export class Settings implements OnInit, OnDestroy {
       this.isLoading.set(false);
       requestAnimationFrame(() => this.isReady.set(true));
     }, loadingDelayMs);
+  }
+
+  updateTheme(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const newTheme = select.value as Theme;
+    this.themeService.setTheme(newTheme);
+    
+    const user = this.authService.currentUser();
+    if (user?.id) {
+      this.userService
+        .updateUser(user.id, { settings: { theme: newTheme } })
+        .subscribe({
+          next: () => this.showToast('Theme updated successfully!'),
+          error: () => this.errorMessage.set('Failed to save theme setting.'),
+        });
+    }
   }
 
   toggleSetting(settingKey: 'receiveNotifications' | 'receiveEmails' | 'receiveSMS', event: Event) {

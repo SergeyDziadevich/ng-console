@@ -1,5 +1,5 @@
 <div
-  class="mt-2 mb-2 w-full max-w-2xl bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-indigo-100/50 overflow-hidden"
+  class="mt-2 mb-2 w-full max-w-2xl bg-white dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-indigo-100/50 overflow-hidden"
 >
   <div class="px-5 py-4 border-b border-indigo-50 flex items-center justify-between">
     <div class="flex items-center gap-2">
@@ -8,7 +8,7 @@
       >
         <img class="h-5 w-5 shrink-0" src="/assets/icons/icon-731e8979.svg" alt="icon" />
       </div>
-      <h3 class="font-semibold text-gray-800">Database Users</h3>
+      <h3 class="font-semibold text-gray-800 dark:text-gray-200">Database Users</h3>
     </div>
     <span class="text-xs font-bold px-2.5 py-1 bg-indigo-500 text-white rounded-full shadow-sm"
       >{{ users.length }} Users</span
@@ -18,7 +18,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       @for (user of users; track user.username) {
         <div
-          class="group flex items-center gap-3 p-3 rounded-xl bg-gray-50/50 hover:bg-white transition-all border border-gray-100 hover:border-indigo-200 hover:shadow-sm cursor-pointer"
+          class="group flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 hover:bg-white dark:hover:bg-gray-800 transition-all border border-gray-100 dark:border-gray-700 hover:border-indigo-200 hover:shadow-sm cursor-pointer"
           (click)="onUserClick(user.username)"
           (keydown.enter)="onUserClick(user.username)"
           tabindex="0"
@@ -29,8 +29,8 @@
             {{ user.avatar }}
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-900 truncate">{{ user.name }}</p>
-            <p class="text-xs text-gray-500 truncate">@{{ user.username }}</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{{ user.name }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">@{{ user.username }}</p>
           </div>
           <div class="flex-shrink-0">
             <span
