@@ -18,7 +18,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       @for (user of users; track user.username) {
         <div
-          class="group flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 hover:bg-white dark:bg-gray-800 transition-all border border-gray-100 dark:border-gray-700 hover:border-indigo-200 hover:shadow-sm cursor-pointer"
+          class="group flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 hover:bg-white dark:hover:bg-gray-800 transition-all border border-gray-100 dark:border-gray-700 hover:border-indigo-200 hover:shadow-sm cursor-pointer"
           (click)="onUserClick(user.username)"
           (keydown.enter)="onUserClick(user.username)"
           tabindex="0"
