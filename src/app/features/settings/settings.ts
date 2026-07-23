@@ -68,8 +68,8 @@ export class Settings implements OnInit, OnDestroy {
         this.receiveNotifications.set(settings.receiveNotifications ?? true);
         this.receiveEmails.set(settings.receiveEmails ?? false);
         this.receiveSMS.set(settings.receiveSMS ?? false);
-        if (settings.theme && settings.theme !== this.themeService.currentTheme()) {
-           this.themeService.setTheme(settings.theme);
+        if (settings.theme && settings.theme !== 'system' && settings.theme !== this.themeService.currentTheme()) {
+           this.themeService.setTheme(settings.theme as Theme);
         }
         this.finishLoading();
       },

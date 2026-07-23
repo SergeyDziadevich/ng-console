@@ -15,8 +15,8 @@ export class ThemeService {
   }
 
   private initializeTheme() {
-    const savedTheme = localStorage.getItem('app-theme') as Theme | null;
-    const initialTheme = savedTheme || 'light';
+    const savedTheme = localStorage.getItem('app-theme');
+    const initialTheme = (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'light';
     this.setTheme(initialTheme);
   }
 
