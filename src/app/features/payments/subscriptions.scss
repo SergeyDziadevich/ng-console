@@ -20,7 +20,7 @@
   }
 
   .active-subscription-card {
-    @apply mt-16 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden max-w-2xl mx-auto;
+    @apply mt-16 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden max-w-2xl mx-auto relative;
 
     .card-body {
       @apply p-8 lg:p-12;

@@ -42,7 +42,15 @@
           }
           
           input, select, textarea {
-            @apply w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 transition-all text-sm text-gray-800 dark:text-gray-200 focus:bg-white dark:focus:bg-gray-800;
+            @apply w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 border-gray-200 transition-all text-sm text-gray-800 focus:bg-white;
+            
+            :host-context(.dark) & {
+              @apply bg-gray-900 border-gray-700 text-gray-100;
+              
+              &:focus {
+                @apply bg-gray-800;
+              }
+            }
           }
         }
 
