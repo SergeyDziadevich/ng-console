@@ -14,15 +14,15 @@
       @apply flex flex-col;
 
       h1 {
-        @apply text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900;
+        @apply text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900 dark:text-white;
         
         img {
-          @apply h-7 w-7 brightness-0 shrink-0;
+          @apply h-7 w-7 brightness-0 dark:invert shrink-0;
         }
       }
 
       p {
-        @apply text-gray-500 text-sm;
+        @apply text-gray-500 dark:text-gray-400 text-sm;
       }
     }
   }

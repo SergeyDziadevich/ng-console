@@ -1,7 +1,7 @@
 @reference "../../../../styles.scss";
 
 .billing-history-container {
-  @apply py-12 bg-gray-50 flex-grow min-h-screen;
+  @apply py-12 bg-gray-50 dark:bg-gray-900 flex-grow min-h-screen;
 
   .content-wrapper {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -11,11 +11,11 @@
     @apply text-center;
 
     h2 {
-      @apply text-3xl font-extrabold text-gray-900 sm:text-4xl;
+      @apply text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl;
     }
 
     p {
-      @apply mt-4 text-xl text-gray-600;
+      @apply mt-4 text-xl text-gray-600 dark:text-gray-400;
     }
   }
 
@@ -23,30 +23,30 @@
     @apply mt-16 max-w-4xl mx-auto;
 
     .table-container {
-      @apply bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200;
+      @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700;
 
       table {
-        @apply min-w-full divide-y divide-gray-200;
+        @apply min-w-full divide-y divide-gray-200 dark:divide-gray-700;
 
         thead {
-          @apply bg-gray-50;
+          @apply bg-gray-50 dark:bg-gray-900;
           
           th {
-            @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+            @apply px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider;
           }
         }
 
         tbody {
-          @apply bg-white divide-y divide-gray-200;
+          @apply bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700;
 
           td {
-            @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+            @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white;
 
             .status-badge {
-              @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800;
+              @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200;
 
               &.paid {
-                @apply bg-green-100 text-green-800;
+                @apply bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100;
               }
             }
 
@@ -55,7 +55,7 @@
             }
 
             .separator {
-              @apply mx-2 text-gray-300;
+              @apply mx-2 text-gray-300 dark:text-gray-600;
             }
           }
         }
@@ -63,15 +63,15 @@
     }
 
     .no-invoices {
-      @apply text-gray-500 text-center py-8;
+      @apply text-gray-500 dark:text-gray-400 text-center py-8;
     }
 
     .loading-state {
-      @apply flex flex-col items-center justify-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-200;
+      @apply flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700;
     }
   }
 
   .no-subscription {
-    @apply mt-16 text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-200 max-w-2xl mx-auto;
+    @apply mt-16 text-center text-gray-500 dark:text-gray-400 py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto;
   }
 }

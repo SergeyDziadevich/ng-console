@@ -32,11 +32,11 @@
 }
 
 .notifications-header {
-  @apply text-2xl font-bold flex items-center gap-3 mb-1;
+  @apply text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900 dark:text-white;
 }
 
 .header-icon {
-  @apply h-7 w-7 brightness-0 shrink-0;
+  @apply h-7 w-7 brightness-0 shrink-0 dark:invert;
 }
 
 .notifications-list {

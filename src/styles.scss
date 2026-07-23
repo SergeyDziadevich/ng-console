@@ -1,5 +1,13 @@
 @import 'tailwindcss/index.css';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    @apply text-gray-900 bg-white dark:text-gray-100 dark:bg-gray-900 transition-colors duration-200;
+  }
+}
+
 html,
 body {
   height: 100%;
