@@ -176,7 +176,7 @@ export class DocumentsComponent implements OnInit {
 
   syncToDrive(doc: UploadedDocument) {
     this.documentService.syncToGoogleDrive(doc._id).subscribe({
-      next: (res) => {
+      next: () => {
         this.showToast('Document synced to Google Drive successfully!');
       },
       error: () => {
