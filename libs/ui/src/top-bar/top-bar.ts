@@ -25,7 +25,7 @@ export class TopBar {
   protected currentUser = this.authService.currentUser;
   protected unreadCount = this.notificationsService.unreadCount;
   protected unreadMessages = this.notificationsService.unreadMessages;
-  protected activeThemeMode = this.themeService.activeThemeMode;
+  protected currentTheme = this.themeService.currentTheme;
 
   protected userAvatar = computed(() => this.currentUser()?.name.slice(0, 2).toUpperCase() || 'NA');
 
@@ -86,7 +86,7 @@ export class TopBar {
   }
 
   protected toggleTheme(): void {
-    const newTheme = this.activeThemeMode() === 'light' ? 'dark' : 'light';
+    const newTheme = this.currentTheme() === 'light' ? 'dark' : 'light';
     this.themeService.setTheme(newTheme);
   }
 }
