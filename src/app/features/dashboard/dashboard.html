@@ -11,7 +11,7 @@
     >
       @if (assignedTicketsCount() > 0) {
         <a
-          class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:bg-gray-900 transition-colors cursor-pointer"
+          class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
           [routerLink]="['/tickets']"
           [queryParams]="{ assignedToMe: 'true' }"
         >
@@ -101,7 +101,7 @@
       class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col relative overflow-hidden group"
     >
       <a
-        class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:bg-gray-900 transition-colors cursor-pointer"
+        class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
         [routerLink]="['/documents']"
       >
         <div
@@ -132,7 +132,7 @@
     >
       @if (planName()) {
         <a
-          class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:bg-gray-900 transition-colors cursor-pointer"
+          class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
           [routerLink]="['/payments/billing-history']"
         >
           <div
@@ -165,7 +165,7 @@
             </div>
             <p class="text-xs text-indigo-100 mb-2">Get access to all features</p>
             <span
-              class="text-xs font-medium bg-white dark:bg-gray-800/20 px-3 py-1 rounded-full group-hover:bg-white dark:bg-gray-800/30 transition-colors"
+              class="text-xs font-medium bg-white dark:bg-gray-800/20 px-3 py-1 rounded-full group-hover:bg-white dark:hover:bg-gray-800/30 transition-colors"
               >View plans &rarr;</span
             >
           </div>

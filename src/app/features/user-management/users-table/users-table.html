@@ -1,8 +1,8 @@
 <div class="overflow-auto flex-1 min-h-0">
-  <table class="min-w-full divide-y divide-gray-200 bg-white dark:bg-gray-800 text-sm">
+  <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800 text-sm">
     <thead class="bg-gray-50 dark:bg-gray-900">
       <tr>
-        <th class="table-th w-[1%] whitespace-nowrap cursor-pointer hover:bg-gray-100 dark:bg-gray-700 select-none" (click)="sortBy('_id')">
+        <th class="table-th w-[1%] whitespace-nowrap cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none" (click)="sortBy('_id')">
           <div class="flex items-center gap-1">
             ID
             @if (sortColumn() === '_id') {
@@ -13,7 +13,7 @@
         <th class="table-th select-none align-top pt-3 w-48" (appClickOutside)="onNameSearchBlur()">
           <button
             type="button"
-            class="flex items-center gap-1 cursor-pointer hover:bg-gray-100 dark:bg-gray-700 p-1 -m-1 rounded"
+            class="flex items-center gap-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-1 -m-1 rounded"
             (click)="onNameTitleClick()"
             (keyup.enter)="onNameTitleClick()"
           >
@@ -34,7 +34,7 @@
         <th class="table-th select-none align-top pt-3 w-64" (appClickOutside)="onEmailSearchBlur()">
           <button
             type="button"
-            class="flex items-center gap-1 cursor-pointer hover:bg-gray-100 dark:bg-gray-700 p-1 -m-1 rounded"
+            class="flex items-center gap-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-1 -m-1 rounded"
             (click)="onEmailTitleClick()"
             (keyup.enter)="onEmailTitleClick()"
           >
@@ -52,7 +52,7 @@
             </div>
           }
         </th>
-        <th class="table-th cursor-pointer hover:bg-gray-100 dark:bg-gray-700 select-none" (click)="sortBy('role')">
+        <th class="table-th cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none" (click)="sortBy('role')">
           <div class="flex items-center gap-1">
             Role
             @if (sortColumn() === 'role') {
@@ -60,7 +60,7 @@
             }
           </div>
         </th>
-        <th class="table-th text-center cursor-pointer hover:bg-gray-100 dark:bg-gray-700 select-none" (click)="sortBy('isTwoFactorEnabled')">
+        <th class="table-th text-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none" (click)="sortBy('isTwoFactorEnabled')">
           <div class="flex items-center justify-center gap-1">
             2FA
             @if (sortColumn() === 'isTwoFactorEnabled') {
@@ -71,9 +71,9 @@
         <th class="table-th text-right">Actions</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-gray-100">
+    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
       @for (user of paginatedUsers(); track user._id) {
-        <tr class="hover:bg-gray-50 dark:bg-gray-900 transition-colors">
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
           <td class="table-td text-gray-500 dark:text-gray-400 font-mono text-xs whitespace-nowrap">
             {{ user._id }}
           </td>
@@ -87,7 +87,7 @@
                 />
               } @else {
                 <div
-                  class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold shrink-0"
+                  class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xs font-bold shrink-0"
                 >
                   {{ user.username.charAt(0).toUpperCase() }}
                 </div>
@@ -98,7 +98,7 @@
           <td class="table-td text-gray-600 dark:text-gray-400">{{ user.email }}</td>
           <td class="table-td">
             <span
-              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300"
             >
               {{ user.role }}
             </span>
@@ -106,7 +106,7 @@
           <td class="table-td text-center">
             @if (user.isTwoFactorEnabled) {
               <span
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300"
               >
                 On
               </span>
@@ -120,7 +120,7 @@
           </td>
           <td class="table-td space-x-2 text-right">
             <button
-              class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white"
+              class="table-action-btn bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-500 text-white"
               *appHasPermission="'edit-user'"
               (click)="editUser(user)"
               title="Edit"
@@ -128,7 +128,7 @@
               <ng-icon class="w-4 h-4" name="lucideEdit"></ng-icon>
             </button>
             <button
-              class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white"
+              class="table-action-btn bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-500 text-white"
               *appHasPermission="'delete-user'"
               (click)="confirmDelete(user)"
               title="Delete"
@@ -167,7 +167,7 @@
     <span>Total: {{ users().length }}</span>
     <div class="flex items-center gap-2">
       <button
-        class="p-1 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
         [disabled]="currentPage() === 1 || pageSize() === 'all'"
         (click)="prevPage()"
       >
@@ -177,7 +177,7 @@
         >Page {{ pageSize() === 'all' ? 1 : currentPage() }} of {{ totalPages() }}</span
       >
       <button
-        class="p-1 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
         [disabled]="currentPage() === totalPages() || pageSize() === 'all'"
         (click)="nextPage()"
       >
