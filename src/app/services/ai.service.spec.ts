@@ -33,6 +33,26 @@ describe('AiService', () => {
     expect(service.messages()).toEqual([]);
   });
 
+  describe('command palette state', () => {
+    it('should toggle command palette open and closed', () => {
+      expect(service.isCommandPaletteOpen()).toBe(false);
+      
+      service.toggleCommandPalette();
+      expect(service.isCommandPaletteOpen()).toBe(true);
+      
+      service.toggleCommandPalette();
+      expect(service.isCommandPaletteOpen()).toBe(false);
+    });
+
+    it('should close command palette explicitly', () => {
+      service.isCommandPaletteOpen.set(true);
+      expect(service.isCommandPaletteOpen()).toBe(true);
+      
+      service.closeCommandPalette();
+      expect(service.isCommandPaletteOpen()).toBe(false);
+    });
+  });
+
   describe('generate', () => {
     it('should handle successful response', async () => {
       const message = 'Hello';
