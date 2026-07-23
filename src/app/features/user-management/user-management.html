@@ -22,7 +22,7 @@
   }
 
   @if (!usersResource.isLoading() && usersResource.value()) {
-    <div class="flex-1 min-h-0 rounded-lg shadow bg-white overflow-hidden flex flex-col">
+    <div class="flex-1 min-h-0 rounded-lg shadow bg-white dark:bg-gray-800 overflow-hidden flex flex-col">
       <app-users-table
         class="flex flex-col flex-1 min-h-0"
         [users]="usersResource.value() ?? []"
@@ -40,8 +40,8 @@
         alt="icon"
       />
       <div>
-        <h2 class="text-xl font-semibold text-gray-800">Something went wrong</h2>
-        <p class="mt-1 text-sm text-gray-500">We couldn't load the users. Please try again.</p>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Something went wrong</h2>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">We couldn't load the users. Please try again.</p>
       </div>
       <button class="mt-2 px-5 py-2 btn-primary" (click)="usersResource.reload()">Retry</button>
     </div>

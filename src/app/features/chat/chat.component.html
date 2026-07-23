@@ -301,7 +301,7 @@
     @for (room of chatService.rooms(); track room.id) {
       @if (room.id === chatService.activeRoomId()) {
         Are you sure you want to remove
-        <span class="font-medium text-gray-800">"{{ room.name }}"</span>? This action cannot be
+        <span class="font-medium text-gray-800 dark:text-gray-200">"{{ room.name }}"</span>? This action cannot be
         undone.
       }
     }

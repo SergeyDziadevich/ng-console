@@ -7,19 +7,19 @@
     @apply flex flex-wrap items-center justify-between gap-3;
 
     .toolbar-toggle-btn {
-      @apply flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors;
+      @apply flex items-center gap-2 cursor-pointer bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 shadow-sm hover:bg-gray-50 dark:bg-gray-900 transition-colors;
     }
 
     .toolbar-filter-group {
-      @apply flex items-center gap-2 bg-white px-2 py-1.5 rounded-md border border-gray-200 shadow-sm;
+      @apply flex items-center gap-2 bg-white dark:bg-gray-800 px-2 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 shadow-sm;
 
       .status-filter-label {
-        @apply flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 transition-colors;
+        @apply flex items-center gap-1.5 cursor-pointer px-2 py-0.5 rounded hover:bg-gray-50 dark:bg-gray-900 transition-colors;
       }
     }
 
     .epic-select {
-      @apply bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500;
+      @apply bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500;
     }
 
     .add-ticket-btn {
@@ -34,7 +34,7 @@
       @apply flex flex-col flex-1 min-w-[320px] rounded-xl p-4 border max-h-full;
       
       &.col-todo {
-        @apply bg-gray-50 border-gray-200;
+        @apply bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700;
       }
       
       &.col-in-progress {
@@ -53,7 +53,7 @@
         @apply flex flex-col gap-3 flex-1 overflow-y-auto min-h-[150px];
 
         .ticket-card {
-          @apply bg-white rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100 relative flex;
+          @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700 relative flex;
 
           &.is-standard {
             @apply p-4 flex-col;
@@ -63,11 +63,11 @@
             }
 
             .ticket-about-standard {
-              @apply text-sm text-gray-600 mb-4 line-clamp-2 pl-5;
+              @apply text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 pl-5;
             }
 
             .ticket-footer-standard {
-              @apply flex justify-between items-center pt-3 mt-auto border-t border-gray-100 text-xs font-medium text-gray-500;
+              @apply flex justify-between items-center pt-3 mt-auto border-t border-gray-100 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-400;
             }
           }
 
@@ -79,7 +79,7 @@
             }
 
             .ticket-meta-compact {
-              @apply flex items-center gap-4 shrink-0 text-xs font-medium text-gray-500;
+              @apply flex items-center gap-4 shrink-0 text-xs font-medium text-gray-500 dark:text-gray-400;
             }
           }
 
@@ -103,7 +103,7 @@
             }
 
             &.badge-low {
-              @apply bg-gray-50 text-gray-700 border-gray-200;
+              @apply bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700;
             }
 
             &.badge-medium {
@@ -124,6 +124,6 @@
   }
 
   .error-state {
-    @apply flex flex-1 flex-col items-center justify-center gap-4 text-center px-4 bg-white rounded-lg shadow-sm border border-gray-100 py-12;
+    @apply flex flex-1 flex-col items-center justify-center gap-4 text-center px-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 py-12;
   }
 }
