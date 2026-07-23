@@ -6,6 +6,7 @@ import { UsersTable } from './users-table';
 import { User } from '../../../models/user.model';
 import { UserRole } from '../../../enums/user-role.enum';
 import { vi } from 'vitest';
+import { AuthService } from '../../../services/auth.service';
 
 describe('UsersTable', () => {
   let component: UsersTable;
@@ -30,6 +31,10 @@ describe('UsersTable', () => {
         ]),
         provideHttpClient(),
         provideHttpClientTesting(),
+        {
+          provide: AuthService,
+          useValue: { currentUser: () => ({ id: '1', username: 'admin', role: UserRole.Admin }) }
+        }
       ],
     }).compileComponents();
 
