@@ -7,12 +7,12 @@
     />
     AI Assistant
   </h1>
-  <p class="text-gray-600 text-sm mb-4">
+  <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
     Ask me anything about registered users, manage support tickets, or search through your uploaded documents!
   </p>
   <!-- Message list -->
   <div
-    class="flex-1 overflow-y-auto flex flex-col gap-3 bg-white rounded-xl p-4 shadow-sm min-h-0"
+    class="flex-1 overflow-y-auto flex flex-col gap-3 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm min-h-0"
     role="log"
     aria-label="Chat messages"
     aria-live="polite"
@@ -27,8 +27,8 @@
         [class.bg-indigo-600]="msg.role === 'user'"
         [class.text-white]="msg.role === 'user'"
         [class.self-start]="msg.role === 'model'"
-        [class.bg-gray-100]="msg.role === 'model'"
-        [class.text-gray-800]="msg.role === 'model'"
+        [class.bg-gray-100 dark:bg-gray-700]="msg.role === 'model'"
+        [class.text-gray-800 dark:text-gray-200]="msg.role === 'model'"
       >
         @if (isWeatherMessage(msg.text)) {
           <app-weather-widget [text]="msg.text"></app-weather-widget>
@@ -43,7 +43,7 @@
     }
     @if (loading()) {
       <div
-        class="self-start bg-gray-100 text-gray-400 text-sm px-4 py-2 rounded-2xl animate-pulse"
+        class="self-start bg-gray-100 dark:bg-gray-700 text-gray-400 text-sm px-4 py-2 rounded-2xl animate-pulse"
         aria-label="Loading response"
       >
         Thinking…
@@ -59,7 +59,7 @@
   <!-- Input -->
   <div class="flex gap-2">
     <textarea
-      class="flex-1 resize-none rounded-xl border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      class="flex-1 resize-none rounded-xl border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
       [value]="prompt()"
       (input)="updatePrompt($any($event.target).value)"
       (keydown)="handleKeydown($event)"

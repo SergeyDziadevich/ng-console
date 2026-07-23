@@ -21,25 +21,25 @@
           (change)="toggleAssignedToMeFilter()"
           type="checkbox"
         />
-        <span class="text-sm font-medium text-gray-700">Assigned to me</span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Assigned to me</span>
       </label>
 
       <div
         class="toolbar-filter-group"
       >
-        <span class="text-sm font-medium text-gray-500 px-1 border-r border-gray-200 mr-1"
+        <span class="text-sm font-medium text-gray-500 dark:text-gray-400 px-1 border-r border-gray-200 dark:border-gray-700 mr-1"
           >Status</span
         >
         <label
           class="status-filter-label"
         >
           <input
-            class="rounded text-gray-500 focus:ring-gray-500 w-3.5 h-3.5 cursor-pointer"
+            class="rounded text-gray-500 dark:text-gray-400 focus:ring-gray-500 w-3.5 h-3.5 cursor-pointer"
             [checked]="hasStatusFilter(TicketStatus.TODO)"
             (change)="toggleStatusFilter(TicketStatus.TODO)"
             type="checkbox"
           />
-          <span class="text-sm font-medium text-gray-700">To Do</span>
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">To Do</span>
         </label>
         <label
           class="status-filter-label"
@@ -85,7 +85,7 @@
           (change)="toggleCompactView()"
           type="checkbox"
         />
-        <span class="text-sm font-medium text-gray-700">Compact</span>
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Compact</span>
       </label>
     </div>
     <button
@@ -123,7 +123,7 @@
           class="kanban-column col-todo"
         >
           <div class="kanban-column-header">
-            <h2 class="font-semibold text-gray-700 flex items-center gap-2">
+            <h2 class="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span>
               To Do
             </h2>
@@ -155,7 +155,7 @@
 
                 @if (isCompactView()) {
                   <div class="ticket-content-compact">
-                    <h3 class="text-base font-semibold text-gray-900">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
                       {{ ticket.title }}
                     </h3>
                     <div class="flex items-center gap-2 shrink-0">
@@ -190,7 +190,7 @@
                 } @else {
                   <div class="ticket-header-standard">
                     <div class="flex flex-col">
-                      <h3 class="text-lg font-semibold text-gray-900 mb-0.5">
+                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-0.5">
                         {{ ticket.title }}
                       </h3>
                       <span class="text-gray-400 font-normal text-xs">#{{ ticket.id }}</span>
@@ -272,7 +272,7 @@
 
                 @if (isCompactView()) {
                   <div class="ticket-content-compact">
-                    <h3 class="text-base font-semibold text-gray-900">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
                       {{ ticket.title }}
                     </h3>
                     <div class="flex items-center gap-2 shrink-0">
@@ -307,7 +307,7 @@
                 } @else {
                   <div class="ticket-header-standard">
                     <div class="flex flex-col">
-                      <h3 class="text-lg font-semibold text-gray-900 mb-0.5">
+                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-0.5">
                         {{ ticket.title }}
                       </h3>
                       <span class="text-gray-400 font-normal text-xs">#{{ ticket.id }}</span>
@@ -389,7 +389,7 @@
 
                 @if (isCompactView()) {
                   <div class="ticket-content-compact">
-                    <h3 class="text-base font-semibold text-gray-900">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
                       {{ ticket.title }}
                     </h3>
                     <div class="flex items-center gap-2 shrink-0">
@@ -424,7 +424,7 @@
                 } @else {
                   <div class="ticket-header-standard">
                     <div class="flex flex-col">
-                      <h3 class="text-lg font-semibold text-gray-900 truncate mb-0.5">
+                      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate mb-0.5">
                         {{ ticket.title }}
                       </h3>
                       <span class="text-gray-400 font-normal text-xs">#{{ ticket.id }}</span>
@@ -483,8 +483,8 @@
         alt="icon"
       />
       <div>
-        <h2 class="text-xl font-semibold text-gray-800">Something went wrong</h2>
-        <p class="mt-1 text-sm text-gray-500">We couldn't load the tickets. Please try again.</p>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Something went wrong</h2>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">We couldn't load the tickets. Please try again.</p>
       </div>
       <button
         class="mt-4 px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
