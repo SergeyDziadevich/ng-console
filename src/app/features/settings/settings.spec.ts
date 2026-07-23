@@ -32,8 +32,8 @@ describe('Settings', () => {
     handleGoogleDriveCallback: Mock;
     disconnectGoogleDrive: Mock;
   };
-  let mockActivatedRoute: any;
-  let mockRouter: any;
+  let mockActivatedRoute: unknown;
+  let mockRouter: unknown;
 
   beforeEach(async () => {
     mockAuthService = {
