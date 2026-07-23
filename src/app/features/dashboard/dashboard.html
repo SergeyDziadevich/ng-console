@@ -223,7 +223,8 @@
                 [class.text-red-600]="ticket.priority === 'critical'"
                 [class.text-orange-600]="ticket.priority === 'high'"
                 [class.text-yellow-600]="ticket.priority === 'medium'"
-                [class.text-gray-600 dark:text-gray-400]="ticket.priority === 'low'"
+                [class.text-gray-600]="ticket.priority === 'low'"
+                [class.dark:text-gray-400]="ticket.priority === 'low'"
               >
                 <span class="uppercase tracking-wide">{{ ticket.priority }}</span>
               </div>

@@ -27,8 +27,10 @@
         [class.bg-indigo-600]="msg.role === 'user'"
         [class.text-white]="msg.role === 'user'"
         [class.self-start]="msg.role === 'model'"
-        [class.bg-gray-100 dark:bg-gray-700]="msg.role === 'model'"
-        [class.text-gray-800 dark:text-gray-200]="msg.role === 'model'"
+        [class.bg-gray-100]="msg.role === 'model'"
+        [class.dark:bg-gray-700]="msg.role === 'model'"
+        [class.text-gray-800]="msg.role === 'model'"
+        [class.dark:text-gray-200]="msg.role === 'model'"
       >
         @if (isWeatherMessage(msg.text)) {
           <app-weather-widget [text]="msg.text"></app-weather-widget>

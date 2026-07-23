@@ -1,7 +1,7 @@
 @reference "../../../../src/styles.scss";
 
 .sidebar-container {
-  @apply flex flex-col h-full bg-gray-900 text-white transition-all duration-300 ease-in-out shrink-0 overflow-hidden;
+  @apply flex flex-col h-full bg-gray-900 text-white transition-all duration-300 ease-in-out shrink-0 overflow-hidden border-r border-gray-700;
 
   &.sidebar-expanded {
     @apply w-64;
