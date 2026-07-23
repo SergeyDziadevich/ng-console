@@ -65,9 +65,12 @@
                 <div class="flex items-center gap-2">
                   <span
                     class="px-3 py-1 text-sm font-bold rounded-full border shadow-sm"
-                    [class.bg-gray-50 dark:bg-gray-900]="ticket()!.priority === 'low'"
-                    [class.text-gray-700 dark:text-gray-300]="ticket()!.priority === 'low'"
-                    [class.border-gray-200 dark:border-gray-700]="ticket()!.priority === 'low'"
+                    [class.bg-gray-50]="ticket()!.priority === 'low'"
+                    [class.dark:bg-gray-900]="ticket()!.priority === 'low'"
+                    [class.text-gray-700]="ticket()!.priority === 'low'"
+                    [class.dark:text-gray-300]="ticket()!.priority === 'low'"
+                    [class.border-gray-200]="ticket()!.priority === 'low'"
+                    [class.dark:border-gray-700]="ticket()!.priority === 'low'"
                     [class.bg-yellow-50]="ticket()!.priority === 'medium'"
                     [class.text-yellow-700]="ticket()!.priority === 'medium'"
                     [class.border-yellow-200]="ticket()!.priority === 'medium'"
@@ -82,9 +85,12 @@
                   </span>
                   <span
                     class="px-3 py-1 text-sm font-bold rounded-full border shadow-sm"
-                    [class.bg-gray-50 dark:bg-gray-900]="ticket()!.status === 'todo'"
-                    [class.text-gray-700 dark:text-gray-300]="ticket()!.status === 'todo'"
-                    [class.border-gray-200 dark:border-gray-700]="ticket()!.status === 'todo'"
+                    [class.bg-gray-50]="ticket()!.status === 'todo'"
+                    [class.dark:bg-gray-900]="ticket()!.status === 'todo'"
+                    [class.text-gray-700]="ticket()!.status === 'todo'"
+                    [class.dark:text-gray-300]="ticket()!.status === 'todo'"
+                    [class.border-gray-200]="ticket()!.status === 'todo'"
+                    [class.dark:border-gray-700]="ticket()!.status === 'todo'"
                     [class.bg-blue-50]="ticket()!.status === 'in progress'"
                     [class.text-blue-700]="ticket()!.status === 'in progress'"
                     [class.border-blue-200]="ticket()!.status === 'in progress'"

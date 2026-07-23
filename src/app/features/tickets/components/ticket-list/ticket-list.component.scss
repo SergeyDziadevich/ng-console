@@ -1,4 +1,4 @@
-@reference "tailwindcss/index.css";
+@reference "../../../../../styles.scss";
 
 .ticket-list-container {
   @apply h-full flex flex-col gap-4 p-4;
