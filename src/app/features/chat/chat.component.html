@@ -1,8 +1,7 @@
 <div class="chat-container">
-  <!-- Page Title -->
   <div class="page-title">
-    <h1>
-      <img src="/assets/icons/icon-4519bc59.svg" alt="icon" />
+    <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 dark:text-white">
+      <img src="/assets/icons/icon-chats.svg" alt="icon" class="h-7 w-7 brightness-0 shrink-0 dark:invert" />
       Chats
     </h1>
   </div>
@@ -302,7 +301,7 @@
     @for (room of chatService.rooms(); track room.id) {
       @if (room.id === chatService.activeRoomId()) {
         Are you sure you want to remove
-        <span class="font-medium text-gray-800">"{{ room.name }}"</span>? This action cannot be
+        <span class="font-medium text-gray-800 dark:text-gray-200">"{{ room.name }}"</span>? This action cannot be
         undone.
       }
     }

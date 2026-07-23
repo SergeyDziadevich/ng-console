@@ -10,7 +10,7 @@ describe('SubscriptionsComponent', () => {
   let component: SubscriptionsComponent;
   let fixture: ComponentFixture<SubscriptionsComponent>;
   let paymentsServiceMock: Record<string, ReturnType<typeof vi.fn>>;
-  let authServiceMock: Record<string, ReturnType<typeof vi.fn>>;
+  let authServiceMock: Record<string, unknown>;
 
   const mockUserSignal = signal<{ planId: string | null } | null>(null);
 
@@ -22,7 +22,7 @@ describe('SubscriptionsComponent', () => {
     };
     
     authServiceMock = {
-      currentUser: vi.fn().mockReturnValue(mockUserSignal())
+      currentUser: mockUserSignal
     };
 
     await TestBed.configureTestingModule({
@@ -36,7 +36,6 @@ describe('SubscriptionsComponent', () => {
 
   beforeEach(() => {
     mockUserSignal.set(null);
-    authServiceMock['currentUser'].mockImplementation(() => mockUserSignal());
   });
 
   it('should create', () => {

@@ -2,11 +2,11 @@
   <!-- Toolbar -->
   <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
     <div class="flex flex-col">
-      <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900">
-        <img src="/assets/icons/icon-documents.svg" class="h-7 w-7 brightness-0 shrink-0" alt="icon" />
+      <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900 dark:text-gray-100 dark:text-white">
+        <img src="/assets/icons/icon-documents.svg" class="h-7 w-7 brightness-0 shrink-0 dark:invert" alt="icon" />
         Documents
       </h1>
-      <p class="text-gray-500 text-sm">Upload and manage your files safely.</p>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">Upload and manage your files safely.</p>
     </div>
     <a routerLink="/documents/generate" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
       <ng-icon name="lucideFilePlus" class="w-4 h-4"></ng-icon>
@@ -150,7 +150,7 @@
     (confirmAction)="executeDelete()"
     (cancelAction)="cancelDelete()"
   >
-    Are you sure you want to remove <span class="font-medium text-gray-700 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
+    Are you sure you want to remove <span class="font-medium text-gray-700 dark:text-gray-300 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
   </app-confirm-dialog>
 }
 

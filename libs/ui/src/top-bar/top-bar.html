@@ -2,7 +2,7 @@
   <!-- Left: Logo + App Title -->
   <div class="top-bar-left">
     <div class="app-logo-wrapper">
-      <img class="app-logo" src="/assets/icons/icon-043b52b2.svg" alt="icon" />
+      <img class="app-logo" src="/assets/icons/icon-043b52b2.svg" alt="icon" title="Ng Console Platform" />
     </div>
     <span class="app-title"> Ng Console Platform </span>
   </div>
@@ -14,6 +14,17 @@
       title="AI Assistant (Cmd+K)"
     >
       <img class="top-bar-btn-icon" src="/assets/icons/icon-ai-stars.svg" alt="icon" />
+    </button>
+    <button
+      class="top-bar-btn"
+      (click)="toggleTheme()"
+      title="Toggle Theme"
+    >
+      @if (currentTheme() === 'light') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      }
     </button>
     <button
       class="top-bar-btn"
@@ -114,6 +125,7 @@
     <button
       class="avatar-btn"
       (click)="toggleDropdown()"
+      title="User Menu"
     >
       {{ userAvatar() }}
     </button>

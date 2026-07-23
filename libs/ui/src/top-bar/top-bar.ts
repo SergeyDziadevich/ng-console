@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '@app/services/auth.service';
 import { AiService } from '@app/services/ai.service';
 import { NotificationsService } from '@app/services/notifications.service';
+import { ThemeService } from '@app/services/theme.service';
 
 @Component({
   selector: 'app-top-bar',
@@ -16,6 +17,7 @@ export class TopBar {
   private readonly authService = inject(AuthService);
   private readonly aiService = inject(AiService);
   private readonly notificationsService = inject(NotificationsService);
+  private readonly themeService = inject(ThemeService);
 
   protected dropdownOpen = signal(false);
   protected notificationsOpen = signal(false);
@@ -23,6 +25,7 @@ export class TopBar {
   protected currentUser = this.authService.currentUser;
   protected unreadCount = this.notificationsService.unreadCount;
   protected unreadMessages = this.notificationsService.unreadMessages;
+  protected currentTheme = this.themeService.currentTheme;
 
   protected userAvatar = computed(() => this.currentUser()?.name.slice(0, 2).toUpperCase() || 'NA');
 
@@ -80,5 +83,10 @@ export class TopBar {
 
   protected markAsRead(id: string): void {
     this.notificationsService.markAsRead(id);
+  }
+
+  protected toggleTheme(): void {
+    const newTheme = this.currentTheme() === 'light' ? 'dark' : 'light';
+    this.themeService.setTheme(newTheme);
   }
 }

@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, vi, afterEach, Mock } from 'vitest';
 import { Settings } from './settings';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
+import { ThemeService } from '../../services/theme.service';
 
 describe('Settings', () => {
   let component: Settings;
@@ -19,6 +20,10 @@ describe('Settings', () => {
   let mockUserService: {
     getUserById: Mock;
     updateUser: Mock;
+  };
+  let mockThemeService: {
+    currentTheme: WritableSignal<string>;
+    setTheme: Mock;
   };
 
   beforeEach(async () => {
@@ -37,12 +42,18 @@ describe('Settings', () => {
       updateUser: vi.fn().mockReturnValue(of({})),
     };
 
+    mockThemeService = {
+      currentTheme: signal('light'),
+      setTheme: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [Settings],
       providers: [
         provideRouter([{ path: '**', component: Settings }]),
         { provide: AuthService, useValue: mockAuthService },
         { provide: UserService, useValue: mockUserService },
+        { provide: ThemeService, useValue: mockThemeService },
       ],
     }).compileComponents();
 
