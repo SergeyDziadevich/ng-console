@@ -1,7 +1,7 @@
 <div class="p-6 max-w-7xl mx-auto w-full">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-    <p class="text-gray-500 mt-1">Welcome back, {{ currentUser()?.name || 'User' }}!</p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+    <p class="text-gray-500 dark:text-gray-400 mt-1">Welcome back, {{ currentUser()?.name || 'User' }}!</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -177,7 +177,7 @@
   <!-- Tickets In Progress Section -->
   <div class="mt-10">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-gray-900">Tickets In Progress</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">Tickets In Progress</h2>
       <a
         class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
         [queryParams]="{ status: 'in progress' }"
@@ -260,7 +260,7 @@
   <!-- Sounds Good (Done Tickets) Section -->
   <div class="mt-10 mb-10">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-gray-900">Tickets Done</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">Tickets Done</h2>
       <a
         class="text-sm font-medium text-green-600 hover:text-green-800 transition-colors"
         [queryParams]="{ status: 'done' }"

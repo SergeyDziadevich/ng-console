@@ -4,6 +4,7 @@ export interface UserSettings {
   receiveNotifications?: boolean;
   receiveEmails?: boolean;
   receiveSMS?: boolean;
+  theme?: 'light' | 'dark' | 'system';
 }
 
 export interface User {

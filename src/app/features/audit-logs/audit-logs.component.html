@@ -1,8 +1,8 @@
 <div class="audit-logs-container">
   <header>
-    <h1 class="text-2xl font-bold flex items-center gap-3 mb-1">
+    <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 dark:text-white">
       <img
-        class="h-7 w-7 brightness-0 shrink-0"
+        class="h-7 w-7 brightness-0 shrink-0 dark:invert"
         src="/assets/icons/icon-activity-log.svg"
         alt="icon"
       />
@@ -29,7 +29,7 @@
       </div>
       <div class="separator"></div>
       <button class="export-btn" (click)="exportLogs()" title="Export to JSON">
-        <img class="w-4 h-4 brightness-0 invert" src="/assets/icons/icon-export.svg" alt="export" />
+        <img class="w-4 h-4 brightness-0 invert dark:invert" src="/assets/icons/icon-export.svg" alt="export" />
         Export
       </button>
     </div>
