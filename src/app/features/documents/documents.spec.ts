@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentsComponent } from './documents';
 import { DocumentService } from '../../services/document.service';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user-service';
 import { UserRole } from '../../enums/user-role.enum';
 import { of, throwError } from 'rxjs';
 import { UploadedDocument } from '../../models/document.model';
@@ -48,6 +49,7 @@ describe('DocumentsComponent', () => {
       providers: [
         { provide: DocumentService, useValue: documentServiceSpy },
         { provide: AuthService, useValue: mockAuthService },
+        { provide: UserService, useValue: { getUserById: vi.fn().mockReturnValue(of({ settings: {} })) } },
         { provide: ActivatedRoute, useValue: { queryParams: of({}) } }
       ]
     }).compileComponents();
