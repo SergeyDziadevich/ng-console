@@ -1,45 +1,45 @@
-<div class="p-6 max-w-7xl mx-auto w-full">
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">Settings</h1>
-    <p class="text-gray-500 dark:text-gray-400 mt-1">Manage your notification preferences and account security settings.</p>
+<div class="settings">
+  <div class="settings__header">
+    <h1 class="settings__title">Settings</h1>
+    <p class="settings__subtitle">Manage your notification preferences and account security settings.</p>
   </div>
 
   @if (successMessage()) {
-    <div class="mb-6 p-4 flex items-center gap-3 text-emerald-800 bg-emerald-50 dark:bg-emerald-900/30 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-fade-in">
-      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-      <span class="font-medium">{{ successMessage() }}</span>
+    <div class="settings__alert settings__alert--success animate-fade-in">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <span>{{ successMessage() }}</span>
     </div>
   }
 
   @if (errorMessage()) {
-    <div class="mb-6 p-4 flex items-center gap-3 text-red-800 bg-red-50 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800 rounded-xl animate-fade-in">
-      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span class="font-medium">{{ errorMessage() }}</span>
+    <div class="settings__alert settings__alert--error animate-fade-in">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span>{{ errorMessage() }}</span>
     </div>
   }
 
   @if (isLoading()) {
-    <div class="flex flex-1 justify-center items-center mt-20">
+    <div class="settings__loading">
       <app-spinner size="lg" color="indigo"></app-spinner>
     </div>
   } @else {
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+    <div class="settings__grid">
       <!-- Left Column -->
-      <div class="flex flex-col gap-6">
+      <div class="settings__column">
         <!-- Appearance Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col h-fit">
-          <h2 class="text-xl font-bold mb-5 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
             Appearance
           </h2>
-          <div class="flex items-center justify-between relative">
-            <div>
-              <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200">Theme</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Choose your preferred appearance.</p>
+          <div class="settings-row">
+            <div class="settings-row__content">
+              <h3 class="settings-row__title">Theme</h3>
+              <p class="settings-row__desc">Choose your preferred appearance.</p>
             </div>
-            <div>
+            <div class="settings-row__action">
               <select
-                class="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-40 p-2.5 shadow-sm transition-all cursor-pointer"
+                class="settings-select"
                 [value]="currentTheme()"
                 (change)="updateTheme($event)"
               >
@@ -51,44 +51,44 @@
         </div>
 
         <!-- Notifications Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col h-fit">
-          <h2 class="text-xl font-bold mb-5 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
             Notifications
           </h2>
           
-          <div class="space-y-6">
-            <div class="flex items-center justify-between relative">
-              <div>
-                <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200">Push Notifications</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Get notified about important updates and activity.</p>
+          <div class="settings-card__body">
+            <div class="settings-row">
+              <div class="settings-row__content">
+                <h3 class="settings-row__title">Push Notifications</h3>
+                <p class="settings-row__desc">Get notified about important updates and activity.</p>
               </div>
-              <label class="relative inline-flex items-center cursor-pointer">
+              <label class="relative inline-flex items-center cursor-pointer settings-row__action">
                 <input class="sr-only peer" [checked]="receiveNotifications()" (change)="toggleSetting('receiveNotifications', $event)" type="checkbox" />
                 <div class="settings-toggle" [class.after:transition-transform]="isReady()"></div>
               </label>
             </div>
 
-            <div class="flex items-center justify-between relative pt-6 border-t border-gray-100 dark:border-gray-700/50">
-              <div>
-                <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200">Email Notifications</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Get notified via email for critical alerts.</p>
+            <div class="settings-row settings-row--bordered">
+              <div class="settings-row__content">
+                <h3 class="settings-row__title">Email Notifications</h3>
+                <p class="settings-row__desc">Get notified via email for critical alerts.</p>
               </div>
-              <label class="relative inline-flex items-center cursor-pointer">
+              <label class="relative inline-flex items-center cursor-pointer settings-row__action">
                 <input class="sr-only peer" [checked]="receiveEmails()" (change)="toggleSetting('receiveEmails', $event)" type="checkbox" />
                 <div class="settings-toggle" [class.after:transition-transform]="isReady()"></div>
               </label>
             </div>
 
-            <div class="flex items-center justify-between relative pt-6 border-t border-gray-100 dark:border-gray-700/50 opacity-60 grayscale-[50%]">
-              <div>
-                <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+            <div class="settings-row settings-row--bordered settings-row--disabled">
+              <div class="settings-row__content">
+                <h3 class="settings-row__title">
                   SMS Notifications
-                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800">Coming soon</span>
+                  <span class="settings-row__badge">Coming soon</span>
                 </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Get text messages for immediate notifications.</p>
+                <p class="settings-row__desc">Get text messages for immediate notifications.</p>
               </div>
-              <label class="relative inline-flex items-center cursor-not-allowed">
+              <label class="relative inline-flex items-center cursor-not-allowed settings-row__action">
                 <input class="sr-only peer" [checked]="receiveSMS()" disabled type="checkbox" />
                 <div class="settings-toggle"></div>
               </label>
@@ -98,19 +98,19 @@
       </div>
 
       <!-- Right Column -->
-      <div class="flex flex-col gap-6">
+      <div class="settings__column">
         <!-- Security Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col h-fit">
-          <h2 class="text-xl font-bold mb-5 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
             Two-Factor Authentication (2FA)
           </h2>
 
           @if (!qrCodeUrl()) {
             <div class="relative">
-              <p class="mb-5 text-sm text-gray-600 dark:text-gray-400">Protect your account with an extra layer of security. We recommend turning this on.</p>
+              <p class="settings-2fa__desc">Protect your account with an extra layer of security. We recommend turning this on.</p>
               <button
-                class="relative bg-blue-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
+                class="settings-btn settings-btn--primary"
                 [disabled]="isGenerating()"
                 (click)="generate2FA()"
               >
@@ -119,23 +119,23 @@
             </div>
           } @else {
             <div class="relative animate-fade-in">
-              <p class="mb-5 text-sm text-gray-600 dark:text-gray-400">Scan this QR code with your authenticator app (like Google Authenticator or Authy):</p>
+              <p class="settings-2fa__desc">Scan this QR code with your authenticator app (like Google Authenticator or Authy):</p>
               
-              <div class="bg-white p-3 rounded-xl inline-block mb-6 shadow-sm border border-gray-100">
+              <div class="settings-2fa__qr-container">
                 <img
-                  class="rounded-lg max-w-[160px] h-auto"
+                  class="settings-2fa__qr-image"
                   [src]="qrCodeUrl()"
                   alt="2FA QR Code"
                 />
               </div>
 
-              <form [formGroup]="twoFactorForm" (ngSubmit)="turnOn2FA()" class="space-y-4">
-                <div class="max-w-sm">
-                  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="code">
+              <form [formGroup]="twoFactorForm" (ngSubmit)="turnOn2FA()" class="settings-form">
+                <div class="settings-form__group">
+                  <label class="settings-form__label" for="code">
                     Verification Code
                   </label>
                   <input
-                    class="w-full rounded-lg bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow shadow-sm"
+                    class="settings-form__input"
                     id="code"
                     type="text"
                     formControlName="code"
@@ -143,16 +143,16 @@
                     autocomplete="off"
                   />
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="settings-form__actions">
                   <button
-                    class="bg-blue-600 text-white font-medium px-6 py-2.5 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
+                    class="settings-btn settings-btn--primary"
                     [disabled]="isSubmitting() || twoFactorForm.invalid"
                     type="submit"
                   >
                     {{ isSubmitting() ? 'Verifying...' : 'Verify & Enable' }}
                   </button>
                   <button
-                    class="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+                    class="settings-btn settings-btn--secondary"
                     (click)="qrCodeUrl.set(null)"
                     type="button"
                   >
@@ -165,28 +165,28 @@
         </div>
 
         <!-- Integrations Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col h-fit">
-          <h2 class="text-xl font-bold mb-5 text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
             Integrations
           </h2>
 
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-full border border-gray-200 dark:border-gray-700">
-                <ng-icon name="lucideHardDrive" class="integration-icon text-gray-600 dark:text-gray-400"></ng-icon>
+          <div class="settings-integration">
+            <div class="settings-integration__info">
+              <div class="settings-integration__icon-wrapper">
+                <ng-icon name="lucideHardDrive" class="settings-integration__icon"></ng-icon>
               </div>
               <div>
-                <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+                <h3 class="settings-integration__name">
                   Google Drive
                 </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Sync your generated documents.</p>
+                <p class="settings-integration__desc">Sync your generated documents.</p>
               </div>
             </div>
             <div>
               @if (googleDriveSyncEnabled()) {
                 <button
-                  class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-red-600 dark:text-red-400 font-medium px-4 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors shadow-sm text-sm"
+                  class="settings-btn settings-btn--danger"
                   [disabled]="isGoogleDriveConnecting()"
                   (click)="disconnectGoogleDrive()"
                 >
@@ -194,7 +194,7 @@
                 </button>
               } @else {
                 <button
-                  class="bg-blue-600 text-white font-medium px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm text-sm"
+                  class="settings-btn settings-btn--primary settings-btn--small"
                   [disabled]="isGoogleDriveConnecting()"
                   (click)="connectGoogleDrive()"
                 >
