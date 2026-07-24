@@ -9,15 +9,12 @@ import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { ChatRoom, ChatMessage } from '../models/chat.model';
 
-import { io } from 'socket.io-client';
-
-vi.mock('socket.io-client');
-
 const mockSocket = {
   on: vi.fn(),
   emit: vi.fn(),
   disconnect: vi.fn(),
 };
+const mockIo = vi.fn(() => mockSocket);
 
 describe('ChatService', () => {
   let service: ChatService;
@@ -28,15 +25,13 @@ describe('ChatService', () => {
   };
 
   beforeEach(() => {
-    vi.mocked(io).mockClear();
-    vi.mocked(io).mockReturnValue(mockSocket as unknown as ReturnType<typeof io>);
+    mockIo.mockClear();
+    Object.values(mockSocket).forEach(mockFn => (mockFn as Mock).mockClear());
 
     authServiceMock = {
       isAuthenticated: signal(false),
       getToken: vi.fn().mockReturnValue('fake-token'),
     };
-
-    vi.clearAllMocks();
 
     TestBed.configureTestingModule({
       providers: [
@@ -48,10 +43,17 @@ describe('ChatService', () => {
     });
 
     service = TestBed.inject(ChatService);
+    // Override the factory to use our mock
+    (service as any).ioFactory = mockIo;
+    
     httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
+    const reqs = httpMock.match(() => true);
+    for (const req of reqs) {
+      req.flush({});
+    }
     httpMock.verify();
   });
 
@@ -60,11 +62,11 @@ describe('ChatService', () => {
   });
 
   describe('connect / disconnect', () => {
-    it.skip('should connect to socket and fetch rooms when connect() is called explicitly', () => {
+    it('should connect to socket and fetch rooms when connect() is called explicitly', () => {
       service.connect();
       expect(authServiceMock.getToken).toHaveBeenCalled();
 
-      expect(io).toHaveBeenCalledWith(`${environment.apiUrl}/chat`, expect.any(Object));
+      expect(mockIo).toHaveBeenCalledWith(`${environment.apiUrl}/chat`, expect.any(Object));
 
       // verify listeners are set
       expect(mockSocket.on).toHaveBeenCalledWith('connect', expect.any(Function));
@@ -74,7 +76,7 @@ describe('ChatService', () => {
       expect(mockSocket.on).toHaveBeenCalledWith('error', expect.any(Function));
     });
 
-    it.skip('should disconnect from socket', () => {
+    it('should disconnect from socket', () => {
       service.connect();
       service.disconnect();
       expect(mockSocket.disconnect).toHaveBeenCalled();
@@ -106,18 +108,18 @@ describe('ChatService', () => {
       errorHandler = mockSocket.on.mock.calls.find((c) => c[0] === 'error')?.[1];
     });
 
-    it.skip('should handle connect event', () => {
+    it('should handle connect event', () => {
       connectHandler();
       expect(service.isOnline()).toBe(true);
     });
 
-    it.skip('should handle disconnect event', () => {
+    it('should handle disconnect event', () => {
       (service.isOnline as WritableSignal<boolean>).set(true);
       disconnectHandler();
       expect(service.isOnline()).toBe(false);
     });
 
-    it.skip('should handle newMessage event for active room', () => {
+    it('should handle newMessage event for active room', () => {
       (service.activeRoomId as WritableSignal<string>).set('1');
       (service.isOnline as WritableSignal<boolean>).set(true);
 
@@ -133,7 +135,7 @@ describe('ChatService', () => {
       expect(mockSocket.emit).toHaveBeenCalledWith('markAsRead', { roomId: '1' });
     });
 
-    it.skip('should handle newMessage event for inactive room', () => {
+    it('should handle newMessage event for inactive room', () => {
       (service.rooms as WritableSignal<ChatRoom[]>).set([
         { id: '2', name: 'Room 2', hasUnread: false, createdAt: '2023', updatedAt: '2023' },
       ]);
@@ -152,7 +154,7 @@ describe('ChatService', () => {
       expect(service.rooms()[0].hasUnread).toBe(true);
     });
 
-    it.skip('should handle readReceiptUpdated event', () => {
+    it('should handle readReceiptUpdated event', () => {
       (service.rooms as WritableSignal<ChatRoom[]>).set([
         {
           id: '1',
@@ -169,7 +171,7 @@ describe('ChatService', () => {
       expect(service.rooms()[0].members![0].lastReadAt).toBe('2024');
     });
 
-    it.skip('should handle error event', () => {
+    it('should handle error event', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       errorHandler(new Error('test error'));
       expect(consoleSpy).toHaveBeenCalled();
@@ -321,7 +323,7 @@ describe('ChatService', () => {
   });
 
   describe('selectRoom and fetch messages', () => {
-    it.skip('should set active room, clear old messages, fetch new messages, and mark as read', () => {
+    it('should set active room, clear old messages, fetch new messages, and mark as read', () => {
       const mockMessages: ChatMessage[] = [
         { id: '100', roomId: '1', senderId: 'u1', content: 'hello', createdAt: '2023' },
       ];
@@ -343,7 +345,7 @@ describe('ChatService', () => {
       expect(service.activeRoomMessages()).toEqual(mockMessages);
     });
 
-    it.skip('should log error if fetch room messages fails', () => {
+    it('should log error if fetch room messages fails', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
       service.connect();
@@ -365,7 +367,7 @@ describe('ChatService', () => {
   });
 
   describe('sendMessage', () => {
-    it.skip('should emit sendMessage if connected', () => {
+    it('should emit sendMessage if connected', () => {
       service.connect();
       (service.isOnline as WritableSignal<boolean>).set(true);
       service.sendMessage('1', 'Test content');
@@ -375,7 +377,7 @@ describe('ChatService', () => {
       });
     });
 
-    it.skip('should not emit if disconnected', () => {
+    it('should not emit if disconnected', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       service.sendMessage('1', 'Test content');
       expect(mockSocket.emit).not.toHaveBeenCalledWith('sendMessage', expect.any(Object));
