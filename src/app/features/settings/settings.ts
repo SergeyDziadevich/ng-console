@@ -54,17 +54,7 @@ export class Settings implements OnInit, OnDestroy {
     code: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  ngOnDestroy() {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-  }
-
-  showToast(message: string) {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toast.set(message);
-    this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     const user = this.authService.currentUser();
     if (!user?.id) {
       this.finishLoading(0);
@@ -79,12 +69,12 @@ export class Settings implements OnInit, OnDestroy {
         this.receiveEmails.set(settings.receiveEmails ?? false);
         this.receiveSMS.set(settings.receiveSMS ?? false);
         if (settings.theme && settings.theme !== this.themeService.currentTheme()) {
-           this.themeService.setTheme(settings.theme as Theme);
+          this.themeService.setTheme(settings.theme as Theme);
         }
         this.googleDriveSyncEnabled.set(settings.googleDriveSyncEnabled ?? false);
         this.finishLoading();
 
-        this.route.queryParams.subscribe(params => {
+        this.route.queryParams.subscribe((params) => {
           if (params['code']) {
             this.isGoogleDriveConnecting.set(true);
             this.integrationService.handleGoogleDriveCallback(params['code']).subscribe({
@@ -95,13 +85,13 @@ export class Settings implements OnInit, OnDestroy {
                 // Remove code from URL
                 this.router.navigate([], {
                   queryParams: { code: null },
-                  queryParamsHandling: 'merge'
+                  queryParamsHandling: 'merge',
                 });
               },
               error: () => {
                 this.errorMessage.set('Failed to connect Google Drive.');
                 this.isGoogleDriveConnecting.set(false);
-              }
+              },
             });
           }
         });
@@ -110,26 +100,34 @@ export class Settings implements OnInit, OnDestroy {
     });
   }
 
-  private finishLoading(loadingDelayMs = 50) {
+  ngOnDestroy(): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
+  showToast(message: string): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toast.set(message);
+    this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
+  }
+
+  private finishLoading(loadingDelayMs = 50): void {
     setTimeout(() => {
       this.isLoading.set(false);
       requestAnimationFrame(() => this.isReady.set(true));
     }, loadingDelayMs);
   }
 
-  updateTheme(event: Event) {
+  updateTheme(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const newTheme = select.value as Theme;
     this.themeService.setTheme(newTheme);
 
     const user = this.authService.currentUser();
     if (user?.id) {
-      this.userService
-        .updateUser(user.id, { settings: { theme: newTheme } })
-        .subscribe({
-          next: () => this.showToast('Theme updated successfully!'),
-          error: () => this.errorMessage.set('Failed to save theme setting.'),
-        });
+      this.userService.updateUser(user.id, { settings: { theme: newTheme } }).subscribe({
+        next: () => this.showToast('Theme updated successfully!'),
+        error: () => this.errorMessage.set('Failed to save theme setting.'),
+      });
     }
   }
 
@@ -160,7 +158,7 @@ export class Settings implements OnInit, OnDestroy {
     }
   }
 
-  generate2FA() {
+  generate2FA(): void {
     this.isGenerating.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
@@ -177,7 +175,7 @@ export class Settings implements OnInit, OnDestroy {
     });
   }
 
-  turnOn2FA() {
+  turnOn2FA(): void {
     if (this.twoFactorForm.invalid) return;
 
     this.isSubmitting.set(true);
@@ -200,7 +198,7 @@ export class Settings implements OnInit, OnDestroy {
     });
   }
 
-  connectGoogleDrive() {
+  connectGoogleDrive(): void {
     this.isGoogleDriveConnecting.set(true);
     this.integrationService.getGoogleDriveAuthUrl().subscribe({
       next: (res) => {
@@ -209,11 +207,11 @@ export class Settings implements OnInit, OnDestroy {
       error: () => {
         this.errorMessage.set('Failed to initiate Google Drive connection.');
         this.isGoogleDriveConnecting.set(false);
-      }
+      },
     });
   }
 
-  disconnectGoogleDrive() {
+  disconnectGoogleDrive(): void {
     this.isGoogleDriveConnecting.set(true);
     this.integrationService.disconnectGoogleDrive().subscribe({
       next: () => {
@@ -224,7 +222,7 @@ export class Settings implements OnInit, OnDestroy {
       error: () => {
         this.errorMessage.set('Failed to disconnect Google Drive.');
         this.isGoogleDriveConnecting.set(false);
-      }
+      },
     });
   }
 }
