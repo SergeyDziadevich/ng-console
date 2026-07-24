@@ -19,14 +19,32 @@ import { IntegrationService } from '../../services/integration.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ThemeService, Theme } from '../../services/theme.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideHardDrive } from '@ng-icons/lucide';
+import {
+  lucideHardDrive,
+  lucideCheck,
+  lucideAlertCircle,
+  lucidePalette,
+  lucideBell,
+  lucideShieldCheck,
+  lucideLink,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-settings',
   imports: [ReactiveFormsModule, Toast, SpinnerComponent, NgIconComponent],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
-  viewProviders: [provideIcons({ lucideHardDrive })],
+  viewProviders: [
+    provideIcons({
+      lucideHardDrive,
+      lucideCheck,
+      lucideAlertCircle,
+      lucidePalette,
+      lucideBell,
+      lucideShieldCheck,
+      lucideLink,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Settings implements OnInit, OnDestroy {
