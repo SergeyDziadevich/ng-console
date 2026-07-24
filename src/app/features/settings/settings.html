@@ -6,14 +6,14 @@
 
   @if (successMessage()) {
     <div class="settings__alert settings__alert--success animate-fade-in">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <ng-icon name="lucideCheck"></ng-icon>
       <span>{{ successMessage() }}</span>
     </div>
   }
 
   @if (errorMessage()) {
     <div class="settings__alert settings__alert--error animate-fade-in">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <ng-icon name="lucideAlertCircle"></ng-icon>
       <span>{{ errorMessage() }}</span>
     </div>
   }
@@ -29,7 +29,7 @@
         <!-- Appearance Section -->
         <div class="settings-card">
           <h2 class="settings-card__title">
-            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+            <ng-icon name="lucidePalette" class="settings-card__icon"></ng-icon>
             Appearance
           </h2>
           <div class="settings-row">
@@ -53,7 +53,7 @@
         <!-- Notifications Section -->
         <div class="settings-card">
           <h2 class="settings-card__title">
-            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            <ng-icon name="lucideBell" class="settings-card__icon"></ng-icon>
             Notifications
           </h2>
           
@@ -102,7 +102,7 @@
         <!-- Security Section -->
         <div class="settings-card">
           <h2 class="settings-card__title">
-            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            <ng-icon name="lucideShieldCheck" class="settings-card__icon"></ng-icon>
             Two-Factor Authentication (2FA)
           </h2>
 
@@ -167,7 +167,7 @@
         <!-- Integrations Section -->
         <div class="settings-card">
           <h2 class="settings-card__title">
-            <svg class="settings-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+            <ng-icon name="lucideLink" class="settings-card__icon"></ng-icon>
             Integrations
           </h2>
 
