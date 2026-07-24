@@ -14,21 +14,21 @@ NgConsole is the frontend Angular application that serves as the administrative 
 - **AI Assistant:** An integrated, intelligent chat assistant powered by Firebase Genkit AI to help users navigate, perform tasks, and search through uploaded documents using Retrieval-Augmented Generation (RAG).
 - **Analytics Dashboard:** A centralized dashboard displaying system metrics and insights.
 - **User Management:** Create, edit, and manage user accounts with role-based access control.
-- **Profile & Settings:** Personalized user settings allowing for account configuration and security management.
-- **Document Management:** Upload, delete, securely share documents via short public links without requiring user authentication, digitally sign PDF documents, and dynamically generate new PDFs using customizable templates (such invoices, contract) with live preview capabilities.
+- **Profile & Settings:** Personalized user settings allowing for account configuration, theme customization, notification preferences, and integration management.
+- **Document Management:** Upload, delete, securely share documents via short public links without requiring user authentication, digitally sign PDF documents, and dynamically generate new PDFs using customizable templates.
+- **Google Drive Integration:** Automated Document Backup — Securely connect users to their personal Google Drive accounts using native OAuth2, enabling automated backups and real-time synchronization of all generated documents.
 - **Subscription Management:** Full Stripe payment integration for upgrading plans, viewing current subscription status (with start/end dates), and accessing the Stripe billing portal.
 - **Real-Time Chat:** Live messaging system to keep users connected.
 - **Notifications:** Notifications system to keep users informed.
 - **Support Ticketing:** Integrated ticketing system for users to submit requests and for administrators to manage and resolve support issues.
-- **Audit Logs:** A dedicated interface for administrators to view, filter (by date, action, actor), and export comprehensive audit trails, with customizable data retention settings.
-
+- **Audit Logs & AI Auditing:** A dedicated interface for administrators to view, filter (by date, action, actor), and export comprehensive audit trails, with customizable data retention settings. Includes detailed tracking of AI Assistant interactions, such as user prompts, agent responses, tool invocations, and autonomous system modifications.
 
 
 ## Main Functionality
 
+- **AI Integration:** Leverages Firebase Genkit AI (`@genkit-ai/google-genai`) for intelligent assistant features directly in the browser.
 - **Modern UI Framework:** Built with Angular 22 and styled with TailwindCSS 4 for a responsive and sleek user experience.
 - **Real-Time Interactions:** Integrated with Socket.IO client for live chat, notifications, and instant updates.
-- **AI Integration:** Leverages Firebase Genkit AI (`@genkit-ai/google-genai`) for intelligent assistant features directly in the browser.
 - **Robust Testing:** Configured with Vitest for fast unit testing and Playwright for reliable end-to-end (e2e) tests.
 
 ## Development server
