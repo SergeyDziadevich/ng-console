@@ -50,4 +50,8 @@ export class DocumentService {
   generateDocument(payload: { templateType: string; data: Record<string, unknown> }): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/generate`, payload);
   }
+
+  syncToGoogleDrive(id: string): Observable<{ success: boolean; webViewLink: string }> {
+    return this.http.post<{ success: boolean; webViewLink: string }>(`${this.apiUrl}/${id}/sync/google-drive`, {});
+  }
 }

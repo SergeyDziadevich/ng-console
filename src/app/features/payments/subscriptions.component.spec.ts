@@ -15,6 +15,13 @@ describe('SubscriptionsComponent', () => {
   const mockUserSignal = signal<{ planId: string | null } | null>(null);
 
   beforeEach(async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        origin: 'http://localhost'
+      },
+      writable: true
+    });
+
     paymentsServiceMock = {
       getSubscription: vi.fn().mockReturnValue(of(null)),
       createCheckoutSession: vi.fn(),

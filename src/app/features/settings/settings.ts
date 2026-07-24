@@ -5,26 +5,57 @@ import {
   OnDestroy,
   OnInit,
   signal,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY } from 'rxjs';
+import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
 import { User, UserSettings } from '../../models/user.model';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
+import { IntegrationService } from '../../services/integration.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ThemeService, Theme } from '../../services/theme.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  lucideHardDrive,
+  lucideCheck,
+  lucideAlertCircle,
+  lucidePalette,
+  lucideBell,
+  lucideShieldCheck,
+  lucideLink,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-settings',
-  imports: [ReactiveFormsModule, Toast, SpinnerComponent],
+  imports: [ReactiveFormsModule, Toast, SpinnerComponent, NgIconComponent],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
+  viewProviders: [
+    provideIcons({
+      lucideHardDrive,
+      lucideCheck,
+      lucideAlertCircle,
+      lucidePalette,
+      lucideBell,
+      lucideShieldCheck,
+      lucideLink,
+    }),
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Settings implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
+  private readonly integrationService = inject(IntegrationService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly themeService = inject(ThemeService);
+  private readonly destroyRef = inject(DestroyRef);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   qrCodeUrl = signal<string | null>(null);
@@ -38,23 +69,15 @@ export class Settings implements OnInit, OnDestroy {
   receiveNotifications = signal<boolean>(true);
   receiveEmails = signal<boolean>(false);
   receiveSMS = signal<boolean>(false);
+  googleDriveSyncEnabled = signal<boolean>(false);
+  isGoogleDriveConnecting = signal<boolean>(false);
   currentTheme = this.themeService.currentTheme;
 
   twoFactorForm = this.fb.group({
     code: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  ngOnDestroy() {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-  }
-
-  showToast(message: string) {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toast.set(message);
-    this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     const user = this.authService.currentUser();
     if (!user?.id) {
       this.finishLoading(0);
@@ -69,34 +92,70 @@ export class Settings implements OnInit, OnDestroy {
         this.receiveEmails.set(settings.receiveEmails ?? false);
         this.receiveSMS.set(settings.receiveSMS ?? false);
         if (settings.theme && settings.theme !== this.themeService.currentTheme()) {
-           this.themeService.setTheme(settings.theme as Theme);
+          this.themeService.setTheme(settings.theme as Theme);
         }
+        this.googleDriveSyncEnabled.set(settings.googleDriveSyncEnabled ?? false);
         this.finishLoading();
+
+        this.route.queryParams
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            filter((params) => !!params['code']),
+            tap(() => this.isGoogleDriveConnecting.set(true)),
+            switchMap((params) =>
+              this.integrationService.handleGoogleDriveCallback(params['code']).pipe(
+                tap(() => {
+                  this.googleDriveSyncEnabled.set(true);
+                  this.showToast('Google Drive connected successfully!');
+                  this.isGoogleDriveConnecting.set(false);
+                  // Remove code from URL
+                  this.router.navigate([], {
+                    queryParams: { code: null },
+                    queryParamsHandling: 'merge',
+                  });
+                }),
+                catchError(() => {
+                  this.errorMessage.set('Failed to connect Google Drive.');
+                  this.isGoogleDriveConnecting.set(false);
+                  return EMPTY;
+                })
+              )
+            )
+          )
+          .subscribe();
       },
       error: () => this.finishLoading(),
     });
   }
 
-  private finishLoading(loadingDelayMs = 50) {
+  ngOnDestroy(): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
+  showToast(message: string): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toast.set(message);
+    this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
+  }
+
+  private finishLoading(loadingDelayMs = 50): void {
     setTimeout(() => {
       this.isLoading.set(false);
       requestAnimationFrame(() => this.isReady.set(true));
     }, loadingDelayMs);
   }
 
-  updateTheme(event: Event) {
+  updateTheme(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const newTheme = select.value as Theme;
     this.themeService.setTheme(newTheme);
-    
+
     const user = this.authService.currentUser();
     if (user?.id) {
-      this.userService
-        .updateUser(user.id, { settings: { theme: newTheme } })
-        .subscribe({
-          next: () => this.showToast('Theme updated successfully!'),
-          error: () => this.errorMessage.set('Failed to save theme setting.'),
-        });
+      this.userService.updateUser(user.id, { settings: { theme: newTheme } }).subscribe({
+        next: () => this.showToast('Theme updated successfully!'),
+        error: () => this.errorMessage.set('Failed to save theme setting.'),
+      });
     }
   }
 
@@ -127,7 +186,7 @@ export class Settings implements OnInit, OnDestroy {
     }
   }
 
-  generate2FA() {
+  generate2FA(): void {
     this.isGenerating.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
@@ -144,7 +203,7 @@ export class Settings implements OnInit, OnDestroy {
     });
   }
 
-  turnOn2FA() {
+  turnOn2FA(): void {
     if (this.twoFactorForm.invalid) return;
 
     this.isSubmitting.set(true);
@@ -163,6 +222,34 @@ export class Settings implements OnInit, OnDestroy {
       error: () => {
         this.errorMessage.set('Failed to verify 2FA code. Please try again.');
         this.isSubmitting.set(false);
+      },
+    });
+  }
+
+  connectGoogleDrive(): void {
+    this.isGoogleDriveConnecting.set(true);
+    this.integrationService.getGoogleDriveAuthUrl().subscribe({
+      next: (res) => {
+        window.location.href = res.url;
+      },
+      error: () => {
+        this.errorMessage.set('Failed to initiate Google Drive connection.');
+        this.isGoogleDriveConnecting.set(false);
+      },
+    });
+  }
+
+  disconnectGoogleDrive(): void {
+    this.isGoogleDriveConnecting.set(true);
+    this.integrationService.disconnectGoogleDrive().subscribe({
+      next: () => {
+        this.googleDriveSyncEnabled.set(false);
+        this.showToast('Google Drive disconnected.');
+        this.isGoogleDriveConnecting.set(false);
+      },
+      error: () => {
+        this.errorMessage.set('Failed to disconnect Google Drive.');
+        this.isGoogleDriveConnecting.set(false);
       },
     });
   }

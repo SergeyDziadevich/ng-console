@@ -5,6 +5,8 @@ export interface UserSettings {
   receiveEmails?: boolean;
   receiveSMS?: boolean;
   theme?: 'light' | 'dark';
+  googleDriveSyncEnabled?: boolean;
+  googleDriveRefreshToken?: string;
 }
 
 export interface User {
