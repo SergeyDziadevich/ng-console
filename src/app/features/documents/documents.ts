@@ -3,33 +3,54 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { HttpEventType } from '@angular/common/http';
-import { DomSanitizer } from '@angular/platform-browser';
 import { DocumentService } from '../../services/document.service';
 import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2, lucideSparkles } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2, lucideSparkles, lucideHardDrive } from '@ng-icons/lucide';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
+import { UserService } from '../../services/user-service';
 import { environment } from '../../../environments/environment';
 import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-documents',
-  imports: [CommonModule, NgIconComponent, Toast, RouterLink, ConfirmDialogComponent, SpinnerComponent],
+  imports: [
+    CommonModule,
+    NgIconComponent,
+    Toast,
+    RouterLink,
+    ConfirmDialogComponent,
+    SpinnerComponent,
+  ],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],
-  viewProviders: [provideIcons({ lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFilePlus, lucideFileSignature, lucideEye, lucideFileText, lucideLoader2, lucideSparkles })]
+  viewProviders: [
+    provideIcons({
+      lucideUploadCloud,
+      lucideTrash2,
+      lucideDownload,
+      lucideFile,
+      lucideShare2,
+      lucideFilePlus,
+      lucideFileSignature,
+      lucideEye,
+      lucideFileText,
+      lucideLoader2,
+      lucideSparkles,
+      lucideHardDrive,
+    }),
+  ],
 })
 export class DocumentsComponent implements OnInit {
   private documentService = inject(DocumentService);
   private authService = inject(AuthService);
-  private sanitizer = inject(DomSanitizer);
-
+  private userService = inject(UserService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  // State
+
   documents = signal<UploadedDocument[]>([]);
   totalDocuments = signal<number>(0);
   currentPage = signal<number>(1);
@@ -38,8 +59,8 @@ export class DocumentsComponent implements OnInit {
   uploadProgress = signal<number | null>(null);
   uploadError = signal<string | null>(null);
   toast = signal<string | null>(null);
-  isActionLoading = signal<boolean>(false);
   documentToDelete = signal<UploadedDocument | null>(null);
+  isGoogleDriveConnected = signal<boolean>(false);
 
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -52,33 +73,50 @@ export class DocumentsComponent implements OnInit {
   private previousUrl = '';
 
   constructor() {
-    this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      takeUntilDestroyed()
-    ).subscribe((event) => {
-      if (this.previousUrl && this.previousUrl !== '/documents' && event.urlAfterRedirects === '/documents') {
-        this.loadDocuments();
-      }
-      this.previousUrl = event.urlAfterRedirects;
-    });
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => {
+        if (
+          this.previousUrl &&
+          this.previousUrl !== '/documents' &&
+          event.urlAfterRedirects === '/documents'
+        ) {
+          this.loadDocuments();
+        }
+        this.previousUrl = event.urlAfterRedirects;
+      });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadDocuments();
-    this.route.queryParams.subscribe(params => {
+
+    const user = this.authService.currentUser();
+    if (user?.id) {
+      this.userService.getUserById(user.id).subscribe({
+        next: (u) => {
+          const settings = typeof u.settings === 'object' ? (u.settings ?? {}) : {};
+          this.isGoogleDriveConnected.set(settings.googleDriveSyncEnabled ?? false);
+        },
+      });
+    }
+
+    this.route.queryParams.subscribe((params) => {
       if (params['generated']) {
         this.showToast('Document generated successfully');
       }
     });
   }
 
-  showToast(message: string) {
+  showToast(message: string): void {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toast.set(message);
     this.toastTimer = setTimeout(() => this.toast.set(null), 3000);
   }
 
-  loadDocuments() {
+  loadDocuments(): void {
     this.isLoading.set(true);
     this.documentService.getDocuments(this.currentPage(), this.pageSize()).subscribe({
       next: (res) => {
@@ -89,23 +127,23 @@ export class DocumentsComponent implements OnInit {
       error: (err) => {
         console.error('Error loading documents', err);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
-  onFileSelected(event: Event) {
+  onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.uploadFile(input.files[0]);
     }
   }
 
-  onDragOver(event: DragEvent) {
+  onDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
   }
 
-  onDrop(event: DragEvent) {
+  onDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
@@ -113,7 +151,7 @@ export class DocumentsComponent implements OnInit {
     }
   }
 
-  uploadFile(file: File) {
+  uploadFile(file: File): void {
     // Basic validation
     const allowedExtensions = ['doc', 'docx', 'pdf', 'img', 'png', 'jpg', 'jpeg'];
     const ext = file.name.split('.').pop()?.toLowerCase() || '';
@@ -133,7 +171,7 @@ export class DocumentsComponent implements OnInit {
       next: (event) => {
         if (event.type === HttpEventType.UploadProgress) {
           if (event.total) {
-            const progress = Math.round(100 * event.loaded / event.total);
+            const progress = Math.round((100 * event.loaded) / event.total);
             this.uploadProgress.set(progress);
           }
         } else if (event.type === HttpEventType.Response) {
@@ -145,11 +183,11 @@ export class DocumentsComponent implements OnInit {
         console.error('Upload failed', err);
         this.uploadError.set(err.error?.message || 'Upload failed');
         this.uploadProgress.set(null);
-      }
+      },
     });
   }
 
-  downloadDocument(doc: UploadedDocument) {
+  downloadDocument(doc: UploadedDocument): void {
     this.documentService.downloadDocument(doc._id).subscribe((blob) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -160,15 +198,26 @@ export class DocumentsComponent implements OnInit {
     });
   }
 
-  confirmDelete(doc: UploadedDocument) {
+  syncToDrive(doc: UploadedDocument): void {
+    this.documentService.syncToGoogleDrive(doc._id).subscribe({
+      next: () => {
+        this.showToast('Document synced to Google Drive successfully!');
+      },
+      error: () => {
+        this.showToast('Failed to sync document to Google Drive.');
+      },
+    });
+  }
+
+  confirmDelete(doc: UploadedDocument): void {
     this.documentToDelete.set(doc);
   }
 
-  cancelDelete() {
+  cancelDelete(): void {
     this.documentToDelete.set(null);
   }
 
-  executeDelete() {
+  executeDelete(): void {
     const doc = this.documentToDelete();
     if (doc) {
       this.documentService.deleteDocument(doc._id).subscribe(() => {
@@ -179,42 +228,45 @@ export class DocumentsComponent implements OnInit {
     }
   }
 
-  shareDocument(doc: UploadedDocument) {
+  shareDocument(doc: UploadedDocument): void {
     this.documentService.shareDocument(doc._id).subscribe({
       next: (res) => {
         const shareUrl = `${environment.apiUrl}/api/documents/shared/${res.token}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          this.showToast('Share link copied to clipboard!');
-        }).catch(err => {
-          console.error('Failed to copy link', err);
-          this.showToast(`Share link generated: ${shareUrl}`);
-        });
+        navigator.clipboard
+          .writeText(shareUrl)
+          .then(() => {
+            this.showToast('Share link copied to clipboard!');
+          })
+          .catch((err) => {
+            console.error('Failed to copy link', err);
+            this.showToast(`Share link generated: ${shareUrl}`);
+          });
       },
       error: (err) => {
         console.error('Failed to generate share link', err);
-      }
+      },
     });
   }
 
-  openPreview(doc: UploadedDocument, mode: 'sign' | 'view') {
+  openPreview(doc: UploadedDocument, mode: 'sign' | 'view'): void {
     this.router.navigate(['/documents', doc._id, mode], { state: { document: doc } });
   }
 
-  nextPage() {
+  nextPage(): void {
     if (this.currentPage() < this.totalPages()) {
-      this.currentPage.update(p => p + 1);
+      this.currentPage.update((p) => p + 1);
       this.loadDocuments();
     }
   }
 
-  prevPage() {
+  prevPage(): void {
     if (this.currentPage() > 1) {
-      this.currentPage.update(p => p - 1);
+      this.currentPage.update((p) => p - 1);
       this.loadDocuments();
     }
   }
 
-  formatBytes(bytes: number, decimals = 2) {
+  formatBytes(bytes: number, decimals = 2): string {
     if (!+bytes) return '0 Bytes';
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
@@ -225,6 +277,8 @@ export class DocumentsComponent implements OnInit {
 
   getUploaderName(doc: UploadedDocument): string {
     if (typeof doc.uploadedBy === 'string') return doc.uploadedBy;
-    return doc.uploadedBy?.displayName || doc.uploadedBy?.username || doc.uploadedBy?.email || 'Unknown';
+    return (
+      doc.uploadedBy?.displayName || doc.uploadedBy?.username || doc.uploadedBy?.email || 'Unknown'
+    );
   }
 }

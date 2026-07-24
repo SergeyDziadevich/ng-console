@@ -30,13 +30,15 @@ export class ChatService {
     });
   }
 
+  protected ioFactory = io;
+
   connect(): void {
     if (this.socket) {
       this.disconnect();
     }
 
     const token = this.authService.getToken();
-    this.socket = io(`${environment.apiUrl}/chat`, {
+    this.socket = this.ioFactory(`${environment.apiUrl}/chat`, {
       transports: ['websocket'],
       auth: { token },
       reconnection: true,
