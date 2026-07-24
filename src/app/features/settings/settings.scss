@@ -1,5 +1,29 @@
+@reference "../../../styles.scss";
+
 .integration-icon {
   width: 20px;
   height: 20px;
   stroke-width: 2;
+}
+
+.settings-toggle {
+  @apply w-11 h-6 bg-gray-300 dark:bg-gray-600 rounded-full peer-focus:ring-4 peer-focus:ring-blue-500/30 peer-checked:bg-blue-600 transition-colors;
+  
+  &::after {
+    content: '';
+    @apply absolute top-[2px] left-[2px] bg-white rounded-full h-5 w-5 shadow-sm border border-gray-200 dark:border-transparent;
+  }
+  
+  .peer:checked ~ &::after {
+    @apply translate-x-5 border-transparent;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
 }
