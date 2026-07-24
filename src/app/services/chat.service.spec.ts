@@ -44,7 +44,7 @@ describe('ChatService', () => {
 
     service = TestBed.inject(ChatService);
     // Override the factory to use our mock
-    (service as any).ioFactory = mockIo;
+    (service as unknown as { ioFactory: typeof mockIo }).ioFactory = mockIo;
     
     httpMock = TestBed.inject(HttpTestingController);
   });
