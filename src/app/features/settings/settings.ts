@@ -5,7 +5,11 @@ import {
   OnDestroy,
   OnInit,
   signal,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY } from 'rxjs';
+import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
@@ -33,6 +37,7 @@ export class Settings implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly themeService = inject(ThemeService);
+  private readonly destroyRef = inject(DestroyRef);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   qrCodeUrl = signal<string | null>(null);
@@ -74,27 +79,32 @@ export class Settings implements OnInit, OnDestroy {
         this.googleDriveSyncEnabled.set(settings.googleDriveSyncEnabled ?? false);
         this.finishLoading();
 
-        this.route.queryParams.subscribe((params) => {
-          if (params['code']) {
-            this.isGoogleDriveConnecting.set(true);
-            this.integrationService.handleGoogleDriveCallback(params['code']).subscribe({
-              next: () => {
-                this.googleDriveSyncEnabled.set(true);
-                this.showToast('Google Drive connected successfully!');
-                this.isGoogleDriveConnecting.set(false);
-                // Remove code from URL
-                this.router.navigate([], {
-                  queryParams: { code: null },
-                  queryParamsHandling: 'merge',
-                });
-              },
-              error: () => {
-                this.errorMessage.set('Failed to connect Google Drive.');
-                this.isGoogleDriveConnecting.set(false);
-              },
-            });
-          }
-        });
+        this.route.queryParams
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            filter((params) => !!params['code']),
+            tap(() => this.isGoogleDriveConnecting.set(true)),
+            switchMap((params) =>
+              this.integrationService.handleGoogleDriveCallback(params['code']).pipe(
+                tap(() => {
+                  this.googleDriveSyncEnabled.set(true);
+                  this.showToast('Google Drive connected successfully!');
+                  this.isGoogleDriveConnecting.set(false);
+                  // Remove code from URL
+                  this.router.navigate([], {
+                    queryParams: { code: null },
+                    queryParamsHandling: 'merge',
+                  });
+                }),
+                catchError(() => {
+                  this.errorMessage.set('Failed to connect Google Drive.');
+                  this.isGoogleDriveConnecting.set(false);
+                  return EMPTY;
+                })
+              )
+            )
+          )
+          .subscribe();
       },
       error: () => this.finishLoading(),
     });
