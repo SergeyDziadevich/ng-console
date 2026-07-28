@@ -46,7 +46,7 @@
     "@angular/compiler-cli": "^22.0.0",
     "@eslint/js": "^10.0.1",
     "@nx/angular": "23.0.1",
-    "@nx/eslint-plugin": "^23.0.1",
+    "@nx/eslint-plugin": "^23.1.0",
     "@nx/js": "23.0.1",
     "@nx/vite": "23.1.0",
     "@nx/vitest": "23.1.0",
