@@ -7,6 +7,9 @@ export interface UploadedDocument {
   isSigned?: boolean;
   isRagProcessed?: boolean;
   signedAt?: string;
+  status?: string;
+  partyASignatureName?: string;
+  partyBSignatureName?: string;
   createdAt: string;
   updatedAt: string;
 }

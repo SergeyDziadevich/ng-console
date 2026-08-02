@@ -54,4 +54,22 @@ export class DocumentService {
   syncToGoogleDrive(id: string): Observable<{ success: boolean; webViewLink: string }> {
     return this.http.post<{ success: boolean; webViewLink: string }>(`${this.apiUrl}/${id}/sync/google-drive`, {});
   }
+
+  inviteToSign(id: string, email: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.apiUrl}/${id}/invite`, { email });
+  }
+
+  getExternalDocument(token: string): Observable<{ _id: string; filename: string; partyASignatureName?: string }> {
+    return this.http.get<{ _id: string; filename: string; partyASignatureName?: string }>(`${this.apiUrl}/external/${token}`);
+  }
+
+  downloadExternalDocument(token: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/external/${token}/download`, {
+      responseType: 'blob',
+    });
+  }
+
+  signExternalDocument(token: string, signatureName: string, signatureImage?: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.apiUrl}/external/${token}/sign`, { signatureName, signatureImage });
+  }
 }
