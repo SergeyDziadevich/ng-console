@@ -105,9 +105,14 @@
                     <ng-icon name="lucideEye" class="w-4 h-4"></ng-icon>
                   </button>
                 }
-                @if (doc.mimeType === 'application/pdf' && !doc.isSigned) {
+                @if (doc.mimeType === 'application/pdf' && (!doc.status ? !doc.isSigned : doc.status === 'DRAFT')) {
                   <button class="table-action-btn bg-blue-500 hover:bg-blue-600 text-white" (click)="openPreview(doc, 'sign')" title="Sign Document">
                     <ng-icon name="lucideFileSignature" class="w-4 h-4"></ng-icon>
+                  </button>
+                }
+                @if (doc.mimeType === 'application/pdf' && doc.status === 'SIGNED_BY_PARTY_A') {
+                  <button class="table-action-btn bg-indigo-500 hover:bg-indigo-600 text-white" (click)="inviteToSign(doc)" title="Invite external signer">
+                    <ng-icon name="lucideMail" class="w-4 h-4"></ng-icon>
                   </button>
                 }
                 <button class="table-action-btn bg-gray-500 hover:bg-gray-600 text-white" (click)="shareDocument(doc)" title="Share link to the document">
@@ -157,5 +162,33 @@
   >
     Are you sure you want to remove <span class="font-medium text-gray-700 dark:text-gray-300 break-all">{{ documentToDelete()!.filename }}</span>? This action cannot be undone.
   </app-confirm-dialog>
+}
+
+@if (documentToInvite()) {
+  <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Invite External Signer</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Enter the email address to invite for <span class="font-medium text-gray-700 dark:text-gray-300 break-all">{{ documentToInvite()!.filename }}</span>.
+        </p>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="inviteEmailInput">Email Address</label>
+          <input id="inviteEmailInput" type="email" [value]="inviteEmail()" (input)="inviteEmail.set($any($event.target).value)" 
+                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors" 
+                 placeholder="colleague@example.com" 
+                 (keydown.enter)="executeInvite()">
+        </div>
+      </div>
+      <div class="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 flex items-center justify-end gap-3">
+        <button (click)="cancelInvite()" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">
+          Cancel
+        </button>
+        <button (click)="executeInvite()" [disabled]="!inviteEmail().trim()" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors">
+          Send Invitation
+        </button>
+      </div>
+    </div>
+  </div>
 }
 
