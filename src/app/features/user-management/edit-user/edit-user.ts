@@ -12,9 +12,11 @@ import { User } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
+import { TranslatePipe } from '../../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-edit-user',
-  imports: [FormField, Toast, UserModal, SpinnerComponent],
+  imports: [FormField, Toast, UserModal, SpinnerComponent, TranslatePipe],
   templateUrl: './edit-user.html',
   styleUrl: './edit-user.scss',
 })

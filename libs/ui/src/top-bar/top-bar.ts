@@ -2,51 +2,63 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@app/services/auth.service';
+import { UserService } from '@app/services/user-service';
 import { AiService } from '@app/services/ai.service';
 import { NotificationsService } from '@app/services/notifications.service';
 import { ThemeService } from '@app/services/theme.service';
+import { TranslationService, SUPPORTED_LANGUAGES, SupportedLanguage } from '@app/services/translation.service';
+import { TranslatePipe } from '@app/pipes/translate.pipe';
 
 @Component({
   selector: 'app-top-bar',
-  imports: [CommonModule, RouterLink, DatePipe],
+  imports: [CommonModule, RouterLink, DatePipe, TranslatePipe],
   templateUrl: './top-bar.html',
   styleUrl: './top-bar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopBar {
   private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
   private readonly aiService = inject(AiService);
   private readonly notificationsService = inject(NotificationsService);
   private readonly themeService = inject(ThemeService);
+  private readonly translationService = inject(TranslationService);
 
   protected dropdownOpen = signal(false);
   protected notificationsOpen = signal(false);
+  protected languageMenuOpen = signal(false);
 
   protected currentUser = this.authService.currentUser;
   protected unreadCount = this.notificationsService.unreadCount;
   protected unreadMessages = this.notificationsService.unreadMessages;
   protected currentTheme = this.themeService.currentTheme;
+  protected currentLang = this.translationService.currentLang;
+  protected supportedLanguages = SUPPORTED_LANGUAGES;
 
   protected userAvatar = computed(() => this.currentUser()?.name.slice(0, 2).toUpperCase() || 'NA');
 
   protected menuItems = [
     {
-      label: 'My Profile',
+      labelKey: 'TOPBAR.MY_PROFILE',
+      defaultLabel: 'My Profile',
       icon: 'icon-my-profile.svg',
       route: null,
     },
     {
-      label: 'Account Settings',
+      labelKey: 'TOPBAR.ACCOUNT_SETTINGS',
+      defaultLabel: 'Account Settings',
       icon: 'icon-account-settings.svg',
       route: '/settings',
     },
     {
-      label: 'Notifications',
+      labelKey: 'TOPBAR.NOTIFICATIONS',
+      defaultLabel: 'Notifications',
       icon: 'icon-notifications-dark.svg',
       route: '/notifications',
     },
     {
-      label: 'Sign Out',
+      labelKey: 'TOPBAR.SIGN_OUT',
+      defaultLabel: 'Sign Out',
       icon: 'icon-sign-out.svg',
       route: null,
     },
@@ -54,6 +66,7 @@ export class TopBar {
 
   protected toggleDropdown(): void {
     if (this.notificationsOpen()) this.notificationsOpen.set(false);
+    if (this.languageMenuOpen()) this.languageMenuOpen.set(false);
     this.dropdownOpen.update((v) => !v);
   }
 
@@ -63,6 +76,7 @@ export class TopBar {
 
   protected toggleNotifications(): void {
     if (this.dropdownOpen()) this.dropdownOpen.set(false);
+    if (this.languageMenuOpen()) this.languageMenuOpen.set(false);
     this.notificationsOpen.update((v) => !v);
   }
 
@@ -70,9 +84,29 @@ export class TopBar {
     this.notificationsOpen.set(false);
   }
 
-  protected onMenuItemClick(label: string): void {
+  protected toggleLanguageMenu(): void {
+    if (this.dropdownOpen()) this.dropdownOpen.set(false);
+    if (this.notificationsOpen()) this.notificationsOpen.set(false);
+    this.languageMenuOpen.update((v) => !v);
+  }
+
+  protected closeLanguageMenu(): void {
+    this.languageMenuOpen.set(false);
+  }
+
+  protected selectLanguage(lang: SupportedLanguage): void {
+    this.translationService.setLanguage(lang);
+    this.closeLanguageMenu();
+
+    const user = this.authService.currentUser();
+    if (user?.id) {
+      this.userService.updateUser(user.id, { settings: { language: lang } }).subscribe();
+    }
+  }
+
+  protected onMenuItemClick(labelKey: string): void {
     this.closeDropdown();
-    if (label === 'Sign Out') {
+    if (labelKey === 'TOPBAR.SIGN_OUT' || labelKey === 'Sign Out') {
       this.authService.logout();
     }
   }

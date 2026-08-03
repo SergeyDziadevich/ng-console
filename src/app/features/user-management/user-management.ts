@@ -8,9 +8,11 @@ import { FormsModule } from '@angular/forms';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { HasPermissionDirective } from '../../directives/has-permission.directive';
 
+import { TranslatePipe } from '../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-user-management',
-  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, HasPermissionDirective, SpinnerComponent],
+  imports: [UsersTable, RouterOutlet, RouterLink, FormsModule, Toast, HasPermissionDirective, SpinnerComponent, TranslatePipe],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })

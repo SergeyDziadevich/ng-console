@@ -1,7 +1,7 @@
 <div class="settings">
   <div class="settings__header">
-    <h1 class="settings__title">Settings</h1>
-    <p class="settings__subtitle">Manage your notification preferences and account security settings.</p>
+    <h1 class="settings__title">{{ 'SETTINGS.TITLE' | translate }}</h1>
+    <p class="settings__subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
   </div>
 
   @if (successMessage()) {
@@ -29,12 +29,12 @@
         <div class="settings-card">
           <h2 class="settings-card__title">
             <ng-icon name="lucidePalette" class="settings-card__icon"></ng-icon>
-            Appearance
+            {{ 'SETTINGS.APPEARANCE' | translate }}
           </h2>
           <div class="settings-row">
             <div class="settings-row__content">
-              <h3 class="settings-row__title">Theme</h3>
-              <p class="settings-row__desc">Choose your preferred appearance.</p>
+              <h3 class="settings-row__title">{{ 'SETTINGS.THEME' | translate }}</h3>
+              <p class="settings-row__desc">{{ 'SETTINGS.THEME_DESC' | translate }}</p>
             </div>
             <div class="settings-row__action">
               <select
@@ -42,8 +42,26 @@
                 [value]="currentTheme()"
                 (change)="updateTheme($event)"
               >
-                <option value="light">Light Mode</option>
-                <option value="dark">Dark Mode</option>
+                <option value="light">{{ 'SETTINGS.LIGHT_MODE' | translate }}</option>
+                <option value="dark">{{ 'SETTINGS.DARK_MODE' | translate }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-row settings-row--bordered">
+            <div class="settings-row__content">
+              <h3 class="settings-row__title">{{ 'SETTINGS.LANGUAGE_TITLE' | translate }}</h3>
+              <p class="settings-row__desc">{{ 'SETTINGS.LANGUAGE_DESC' | translate }}</p>
+            </div>
+            <div class="settings-row__action">
+              <select
+                class="settings-select"
+                [value]="currentLang()"
+                (change)="updateLanguage($event)"
+              >
+                @for (lang of supportedLanguages; track lang.code) {
+                  <option [value]="lang.code" [selected]="lang.code === currentLang()">{{ lang.label }}</option>
+                }
               </select>
             </div>
           </div>
@@ -52,14 +70,14 @@
         <div class="settings-card">
           <h2 class="settings-card__title">
             <ng-icon name="lucideBell" class="settings-card__icon"></ng-icon>
-            Notifications
+            {{ 'SETTINGS.NOTIFICATIONS' | translate }}
           </h2>
 
           <div class="settings-card__body">
             <div class="settings-row">
               <div class="settings-row__content">
-                <h3 class="settings-row__title">Push Notifications</h3>
-                <p class="settings-row__desc">Get notified about important updates and activity.</p>
+                <h3 class="settings-row__title">{{ 'SETTINGS.PUSH_NOTIFICATIONS' | translate }}</h3>
+                <p class="settings-row__desc">{{ 'SETTINGS.PUSH_NOTIFICATIONS_DESC' | translate }}</p>
               </div>
               <label class="relative inline-flex items-center cursor-pointer settings-row__action">
                 <input class="sr-only peer" [checked]="receiveNotifications()" (change)="toggleSetting('receiveNotifications', $event)" type="checkbox" />

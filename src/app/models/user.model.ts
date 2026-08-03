@@ -5,6 +5,7 @@ export interface UserSettings {
   receiveEmails?: boolean;
   receiveSMS?: boolean;
   theme?: 'light' | 'dark';
+  language?: string;
   googleDriveSyncEnabled?: boolean;
   googleDriveRefreshToken?: string;
 }

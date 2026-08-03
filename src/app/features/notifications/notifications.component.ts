@@ -4,9 +4,11 @@ import { AuthService } from '@app/services/auth.service';
 import { NotificationsService } from '@app/services/notifications.service';
 
 
+import { TranslatePipe } from '../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-notifications',
-  imports: [DatePipe],
+  imports: [DatePipe, TranslatePipe],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

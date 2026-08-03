@@ -18,7 +18,7 @@
     <button
       class="top-bar-btn"
       (click)="toggleTheme()"
-      title="Toggle Theme"
+      [title]="'TOPBAR.TOGGLE_THEME' | translate"
     >
       @if (currentTheme() === 'light') {
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
@@ -27,9 +27,50 @@
       }
     </button>
     <button
+      class="top-bar-btn font-semibold text-xs uppercase"
+      (click)="toggleLanguageMenu()"
+      [title]="'SETTINGS.LANGUAGE' | translate"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500 dark:text-gray-300"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+      <span class="ml-1">{{ currentLang() }}</span>
+    </button>
+
+    @if (languageMenuOpen()) {
+      <div
+        class="dropdown-overlay"
+        (click)="closeLanguageMenu()"
+        (keydown)="closeLanguageMenu()"
+        role="button"
+        tabindex="0"
+        aria-label="Close language menu"
+      ></div>
+
+      <div class="user-dropdown w-44">
+        <div class="user-dropdown-header">
+          <p class="user-dropdown-name">{{ 'SETTINGS.LANGUAGE_TITLE' | translate }}</p>
+        </div>
+        <ul class="py-1">
+          @for (lang of supportedLanguages; track lang.code) {
+            <li>
+              <button
+                class="menu-item w-full text-left flex items-center justify-between"
+                [class.font-bold]="lang.code === currentLang()"
+                (click)="selectLanguage(lang.code)"
+              >
+                <span>{{ lang.label }}</span>
+                @if (lang.code === currentLang()) {
+                  <span class="text-blue-500 font-bold">✓</span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+    <button
       class="top-bar-btn"
       (click)="toggleNotifications()"
-      title="Notifications"
+      [title]="'TOPBAR.NOTIFICATIONS' | translate"
     >
       <img class="top-bar-btn-icon" src="/assets/icons/icon-2c9fcb7e.svg" alt="icon" />
       <!-- Unread notification badge -->
@@ -50,7 +91,7 @@
 
       <div class="notifications-dropdown">
         <div class="dropdown-header">
-          <h3 class="dropdown-title">Notifications</h3>
+          <h3 class="dropdown-title">{{ 'TOPBAR.NOTIFICATIONS' | translate }}</h3>
           @if (unreadCount() > 0) {
             <span class="unread-badge">{{ unreadCount() }} new</span>
           }
@@ -96,8 +137,8 @@
                   src="/assets/icons/icon-2c9fcb7e.svg"
                   alt="icon"
                 />
-                <p class="empty-title">No new notifications</p>
-                <p class="empty-subtitle">You're all caught up!</p>
+                <p class="empty-title">{{ 'TOPBAR.NO_NOTIFICATIONS' | translate }}</p>
+                <p class="empty-subtitle">{{ 'TOPBAR.ALL_CAUGHT_UP' | translate }}</p>
               </li>
             }
           </ul>
@@ -108,7 +149,7 @@
             class="see-all-link"
             (click)="closeNotifications()"
             routerLink="/notifications"
-            >See all notifications</a
+            >{{ 'TOPBAR.SEE_ALL_NOTIFICATIONS' | translate }}</a
           >
         </div>
       </div>
@@ -148,7 +189,7 @@
         </div>
 
         <ul class="py-1">
-          @for (item of menuItems; track item.label) {
+          @for (item of menuItems; track item.labelKey) {
             <li>
               @if (item.route) {
                 <a
@@ -157,15 +198,15 @@
                   (click)="closeDropdown()"
                 >
                   <img class="menu-item-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
-                  {{ item.label }}
+                  {{ item.labelKey | translate }}
                 </a>
               } @else {
                 <button
                   class="menu-item"
-                  (click)="onMenuItemClick(item.label)"
+                  (click)="onMenuItemClick(item.labelKey)"
                 >
                   <img class="menu-item-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
-                  {{ item.label }}
+                  {{ item.labelKey | translate }}
                 </button>
               }
             </li>

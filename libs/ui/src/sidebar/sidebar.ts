@@ -4,24 +4,27 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { AuthResponse } from '@app/services/auth.service';
 import { ChatService } from '@app/services/chat.service';
+import { TranslatePipe } from '@app/pipes/translate.pipe';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp } from '@ng-icons/lucide';
 
 interface NavItem {
   label: string;
+  labelKey: string;
   icon: string;
   route: string;
   adminOnly?: boolean;
   badge?: {
     text: string;
+    labelKey?: string;
     classes: string;
   };
-  children?: { label: string; route: string; icon?: string }[];
+  children?: { label: string; labelKey?: string; route: string; icon?: string }[];
 }
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, NgIconComponent],
+  imports: [RouterLink, RouterLinkActive, NgIconComponent, TranslatePipe],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
   viewProviders: [provideIcons({ lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp })],
@@ -45,61 +48,71 @@ export class Sidebar {
   navItems: NavItem[] = [
     {
       label: 'Dashboard',
+      labelKey: 'NAV.DASHBOARD',
       icon: 'icon-dashboard.svg',
       route: '/dashboard',
     },
     {
       label: 'AI Assistant',
+      labelKey: 'NAV.AI_ASSISTANT',
       icon: 'icon-ai-assistant.svg',
       route: '/ai-assistant',
-      badge: { text: 'Beta', classes: 'sidebar-badge-green' },
+      badge: { text: 'Beta', labelKey: 'BADGES.BETA', classes: 'sidebar-badge-green' },
     },
     {
       label: 'User Management',
+      labelKey: 'NAV.USER_MANAGEMENT',
       icon: 'icon-users.svg',
       route: '/user-management',
     },
     {
       label: 'Tickets',
+      labelKey: 'NAV.TICKETS',
       icon: 'icon-tickets.svg',
       route: '/tickets',
-      badge: { text: 'Preview', classes: 'sidebar-badge-purple' },
+      badge: { text: 'Preview', labelKey: 'BADGES.PREVIEW', classes: 'sidebar-badge-purple' },
     },
     {
       label: 'Documents',
+      labelKey: 'NAV.DOCUMENTS',
       icon: 'icon-documents.svg',
       route: '/documents',
-      badge: { text: 'New', classes: 'sidebar-badge-blue' },
+      badge: { text: 'New', labelKey: 'BADGES.NEW', classes: 'sidebar-badge-blue' },
       children: [
-        { label: 'Generate Document', route: '/documents/generate', icon: 'lucideFilePlus' }
+        { label: 'Generate Document', labelKey: 'NAV.GENERATE_DOCUMENT', route: '/documents/generate', icon: 'lucideFilePlus' }
       ]
     },
     {
       label: 'Chats',
+      labelKey: 'NAV.CHATS',
       icon: 'icon-chats.svg',
       route: '/chats',
     },
     {
       label: 'Notifications',
+      labelKey: 'NAV.NOTIFICATIONS',
       icon: 'icon-notifications.svg',
       route: '/notifications',
     },
     {
       label: 'Payments',
+      labelKey: 'NAV.PAYMENTS',
       icon: 'lucideCreditCard',
       route: '/payments/subscriptions',
       children: [
-        { label: 'Subscriptions', route: '/payments/subscriptions' },
-        { label: 'Billing History', route: '/payments/billing-history' }
+        { label: 'Subscriptions', labelKey: 'NAV.SUBSCRIPTIONS', route: '/payments/subscriptions' },
+        { label: 'Billing History', labelKey: 'NAV.BILLING_HISTORY', route: '/payments/billing-history' }
       ]
     },
     {
       label: 'Settings',
+      labelKey: 'NAV.SETTINGS',
       icon: 'icon-settings.svg',
       route: '/settings',
     },
     {
       label: 'Audit Logs',
+      labelKey: 'NAV.AUDIT_LOGS',
       icon: 'icon-activity-log.svg',
       route: '/audit-logs',
       adminOnly: true,

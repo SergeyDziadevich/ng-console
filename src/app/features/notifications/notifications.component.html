@@ -5,7 +5,7 @@
       src="/assets/icons/icon-notifications.svg"
       alt="icon"
     />
-    Notifications
+    {{ 'NOTIFICATIONS.TITLE' | translate }}
     <span
       class="status-badge"
       [class.offline]="!isOnline()"
@@ -48,7 +48,7 @@
                 class="btn-mark-read"
                 (click)="markAsRead(msg.id)"
               >
-                Mark as read
+                {{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}
               </button>
             }
             @if (msg.timestamp) {
