@@ -12,6 +12,8 @@ import { form, FormField, FormRoot, required, min } from '@angular/forms/signals
 import { AuthService } from '../../../../services/auth.service';
 import { ConfirmDialogComponent, SpinnerComponent } from '@ng-console-platform/ui';
 
+import { TranslatePipe } from '../../../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-ticket-detail',
   standalone: true,
@@ -25,6 +27,7 @@ import { ConfirmDialogComponent, SpinnerComponent } from '@ng-console-platform/u
     FormRoot,
     ConfirmDialogComponent,
     SpinnerComponent,
+    TranslatePipe,
   ],
   templateUrl: './ticket-detail.component.html',
 })
