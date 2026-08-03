@@ -6,9 +6,11 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideEdit, lucideTrash2, lucideArrowUp, lucideArrowDown, lucideArrowUpDown } from '@ng-icons/lucide';
 import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 
+import { TranslatePipe } from '../../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-users-table',
-  imports: [HasPermissionDirective, ClickOutsideDirective, NgIconComponent, ConfirmDialogComponent],
+  imports: [HasPermissionDirective, ClickOutsideDirective, NgIconComponent, ConfirmDialogComponent, TranslatePipe],
   templateUrl: './users-table.html',
   styleUrl: './users-table.scss',
   viewProviders: [provideIcons({ lucideEdit, lucideTrash2, lucideArrowUp, lucideArrowDown, lucideArrowUpDown })],

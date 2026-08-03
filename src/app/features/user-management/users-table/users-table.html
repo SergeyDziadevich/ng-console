@@ -17,7 +17,7 @@
             (click)="onNameTitleClick()"
             (keyup.enter)="onNameTitleClick()"
           >
-            Name
+            {{ 'USER_MANAGEMENT.NAME' | translate }}
             @if (searchName()) {
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
             }
@@ -27,7 +27,7 @@
           </button>
           @if (isNameSearchVisible()) {
             <div class="mt-1.5 -mx-1">
-              <input type="text" [value]="searchName()" (input)="updateSearchName($event)" (click)="$event.stopPropagation()" class="border border-gray-300 dark:border-gray-600 px-2 py-1 text-xs rounded font-normal text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Search name..." />
+              <input type="text" [value]="searchName()" (input)="updateSearchName($event)" (click)="$event.stopPropagation()" class="border border-gray-300 dark:border-gray-600 px-2 py-1 text-xs rounded font-normal text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" [placeholder]="'COMMON.SEARCH' | translate" />
             </div>
           }
         </th>
@@ -38,7 +38,7 @@
             (click)="onEmailTitleClick()"
             (keyup.enter)="onEmailTitleClick()"
           >
-            Email
+            {{ 'USER_MANAGEMENT.EMAIL' | translate }}
             @if (searchEmail()) {
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
             }
@@ -48,13 +48,13 @@
           </button>
           @if (isEmailSearchVisible()) {
             <div class="mt-1.5 -mx-1">
-              <input type="text" [value]="searchEmail()" (input)="updateSearchEmail($event)" (click)="$event.stopPropagation()" class="border border-gray-300 dark:border-gray-600 px-2 py-1 text-xs rounded font-normal text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Search email..." />
+              <input type="text" [value]="searchEmail()" (input)="updateSearchEmail($event)" (click)="$event.stopPropagation()" class="border border-gray-300 dark:border-gray-600 px-2 py-1 text-xs rounded font-normal text-gray-700 dark:text-gray-300 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" [placeholder]="'COMMON.SEARCH' | translate" />
             </div>
           }
         </th>
         <th class="table-th cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 select-none" (click)="sortBy('role')">
           <div class="flex items-center gap-1">
-            Role
+            {{ 'USER_MANAGEMENT.ROLE' | translate }}
             @if (sortColumn() === 'role') {
               <ng-icon [name]="sortDirection() === 'asc' ? 'lucideArrowUp' : 'lucideArrowDown'" class="w-3 h-3 text-gray-700 dark:text-gray-300"></ng-icon>
             }
@@ -68,7 +68,7 @@
             }
           </div>
         </th>
-        <th class="table-th text-right">Actions</th>
+        <th class="table-th text-right">{{ 'USER_MANAGEMENT.ACTIONS' | translate }}</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -123,7 +123,7 @@
               class="table-action-btn bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-500 text-white"
               *appHasPermission="'edit-user'"
               (click)="editUser(user)"
-              title="Edit"
+              [title]="'COMMON.EDIT' | translate"
             >
               <ng-icon class="w-4 h-4" name="lucideEdit"></ng-icon>
             </button>
@@ -131,7 +131,7 @@
               class="table-action-btn bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-500 text-white"
               *appHasPermission="'delete-user'"
               (click)="confirmDelete(user)"
-              title="Delete"
+              [title]="'COMMON.DELETE' | translate"
             >
               <ng-icon class="w-4 h-4" name="lucideTrash2"></ng-icon>
             </button>
@@ -139,7 +139,7 @@
         </tr>
       } @empty {
         <tr>
-          <td class="px-6 py-10 text-center text-gray-400" colspan="5">No users found.</td>
+          <td class="px-6 py-10 text-center text-gray-400" colspan="5">{{ 'USER_MANAGEMENT.NO_USERS_FOUND' | translate }}</td>
         </tr>
       }
     </tbody>
@@ -191,10 +191,10 @@
   <app-confirm-dialog
     (confirmAction)="deleteUser()"
     (cancelAction)="cancelDelete()"
-    title="Delete User"
+    [title]="'USER_MANAGEMENT.DELETE_USER' | translate"
     type="danger"
-    confirmText="Delete"
-    cancelText="Cancel"
+    [confirmText]="'COMMON.DELETE' | translate"
+    [cancelText]="'COMMON.CANCEL' | translate"
   >
     Are you sure you want to delete
     <span class="font-medium text-gray-700 dark:text-gray-300">{{

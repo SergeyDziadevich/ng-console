@@ -9,9 +9,11 @@ import { TicketStatus, Ticket } from '../../models/ticket.model';
 import { SpinnerComponent } from '@ng-console-platform/ui';
 import { CdkDragDrop, transferArrayItem, CdkDrag, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 
+import { TranslatePipe } from '../../../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-ticket-list',
-  imports: [RouterLink, CommonModule, NgOptimizedImage, SpinnerComponent, CdkDrag, CdkDropList, CdkDropListGroup],
+  imports: [RouterLink, CommonModule, NgOptimizedImage, SpinnerComponent, CdkDrag, CdkDropList, CdkDropListGroup, TranslatePipe],
   templateUrl: './ticket-list.component.html',
   styleUrl: './ticket-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

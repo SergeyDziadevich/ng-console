@@ -3,13 +3,13 @@
   [error]="error()"
   (closeModal)="close()"
   (submitted)="onSubmit()"
-  title="Add New User"
-  submitLabel="Add User"
+  [title]="'USER_MANAGEMENT.ADD_USER' | translate"
+  [submitLabel]="'USER_MANAGEMENT.ADD_USER' | translate"
 >
   <img class="w-5 h-5 text-blue-500 shrink-0" src="/assets/icons/icon-8a89fc23.svg" alt="icon" />
 
   <div class="form-field">
-    <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="add-name">Full Name</label>
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="add-name">{{ 'USER_MANAGEMENT.NAME' | translate }}</label>
     <input
       class="px-4 py-2 form-input transition-all"
       id="add-name"
@@ -27,7 +27,7 @@
   </div>
 
   <div class="form-field">
-    <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="add-email">Email Address</label>
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="add-email">{{ 'USER_MANAGEMENT.EMAIL' | translate }}</label>
     <input
       class="px-4 py-2 form-input transition-all"
       id="add-email"
@@ -63,7 +63,7 @@
   </div>
 
   <div class="form-field">
-    <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="add-role">Role</label>
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="add-role">{{ 'USER_MANAGEMENT.ROLE' | translate }}</label>
     <select
       class="px-4 py-2 form-input border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
       id="add-role"

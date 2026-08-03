@@ -7,10 +7,12 @@ import { TicketService } from '../../features/tickets/services/ticket.service';
 import { DocumentService } from '../../services/document.service';
 import { PaymentsService } from '../../services/payments.service';
 
+import { TranslatePipe } from '../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, SpinnerComponent],
+  imports: [CommonModule, RouterLink, SpinnerComponent, TranslatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

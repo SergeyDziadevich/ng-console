@@ -3,9 +3,11 @@ import { RouterLink } from '@angular/router';
 import { catchError, EMPTY } from 'rxjs';
 import { PaymentsService } from '@app/services/payments.service';
 
+import { TranslatePipe } from '@app/pipes/translate.pipe';
+
 @Component({
   selector: 'app-trial-banner',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './trial-banner.html',
   styleUrl: './trial-banner.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

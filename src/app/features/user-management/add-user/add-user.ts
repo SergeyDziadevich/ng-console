@@ -8,9 +8,11 @@ import { UserRole } from '../../../enums/user-role.enum';
 import { CreateUser } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
+import { TranslatePipe } from '../../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-add-user',
-  imports: [FormField, Toast, UserModal],
+  imports: [FormField, Toast, UserModal, TranslatePipe],
   templateUrl: './add-user.html',
   styleUrl: './add-user.scss',
 })

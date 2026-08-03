@@ -10,11 +10,12 @@ import {
 } from '@angular/core';
 import { AiService } from '@app/services/ai.service';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@app/pipes/translate.pipe';
 
 @Component({
   selector: 'app-command-palette',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   templateUrl: './command-palette.html',
   styleUrls: ['./command-palette.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

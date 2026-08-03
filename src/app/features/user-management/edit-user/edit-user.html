@@ -10,15 +10,15 @@
     [error]="error()"
     (closeModal)="close()"
     (submitted)="onSubmit()"
-    title="Edit User"
-    submitLabel="Save Changes"
+    [title]="'USER_MANAGEMENT.EDIT_USER' | translate"
+    [submitLabel]="'COMMON.SAVE' | translate"
   >
     <!-- Pencil icon -->
     <img class="w-5 h-5 text-blue-500 shrink-0" src="/assets/icons/icon-bc1a93f7.svg" alt="icon" />
 
     <!-- Name -->
     <div class="form-field">
-      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-name">Full Name</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-name">{{ 'USER_MANAGEMENT.NAME' | translate }}</label>
       <input
         class="px-4 py-2 form-input transition-all"
         id="edit-name"
@@ -37,7 +37,7 @@
 
     <!-- Email -->
     <div class="form-field">
-      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-email">Email Address</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-email">{{ 'USER_MANAGEMENT.EMAIL' | translate }}</label>
       <input
         class="px-4 py-2 form-input transition-all"
         id="edit-email"
@@ -56,7 +56,7 @@
 
     <!-- Role -->
     <div class="form-field">
-      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-role">Role</label>
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-role">{{ 'USER_MANAGEMENT.ROLE' | translate }}</label>
       <select
         class="px-4 py-2 form-input border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
         id="edit-role"

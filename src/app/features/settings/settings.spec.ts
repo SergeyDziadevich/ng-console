@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user-service';
 import { ThemeService } from '../../services/theme.service';
 import { IntegrationService } from '../../services/integration.service';
+import { TranslationService } from '../../services/translation.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 describe('Settings', () => {
@@ -26,6 +27,11 @@ describe('Settings', () => {
   let mockThemeService: {
     currentTheme: WritableSignal<string>;
     setTheme: Mock;
+  };
+  let mockTranslationService: {
+    currentLang: WritableSignal<string>;
+    setLanguage: Mock;
+    translate: Mock;
   };
   let mockIntegrationService: {
     getGoogleDriveAuthUrl: Mock;
@@ -56,6 +62,12 @@ describe('Settings', () => {
       setTheme: vi.fn(),
     };
 
+    mockTranslationService = {
+      currentLang: signal('en'),
+      setLanguage: vi.fn(),
+      translate: vi.fn((key: string) => key),
+    };
+
     mockIntegrationService = {
       getGoogleDriveAuthUrl: vi.fn().mockReturnValue(of({ url: 'http://auth-url' })),
       handleGoogleDriveCallback: vi.fn().mockReturnValue(of({})),
@@ -77,6 +89,7 @@ describe('Settings', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: UserService, useValue: mockUserService },
         { provide: ThemeService, useValue: mockThemeService },
+        { provide: TranslationService, useValue: mockTranslationService },
         { provide: IntegrationService, useValue: mockIntegrationService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
@@ -238,5 +251,13 @@ describe('Settings', () => {
       expect(component.errorMessage()).toBe('Failed to disconnect Google Drive.');
       expect(component.isGoogleDriveConnecting()).toBe(false);
     });
+  });
+
+  it('should update language on select change', () => {
+    const event = { target: { value: 'es' } } as unknown as Event;
+    component.updateLanguage(event);
+
+    expect(mockTranslationService.setLanguage).toHaveBeenCalledWith('es');
+    expect(component.toast()).toBe('Language updated successfully!');
   });
 });

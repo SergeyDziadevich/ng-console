@@ -3,7 +3,7 @@
     
     @if (activePlan()) {
       <div class="header">
-        <h2>Your Active Subscription</h2>
+        <h2>{{ 'PAYMENTS.CURRENT_PLAN' | translate }}</h2>
         <p>You are currently subscribed to the <strong>{{ currentPlan()?.name }}</strong> plan.</p>
       </div>
 
