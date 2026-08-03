@@ -1,12 +1,13 @@
-import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExternalSignatureComponent } from './external-signature.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { DocumentService } from '../../../services/document.service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { vi } from 'vitest';
+import SignaturePad from 'signature_pad';
 
-// We must mock signature_pad because it requires canvas
+// mock signature_pad because it requires canvas
 vi.mock('signature_pad', () => {
   const MockSignaturePad = class {
     clear = vi.fn();
@@ -22,8 +23,14 @@ vi.mock('signature_pad', () => {
 describe('ExternalSignatureComponent', () => {
   let component: ExternalSignatureComponent;
   let fixture: ComponentFixture<ExternalSignatureComponent>;
-  let mockDocumentService: any;
-  let mockActivatedRoute: any;
+  let mockDocumentService: {
+    getExternalDocument: ReturnType<typeof vi.fn>;
+    downloadExternalDocument: ReturnType<typeof vi.fn>;
+    signExternalDocument: ReturnType<typeof vi.fn>;
+  };
+  let mockActivatedRoute: {
+    queryParams: Observable<Params>;
+  };
 
   beforeEach(async () => {
     mockDocumentService = {
@@ -52,7 +59,7 @@ describe('ExternalSignatureComponent', () => {
 
     fixture = TestBed.createComponent(ExternalSignatureComponent);
     component = fixture.componentInstance;
-    
+
     Object.defineProperty(component, 'signatureCanvas', {
       value: () => ({
         nativeElement: {
@@ -67,7 +74,7 @@ describe('ExternalSignatureComponent', () => {
       }),
       writable: true,
     });
-    
+
     // Do not call fixture.detectChanges() here to prevent ngOnInit from running automatically
   });
 
@@ -83,7 +90,7 @@ describe('ExternalSignatureComponent', () => {
   it('should load document and preview if token is provided', () => {
     mockActivatedRoute.queryParams = of({ token: 'mock-token' });
     fixture.detectChanges();
-    
+
     expect(component.token()).toBe('mock-token');
     expect(mockDocumentService.getExternalDocument).toHaveBeenCalledWith('mock-token');
     expect(mockDocumentService.downloadExternalDocument).toHaveBeenCalledWith('mock-token');
@@ -95,7 +102,7 @@ describe('ExternalSignatureComponent', () => {
   it('should handle missing token', () => {
     mockActivatedRoute.queryParams = of({});
     fixture.detectChanges();
-    
+
     expect(component.token()).toBeNull();
     expect(component.errorMessage()).toBe('Invalid or missing signature token.');
     expect(component.isLoading()).toBe(false);
@@ -105,7 +112,7 @@ describe('ExternalSignatureComponent', () => {
     mockActivatedRoute.queryParams = of({ token: 'mock-token' });
     mockDocumentService.getExternalDocument.mockReturnValue(throwError(() => new Error('Load error')));
     fixture.detectChanges();
-    
+
     expect(component.errorMessage()).toBe('The signature link is invalid or has expired.');
     expect(component.isLoading()).toBe(false);
   });
@@ -114,7 +121,7 @@ describe('ExternalSignatureComponent', () => {
     mockActivatedRoute.queryParams = of({ token: 'mock-token' });
     mockDocumentService.downloadExternalDocument.mockReturnValue(throwError(() => new Error('Preview error')));
     fixture.detectChanges();
-    
+
     expect(component.documentPreviewUrl()).toBeNull();
     expect(component.isLoading()).toBe(false);
   });
@@ -123,7 +130,7 @@ describe('ExternalSignatureComponent', () => {
     fixture.detectChanges();
     component.signatureName.set('   ');
     component.signDocument();
-    
+
     expect(component.errorMessage()).toBe('Please type your name to sign.');
     expect(mockDocumentService.signExternalDocument).not.toHaveBeenCalled();
   });
@@ -132,17 +139,17 @@ describe('ExternalSignatureComponent', () => {
     fixture.detectChanges();
     component.token.set('mock-token');
     component.signatureName.set('Test User');
-    
+
     const signaturePadMock = {
       clear: vi.fn(),
       isEmpty: vi.fn().mockReturnValue(false),
       toDataURL: vi.fn().mockReturnValue('data:image/png;base64,mocksignature'),
       off: vi.fn(),
-    } as any;
+    } as unknown as SignaturePad;
     component['signaturePad'] = signaturePadMock;
-    
+
     component.signDocument();
-    
+
     expect(component.isSigning()).toBe(false);
     expect(mockDocumentService.signExternalDocument).toHaveBeenCalledWith('mock-token', 'Test User', 'data:image/png;base64,mocksignature');
     expect(component.isSuccess()).toBe(true);
@@ -153,9 +160,9 @@ describe('ExternalSignatureComponent', () => {
     component.token.set('mock-token');
     component.signatureName.set('Test User');
     mockDocumentService.signExternalDocument.mockReturnValue(throwError(() => new Error('Sign error')));
-    
+
     component.signDocument();
-    
+
     expect(component.errorMessage()).toBe('Failed to submit signature. Please try again.');
     expect(component.isSigning()).toBe(false);
   });
@@ -167,11 +174,11 @@ describe('ExternalSignatureComponent', () => {
       isEmpty: vi.fn().mockReturnValue(false),
       toDataURL: vi.fn().mockReturnValue('data:image/png;base64,mocksignature'),
       off: vi.fn(),
-    } as any;
+    } as unknown as SignaturePad;
     component['signaturePad'] = signaturePadMock;
-    
+
     component.clearSignature();
-    
+
     expect(component['signaturePad']!.clear).toHaveBeenCalled();
   });
 
@@ -180,9 +187,9 @@ describe('ExternalSignatureComponent', () => {
     const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
     component.token.set('mock-token');
     component.document.set({ _id: 'doc1', filename: 'test.pdf' });
-    
+
     component.downloadDocument();
-    
+
     expect(windowOpenSpy).toHaveBeenCalledWith(`${environment.apiUrl}/api/documents/external/mock-token/download`, '_blank');
   });
 });
