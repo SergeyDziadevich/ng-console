@@ -1,0 +1,71 @@
+<div class="signature-container">
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading document...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-state">
+      <h2>Error</h2>
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else if (isSuccess()) {
+    <div class="success-state">
+      <h2>Document Successfully Signed!</h2>
+      <p>Thank you. A finalized copy of the PDF will be emailed to both parties shortly.</p>
+    </div>
+  } @else if (document()) {
+    <div class="document-view">
+      <header>
+        <h2>Sign Document: {{ document()?.filename }}</h2>
+        <button class="btn btn-secondary" (click)="downloadDocument()">Download Original PDF</button>
+      </header>
+
+      @if (documentPreviewUrl()) {
+        <div class="pdf-preview-container mb-6 mt-4">
+          <iframe [src]="documentPreviewUrl()" class="w-full h-[500px] border border-gray-300 rounded-lg shadow-sm"></iframe>
+        </div>
+      }
+
+      <section class="signatures">
+        <div class="party-a-signature">
+          <h3>Party A (Sender)</h3>
+          <p class="signed-by">Signed by: <strong>{{ document()?.partyASignatureName || 'User' }}</strong></p>
+        </div>
+
+        <div class="party-b-signature">
+          <h3>Party B (You)</h3>
+          <div class="input-group">
+            <label for="signatureName">Type your full name to digitally sign:</label>
+            <input 
+              id="signatureName" 
+              type="text" 
+              [(ngModel)]="signatureName" 
+              placeholder="e.g. John Doe" 
+              [disabled]="isSigning()"
+            />
+          </div>
+
+          <div class="signature-pad-container mt-6">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-700">Draw Your Signature (Optional):</span>
+              <button class="text-xs text-blue-600 hover:text-blue-800" (click)="clearSignature()">Clear</button>
+            </div>
+            <div class="border border-gray-300 rounded-lg bg-gray-50 h-40 relative group overflow-hidden">
+              <canvas class="w-full h-full cursor-crosshair" #signatureCanvas></canvas>
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30 group-hover:opacity-10 transition-opacity">
+                <span class="text-2xl font-semibold text-gray-400 select-none">Sign Here</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <button class="btn btn-primary" (click)="signDocument()" [disabled]="isSigning() || !signatureName().trim()">
+          {{ isSigning() ? 'Signing...' : 'Approve & Sign Document' }}
+        </button>
+      </footer>
+    </div>
+  }
+</div>

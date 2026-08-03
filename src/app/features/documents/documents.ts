@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { UploadedDocument } from '../../models/document.model';
 import { UserRole } from '../../enums/user-role.enum';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2, lucideSparkles, lucideHardDrive } from '@ng-icons/lucide';
+import { lucideUploadCloud, lucideTrash2, lucideDownload, lucideFile, lucideShare2, lucideFileSignature, lucideEye, lucideFileText, lucideFilePlus, lucideLoader2, lucideSparkles, lucideHardDrive, lucideMail } from '@ng-icons/lucide';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { UserService } from '../../services/user-service';
 import { environment } from '../../../environments/environment';
@@ -41,6 +41,7 @@ import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/rout
       lucideLoader2,
       lucideSparkles,
       lucideHardDrive,
+      lucideMail,
     }),
   ],
 })
@@ -60,6 +61,8 @@ export class DocumentsComponent implements OnInit {
   uploadError = signal<string | null>(null);
   toast = signal<string | null>(null);
   documentToDelete = signal<UploadedDocument | null>(null);
+  documentToInvite = signal<UploadedDocument | null>(null);
+  inviteEmail = signal<string>('');
   isGoogleDriveConnected = signal<boolean>(false);
 
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -250,6 +253,34 @@ export class DocumentsComponent implements OnInit {
 
   openPreview(doc: UploadedDocument, mode: 'sign' | 'view'): void {
     this.router.navigate(['/documents', doc._id, mode], { state: { document: doc } });
+  }
+
+  inviteToSign(doc: UploadedDocument): void {
+    this.documentToInvite.set(doc);
+    this.inviteEmail.set('');
+  }
+
+  cancelInvite(): void {
+    this.documentToInvite.set(null);
+    this.inviteEmail.set('');
+  }
+
+  executeInvite(): void {
+    const doc = this.documentToInvite();
+    const email = this.inviteEmail().trim();
+    if (!doc || !email) return;
+
+    this.documentService.inviteToSign(doc._id, email).subscribe({
+      next: () => {
+        this.showToast(`Invitation sent to ${email}`);
+        this.loadDocuments();
+        this.cancelInvite();
+      },
+      error: (err) => {
+        console.error('Failed to send invitation', err);
+        this.showToast(err.error?.message || 'Failed to send invitation');
+      }
+    });
   }
 
   nextPage(): void {

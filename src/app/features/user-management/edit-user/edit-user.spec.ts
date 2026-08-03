@@ -87,15 +87,29 @@ describe('EditUser', () => {
     expect(component.error()).toBe('Server error');
   });
 
-  it('should handle FileReader onAvatarChange', async () => {
-    vi.useFakeTimers();
+  it('should handle FileReader onAvatarChange', () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     const event = { target: { files: [file] } } as unknown as Event;
 
-    component.onAvatarChange(event);
+    const mockFileReader = {
+      readAsDataURL: vi.fn(),
+      onload: null as (() => void) | null,
+      result: 'data:image/png;base64,mockdata',
+    };
+    vi.stubGlobal(
+      'FileReader',
+      class {
+        constructor() {
+          return mockFileReader;
+        }
+      }
+    );
 
-    vi.advanceTimersByTime(100);
+    component.onAvatarChange(event);
+    if (mockFileReader.onload) {
+      mockFileReader.onload();
+    }
+
     expect(component.avatarPreview()).toContain('data:image/png;base64');
-    vi.useRealTimers();
   });
 });

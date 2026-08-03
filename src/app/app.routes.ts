@@ -14,6 +14,13 @@ export const routes: Routes = [
     loadComponent: () => import('./features/login/login').then((m) => m.Login),
   },
   {
+    path: 'sign-invoice',
+    loadComponent: () =>
+      import('./features/documents/external-signature/external-signature.component').then(
+        (m) => m.ExternalSignatureComponent
+      ),
+  },
+  {
     path: '',
     loadComponent: () => import('@ng-console-platform/ui').then((m) => m.Shell),
     // canMatch prevents downloading the shell (and all child) bundles when not authenticated

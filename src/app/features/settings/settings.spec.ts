@@ -207,18 +207,12 @@ describe('Settings', () => {
 
   describe('Google Drive Integration', () => {
     it('should connect to Google Drive successfully', () => {
-      // Mock window.location.href
-      const originalWindow = { ...window };
-      const windowLocationMock = { href: '' };
-      Object.defineProperty(window, 'location', { value: windowLocationMock, writable: true });
+      const windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
       component.connectGoogleDrive();
       expect(component.isGoogleDriveConnecting()).toBe(true);
       expect(mockIntegrationService.getGoogleDriveAuthUrl).toHaveBeenCalled();
-      expect(window.location.href).toBe('http://auth-url');
-
-      // Restore window
-      Object.defineProperty(window, 'location', { value: originalWindow.location, writable: true });
+      expect(windowOpenSpy).toHaveBeenCalledWith('http://auth-url', '_self');
     });
 
     it('should handle connect to Google Drive error', () => {
