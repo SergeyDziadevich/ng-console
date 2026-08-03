@@ -230,7 +230,7 @@ export class Settings implements OnInit, OnDestroy {
     this.isGoogleDriveConnecting.set(true);
     this.integrationService.getGoogleDriveAuthUrl().subscribe({
       next: (res) => {
-        window.location.href = res.url;
+        window.open(res.url, '_self');
       },
       error: () => {
         this.errorMessage.set('Failed to initiate Google Drive connection.');
