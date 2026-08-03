@@ -91,20 +91,23 @@ describe('EditUser', () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     const event = { target: { files: [file] } } as unknown as Event;
 
-    let instance: { readAsDataURL: ReturnType<typeof vi.fn>; onload: (() => void) | null; result: string } | undefined;
-    class MockFileReader {
-      readAsDataURL = vi.fn();
-      onload: (() => void) | null = null;
-      result = 'data:image/png;base64,mockdata';
-      constructor() {
-        instance = this;
+    const mockFileReader = {
+      readAsDataURL: vi.fn(),
+      onload: null as (() => void) | null,
+      result: 'data:image/png;base64,mockdata',
+    };
+    vi.stubGlobal(
+      'FileReader',
+      class {
+        constructor() {
+          return mockFileReader;
+        }
       }
-    }
-    vi.stubGlobal('FileReader', MockFileReader);
+    );
 
     component.onAvatarChange(event);
-    if (instance?.onload) {
-      instance.onload();
+    if (mockFileReader.onload) {
+      mockFileReader.onload();
     }
 
     expect(component.avatarPreview()).toContain('data:image/png;base64');
