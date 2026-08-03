@@ -118,23 +118,23 @@
         <div class="settings-card">
           <h2 class="settings-card__title">
             <ng-icon name="lucideShieldCheck" class="settings-card__icon"></ng-icon>
-            Two-Factor Authentication (2FA)
+            {{ 'SETTINGS.SECURITY' | translate }}
           </h2>
 
           @if (!qrCodeUrl()) {
             <div class="relative">
-              <p class="settings-2fa__desc">Protect your account with an extra layer of security. We recommend turning this on.</p>
+              <p class="settings-2fa__desc">{{ 'SETTINGS.SECURITY_DESC' | translate }}</p>
               <button
                 class="settings-btn settings-btn--primary"
                 [disabled]="isGenerating()"
                 (click)="generate2FA()"
               >
-                <span>{{ isGenerating() ? 'Generating...' : 'Setup 2FA' }}</span>
+                <span>{{ isGenerating() ? ('SETTINGS.GENERATING' | translate) : ('SETTINGS.SETUP_2FA' | translate) }}</span>
               </button>
             </div>
           } @else {
             <div class="relative animate-fade-in">
-              <p class="settings-2fa__desc">Scan this QR code with your authenticator app (like Google Authenticator or Authy):</p>
+              <p class="settings-2fa__desc">{{ 'SETTINGS.QR_INSTRUCTIONS' | translate }}</p>
 
               <div class="settings-2fa__qr-container">
                 <img
@@ -147,7 +147,7 @@
               <form [formGroup]="twoFactorForm" (ngSubmit)="turnOn2FA()" class="settings-form">
                 <div class="settings-form__group">
                   <label class="settings-form__label" for="code">
-                    Verification Code
+                    {{ 'SETTINGS.VERIFICATION_CODE' | translate }}
                   </label>
                   <input
                     class="settings-form__input"
@@ -164,14 +164,14 @@
                     [disabled]="isSubmitting() || twoFactorForm.invalid"
                     type="submit"
                   >
-                    {{ isSubmitting() ? 'Verifying...' : 'Verify & Enable' }}
+                    {{ isSubmitting() ? ('SETTINGS.VERIFYING' | translate) : ('SETTINGS.VERIFY_ENABLE' | translate) }}
                   </button>
                   <button
                     class="settings-btn settings-btn--secondary"
                     (click)="qrCodeUrl.set(null)"
                     type="button"
                   >
-                    Cancel
+                    {{ 'COMMON.CANCEL' | translate }}
                   </button>
                 </div>
               </form>
@@ -182,7 +182,7 @@
         <div class="settings-card">
           <h2 class="settings-card__title">
             <ng-icon name="lucideLink" class="settings-card__icon"></ng-icon>
-            Integrations
+            {{ 'SETTINGS.INTEGRATIONS' | translate }}
           </h2>
 
           <div class="settings-integration">
@@ -192,9 +192,9 @@
               </div>
               <div>
                 <h3 class="settings-integration__name">
-                  Google Drive
+                  {{ 'SETTINGS.GOOGLE_DRIVE' | translate }}
                 </h3>
-                <p class="settings-integration__desc">Sync your generated documents.</p>
+                <p class="settings-integration__desc">{{ 'SETTINGS.GOOGLE_DRIVE_DESC' | translate }}</p>
               </div>
             </div>
             <div>
@@ -204,7 +204,7 @@
                   [disabled]="isGoogleDriveConnecting()"
                   (click)="disconnectGoogleDrive()"
                 >
-                  {{ isGoogleDriveConnecting() ? 'Disconnecting...' : 'Disconnect' }}
+                  {{ isGoogleDriveConnecting() ? ('SETTINGS.DISCONNECTING' | translate) : ('SETTINGS.DISCONNECT' | translate) }}
                 </button>
               } @else {
                 <button
@@ -212,7 +212,7 @@
                   [disabled]="isGoogleDriveConnecting()"
                   (click)="connectGoogleDrive()"
                 >
-                  {{ isGoogleDriveConnecting() ? 'Connecting...' : 'Connect' }}
+                  {{ isGoogleDriveConnecting() ? ('SETTINGS.CONNECTING' | translate) : ('SETTINGS.CONNECT' | translate) }}
                 </button>
               }
             </div>
