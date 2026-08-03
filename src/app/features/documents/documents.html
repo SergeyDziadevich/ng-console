@@ -110,7 +110,7 @@
                     <ng-icon name="lucideFileSignature" class="w-4 h-4"></ng-icon>
                   </button>
                 }
-                @if (doc.mimeType === 'application/pdf' && doc.status === 'SIGNED_BY_PARTY_A') {
+                @if (doc.mimeType === 'application/pdf' && (doc.status === 'SIGNED_BY_PARTY_A' || doc.status === 'INVITATION_SENT')) {
                   <button class="table-action-btn bg-indigo-500 hover:bg-indigo-600 text-white" (click)="inviteToSign(doc)" title="Invite external signer">
                     <ng-icon name="lucideMail" class="w-4 h-4"></ng-icon>
                   </button>
