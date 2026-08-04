@@ -6,7 +6,6 @@ import { TranslationService } from '@app/services/translation.service';
 
 describe('TranslatePipe', () => {
   let pipe: TranslatePipe;
-  let service: TranslationService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -20,7 +19,6 @@ describe('TranslatePipe', () => {
       ],
     });
 
-    service = TestBed.inject(TranslationService);
     httpMock = TestBed.inject(HttpTestingController);
     pipe = TestBed.runInInjectionContext(() => new TranslatePipe());
 
