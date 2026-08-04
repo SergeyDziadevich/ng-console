@@ -5,7 +5,7 @@
       routerLink="/tickets"
     >
       <img class="h-4 w-4 shrink-0" src="/assets/icons/icon-ccdbfa9e.svg" alt="icon" />
-      Back to Tickets
+      {{ 'COMMON.BACK' | translate }}
     </a>
   </div>
 
@@ -17,7 +17,7 @@
           src="/assets/icons/icon-tickets.svg"
           alt="icon"
         />
-        Create New Ticket
+        {{ 'TICKETS.CREATE_TICKET' | translate }}
       </h1>
     </div>
 
@@ -151,7 +151,7 @@
           type="button"
           routerLink="/tickets"
         >
-          Cancel
+          {{ 'COMMON.CANCEL' | translate }}
         </button>
         <button
           class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -160,9 +160,9 @@
         >
           @if (isSubmitting()) {
             <app-spinner size="sm" color="white"></app-spinner>
-            Creating...
+            {{ 'COMMON.LOADING' | translate }}
           } @else {
-            Create Ticket
+            {{ 'TICKETS.CREATE_TICKET' | translate }}
           }
         </button>
       </div>

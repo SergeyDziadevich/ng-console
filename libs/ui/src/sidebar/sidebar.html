@@ -44,7 +44,7 @@
             }
             @if (!collapsed()) {
               <span class="sidebar-nav-label">
-                {{ item.label }}
+                {{ (item.labelKey ? (item.labelKey | translate) : item.label) }}
                 @if (item.label === 'Chats' && chatService.hasUnreadChats()) {
                   <span class="sidebar-unread-indicator">
                     <span class="sidebar-unread-dot"></span>
@@ -53,7 +53,7 @@
               </span>
               @if (item.badge) {
                 <span class="sidebar-badge {{ item.badge.classes }}">
-                  {{ item.badge.text }}
+                  {{ (item.badge.labelKey ? (item.badge.labelKey | translate) : item.badge.text) }}
                 </span>
               }
               @if (item.children) {
@@ -80,7 +80,7 @@
                       <ng-icon class="w-6 h-6 -ml-1 opacity-70 shrink-0" [name]="child.icon"></ng-icon>
                     }
                   }
-                  {{ child.label }}
+                  {{ (child.labelKey ? (child.labelKey | translate) : child.label) }}
                 </a>
               }
             </div>

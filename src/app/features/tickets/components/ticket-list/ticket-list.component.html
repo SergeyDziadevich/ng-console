@@ -10,7 +10,7 @@
           height="28"
           alt="icon"
         />
-        Tickets
+        {{ 'TICKETS.TITLE' | translate }}
       </h1>
       <label
         class="toolbar-toggle-btn"
@@ -28,7 +28,7 @@
         class="toolbar-filter-group"
       >
         <span class="text-sm font-medium text-gray-500 dark:text-gray-400 px-1 border-r border-gray-200 dark:border-gray-700 mr-1"
-          >Status</span
+          >{{ 'TICKETS.STATUS' | translate }}</span
         >
         <label
           class="status-filter-label"
@@ -39,7 +39,7 @@
             (change)="toggleStatusFilter(TicketStatus.TODO)"
             type="checkbox"
           />
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">To Do</span>
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ 'DASHBOARD.STATUS_TODO' | translate }}</span>
         </label>
         <label
           class="status-filter-label"
@@ -50,7 +50,7 @@
             (change)="toggleStatusFilter(TicketStatus.IN_PROGRESS)"
             type="checkbox"
           />
-          <span class="text-sm font-medium text-blue-700">In Progress</span>
+          <span class="text-sm font-medium text-blue-700">{{ 'DASHBOARD.STATUS_IN_PROGRESS' | translate }}</span>
         </label>
         <label
           class="status-filter-label"
@@ -61,7 +61,7 @@
             (change)="toggleStatusFilter(TicketStatus.DONE)"
             type="checkbox"
           />
-          <span class="text-sm font-medium text-green-700">Done</span>
+          <span class="text-sm font-medium text-green-700">{{ 'DASHBOARD.STATUS_DONE' | translate }}</span>
         </label>
       </div>
 
@@ -105,13 +105,13 @@
         <path d="M5 12h14" />
         <path d="M12 5v14" />
       </svg>
-      Add Ticket
+      {{ 'TICKETS.CREATE_TICKET' | translate }}
     </button>
   </div>
 
   @if (ticketsResource.isLoading()) {
     <div class="flex flex-1 justify-center items-center">
-      <app-spinner size="lg"></app-spinner>
+      <app-spinner size="lg" [loadingText]="'COMMON.LOADING' | translate"></app-spinner>
     </div>
   }
 

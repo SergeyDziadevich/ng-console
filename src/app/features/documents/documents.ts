@@ -15,6 +15,8 @@ import { environment } from '../../../environments/environment';
 import { ConfirmDialogComponent } from '@ng-console-platform/ui';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
 
+import { TranslatePipe } from '../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-documents',
   imports: [
@@ -24,6 +26,7 @@ import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/rout
     RouterLink,
     ConfirmDialogComponent,
     SpinnerComponent,
+    TranslatePipe,
   ],
   templateUrl: './documents.html',
   styleUrls: ['./documents.scss'],

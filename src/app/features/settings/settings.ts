@@ -18,6 +18,8 @@ import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 import { IntegrationService } from '../../services/integration.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ThemeService, Theme } from '../../services/theme.service';
+import { TranslationService, SUPPORTED_LANGUAGES, SupportedLanguage } from '../../services/translation.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   lucideHardDrive,
@@ -27,11 +29,12 @@ import {
   lucideBell,
   lucideShieldCheck,
   lucideLink,
+  lucideGlobe,
 } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-settings',
-  imports: [ReactiveFormsModule, Toast, SpinnerComponent, NgIconComponent],
+  imports: [ReactiveFormsModule, Toast, SpinnerComponent, NgIconComponent, TranslatePipe],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
   viewProviders: [
@@ -43,6 +46,7 @@ import {
       lucideBell,
       lucideShieldCheck,
       lucideLink,
+      lucideGlobe,
     }),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +59,7 @@ export class Settings implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly themeService = inject(ThemeService);
+  private readonly translationService = inject(TranslationService);
   private readonly destroyRef = inject(DestroyRef);
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -72,6 +77,8 @@ export class Settings implements OnInit, OnDestroy {
   googleDriveSyncEnabled = signal<boolean>(false);
   isGoogleDriveConnecting = signal<boolean>(false);
   currentTheme = this.themeService.currentTheme;
+  currentLang = this.translationService.currentLang;
+  supportedLanguages = SUPPORTED_LANGUAGES;
 
   twoFactorForm = this.fb.group({
     code: ['', [Validators.required, Validators.minLength(6)]],
@@ -93,6 +100,9 @@ export class Settings implements OnInit, OnDestroy {
         this.receiveSMS.set(settings.receiveSMS ?? false);
         if (settings.theme && settings.theme !== this.themeService.currentTheme()) {
           this.themeService.setTheme(settings.theme as Theme);
+        }
+        if (settings.language && settings.language !== this.translationService.currentLang()) {
+          this.translationService.setLanguage(settings.language as SupportedLanguage);
         }
         this.googleDriveSyncEnabled.set(settings.googleDriveSyncEnabled ?? false);
         this.finishLoading();
@@ -252,5 +262,21 @@ export class Settings implements OnInit, OnDestroy {
         this.isGoogleDriveConnecting.set(false);
       },
     });
+  }
+
+  updateLanguage(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const newLang = select.value as SupportedLanguage;
+    this.translationService.setLanguage(newLang);
+
+    const user = this.authService.currentUser();
+    if (user?.id) {
+      this.userService.updateUser(user.id, { settings: { language: newLang } }).subscribe({
+        next: () => this.showToast('Language updated successfully!'),
+        error: () => this.errorMessage.set('Failed to save language setting.'),
+      });
+    } else {
+      this.showToast('Language updated successfully!');
+    }
   }
 }

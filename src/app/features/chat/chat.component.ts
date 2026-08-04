@@ -7,9 +7,11 @@ import { AuthService } from '../../services/auth.service';
 import { ChatMessage } from '../../models/chat.model';
 import { ConfirmDialogComponent, SvgIconComponent } from '@ng-console-platform/ui';
 
+import { TranslatePipe } from '../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-chat',
-  imports: [DatePipe, FormsModule, ConfirmDialogComponent, SvgIconComponent],
+  imports: [DatePipe, FormsModule, ConfirmDialogComponent, SvgIconComponent, TranslatePipe],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

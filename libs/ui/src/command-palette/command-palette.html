@@ -7,7 +7,7 @@
     (mousedown)="onDragStart($event)"
   >
     <div class="palette-header">
-      <span>AI Assistant</span>
+      <span>{{ 'NAV.AI_ASSISTANT' | translate }}</span>
       <button class="close-btn" (click)="close()">
         <img
           class="w-5 h-5 opacity-60 hover:opacity-100 transition-opacity"
@@ -20,7 +20,7 @@
     <div class="palette-messages">
       @if (messages().length === 0) {
         <div class="empty-state">
-          <p>Not sure what to ask? Try these examples:</p>
+          <p>{{ 'AI_ASSISTANT.TRY_EXAMPLES' | translate }}</p>
           <div class="examples-list">
             @for (cmd of examples; track $index) {
               <button class="example-btn" (click)="useExample(cmd)">
@@ -52,7 +52,7 @@
         (ngModelChange)="prompt.set($event)"
         (keydown.enter)="submitCommand()"
         type="text"
-        placeholder="Ask anything or use commands... (Cmd+K to close)"
+        [placeholder]="'AI_ASSISTANT.INPUT_PLACEHOLDER' | translate"
       />
     </div>
   </div>

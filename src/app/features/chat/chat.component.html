@@ -2,7 +2,7 @@
   <div class="page-title">
     <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 dark:text-white">
       <img src="/assets/icons/icon-chats.svg" alt="icon" class="h-7 w-7 brightness-0 shrink-0 dark:invert" />
-      Chats
+      {{ 'CHATS.TITLE' | translate }}
     </h1>
   </div>
 
@@ -11,7 +11,7 @@
     <!-- Sidebar / Room List -->
     <div class="sidebar">
       <div class="sidebar-header">
-        <h2>Chats</h2>
+        <h2>{{ 'CHATS.TITLE' | translate }}</h2>
         <button (click)="toggleCreateRoom()">
           <img src="/assets/icons/icon-3874dbd4.svg" alt="icon" />
         </button>
@@ -279,9 +279,9 @@
           <div class="icon-wrapper">
             <img src="/assets/icons/icon-566eb6cf.svg" alt="icon" />
           </div>
-          <h3>Your Messages</h3>
+          <h3>{{ 'CHATS.YOUR_MESSAGES' | translate }}</h3>
           <p>
-            Select a chat from the sidebar or create a new room to start communicating with your team.
+            {{ 'CHATS.EMPTY_DESC' | translate }}
           </p>
         </div>
       }

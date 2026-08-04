@@ -1,7 +1,10 @@
 import { Component, input, output } from '@angular/core';
 
+import { TranslatePipe } from '../../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-user-modal',
+  imports: [TranslatePipe],
   templateUrl: './user-modal.html',
   styleUrl: './user-modal.scss',
 })
