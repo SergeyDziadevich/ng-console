@@ -7,11 +7,13 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, catchError, of } from 'rxjs';
 import { SpinnerComponent } from '@ng-console-platform/ui';
 
+import { TranslatePipe } from '../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-subscriptions',
   templateUrl: './subscriptions.html',
   styleUrl: './subscriptions.scss',
-  imports: [DatePipe, SpinnerComponent],
+  imports: [DatePipe, SpinnerComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubscriptionsComponent {

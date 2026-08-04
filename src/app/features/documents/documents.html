@@ -4,13 +4,13 @@
     <div class="flex flex-col">
       <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 text-gray-900 dark:text-gray-100 dark:text-white">
         <img src="/assets/icons/icon-documents.svg" class="h-7 w-7 brightness-0 shrink-0 dark:invert" alt="icon" />
-        Documents
+        {{ 'DOCUMENTS.TITLE' | translate }}
       </h1>
       <p class="text-gray-500 dark:text-gray-400 text-sm">Upload and manage your files safely.</p>
     </div>
     <a routerLink="/documents/generate" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
       <ng-icon name="lucideFilePlus" class="w-4 h-4"></ng-icon>
-      Generate Document
+      {{ 'DOCUMENTS.GENERATE' | translate }}
     </a>
   </div>
 
@@ -42,25 +42,25 @@
 
     @if (isLoading() && documents().length === 0) {
       <div class="loading">
-        <app-spinner loadingText="Loading documents..."></app-spinner>
+        <app-spinner [loadingText]="'COMMON.LOADING' | translate"></app-spinner>
       </div>
     } @else if (documents().length === 0) {
       <div class="empty-state">
         <ng-icon name="lucideFile"></ng-icon>
-        <p>No documents found.</p>
+        <p>{{ 'DOCUMENTS.NO_DOCUMENTS_FOUND' | translate }}</p>
       </div>
     } @else {
       <table class="data-table">
         <thead>
           <tr>
-            <th>Filename</th>
+            <th>{{ 'DOCUMENTS.DOCUMENT_NAME' | translate }}</th>
             <th>Type</th>
             <th>Size</th>
-            <th>Uploaded On</th>
+            <th>{{ 'DOCUMENTS.CREATED_AT' | translate }}</th>
             @if (isAdmin()) {
               <th>Uploaded By</th>
             }
-            <th>Actions</th>
+            <th>{{ 'COMMON.ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>

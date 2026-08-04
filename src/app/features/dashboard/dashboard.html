@@ -1,7 +1,7 @@
 <div class="p-6 max-w-7xl mx-auto w-full">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">Dashboard</h1>
-    <p class="text-gray-500 dark:text-gray-400 mt-1">Welcome back, {{ currentUser()?.name || 'User' }}!</p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">{{ 'DASHBOARD.TITLE' | translate }}</h1>
+    <p class="text-gray-500 dark:text-gray-400 mt-1">{{ 'DASHBOARD.WELCOME_BACK' | translate: { name: currentUser()?.name || 'User' } }}</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -20,15 +20,15 @@
           ></div>
           <div class="relative z-10 w-full flex flex-col items-center">
             <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-              My Assigned Tickets
+              {{ 'DASHBOARD.MY_ASSIGNED_TICKETS' | translate }}
             </h3>
             <div class="flex items-baseline gap-2">
               <span class="text-4xl font-bold text-blue-600">{{ assignedTicketsCount() }}</span>
-              <span class="text-sm font-medium text-gray-400">tickets</span>
+              <span class="text-sm font-medium text-gray-400">{{ 'DASHBOARD.TICKETS_UNIT' | translate }}</span>
             </div>
             <span
               class="text-xs text-blue-500 mt-2 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-              >Click to view &rarr;</span
+              >{{ 'COMMON.CLICK_TO_VIEW' | translate }}</span
             >
           </div>
         </a>
@@ -39,14 +39,14 @@
           ></div>
           <div class="relative z-10 w-full flex flex-col items-center">
             <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-              My Assigned Tickets
+              {{ 'DASHBOARD.MY_ASSIGNED_TICKETS' | translate }}
             </h3>
             @if (ticketsResource.isLoading()) {
-              <app-spinner size="sm" color="blue" loadingText="Loading..." direction="row"></app-spinner>
+              <app-spinner size="sm" color="blue" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
             } @else {
               <div class="flex items-baseline gap-2">
                 <span class="text-4xl font-bold text-blue-600">0</span>
-                <span class="text-sm font-medium text-gray-400">tickets</span>
+                <span class="text-sm font-medium text-gray-400">{{ 'DASHBOARD.TICKETS_UNIT' | translate }}</span>
               </div>
             }
           </div>
@@ -59,7 +59,7 @@
       class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col h-full group"
     >
       <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
-        Ticket Status
+        {{ 'DASHBOARD.TICKET_STATUS' | translate }}
       </h3>
       <div class="flex-1 flex items-center justify-between gap-6">
         <!-- Donut Chart -->
@@ -77,19 +77,19 @@
         <div class="flex flex-col justify-center gap-2 flex-1">
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium">
-              <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span> Todo
+              <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span> {{ 'DASHBOARD.STATUS_TODO' | translate }}
             </div>
             <span class="font-bold text-gray-800 dark:text-gray-200">{{ todoTicketsCount() }}</span>
           </div>
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium">
-              <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> In Progress
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> {{ 'DASHBOARD.STATUS_IN_PROGRESS' | translate }}
             </div>
             <span class="font-bold text-gray-800 dark:text-gray-200">{{ inProgressTicketsCount() }}</span>
           </div>
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium">
-              <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> Done
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> {{ 'DASHBOARD.STATUS_DONE' | translate }}
             </div>
             <span class="font-bold text-gray-800 dark:text-gray-200">{{ doneTicketsCount() }}</span>
           </div>
@@ -109,18 +109,18 @@
         ></div>
         <div class="relative z-10 w-full flex flex-col items-center">
           <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-            Total Documents
+            {{ 'DASHBOARD.TOTAL_DOCUMENTS' | translate }}
           </h3>
           @if (isLoadingDocuments()) {
-            <app-spinner size="sm" color="yellow" loadingText="Loading..." direction="row"></app-spinner>
+            <app-spinner size="sm" color="yellow" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
           } @else {
             <div class="flex items-baseline gap-2">
               <span class="text-4xl font-bold text-yellow-600">{{ totalDocuments() }}</span>
-              <span class="text-sm font-medium text-gray-400">files</span>
+              <span class="text-sm font-medium text-gray-400">{{ 'DASHBOARD.FILES_UNIT' | translate }}</span>
             </div>
             <span
               class="text-xs text-yellow-500 mt-2 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-              >Click to view &rarr;</span
+              >{{ 'COMMON.CLICK_TO_VIEW' | translate }}</span
             >
           }
         </div>
@@ -140,14 +140,14 @@
           ></div>
           <div class="relative z-10 w-full flex flex-col items-center">
             <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-              Current Plan
+              {{ 'DASHBOARD.CURRENT_PLAN' | translate }}
             </h3>
             <div class="flex items-baseline gap-2">
               <span class="text-3xl font-bold text-purple-600">{{ planName() }}</span>
             </div>
             <span
               class="text-xs text-purple-500 mt-2 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-              >Manage subscription &rarr;</span
+              >{{ 'DASHBOARD.MANAGE_SUBSCRIPTION' | translate }}</span
             >
           </div>
         </a>
@@ -158,15 +158,15 @@
         >
           <div class="relative z-10 w-full flex flex-col items-center text-center">
             <h3 class="text-sm font-semibold text-indigo-100 uppercase tracking-wider mb-2">
-              Unlock Premium
+              {{ 'DASHBOARD.UNLOCK_PREMIUM' | translate }}
             </h3>
             <div class="flex items-baseline gap-2 mb-2">
-              <span class="text-2xl font-bold">Upgrade Now</span>
+              <span class="text-2xl font-bold">{{ 'DASHBOARD.UPGRADE_NOW' | translate }}</span>
             </div>
-            <p class="text-xs text-indigo-100 mb-2">Get access to all features</p>
+            <p class="text-xs text-indigo-100 mb-2">{{ 'DASHBOARD.ACCESS_ALL_FEATURES' | translate }}</p>
             <span
               class="text-xs font-medium bg-white dark:bg-gray-800/20 px-3 py-1 rounded-full group-hover:bg-white dark:hover:bg-gray-800/30 transition-colors"
-              >View plans &rarr;</span
+              >{{ 'DASHBOARD.VIEW_PLANS' | translate }}</span
             >
           </div>
         </a>
@@ -177,19 +177,19 @@
   <!-- Tickets In Progress Section -->
   <div class="mt-10">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">Tickets In Progress</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">{{ 'DASHBOARD.TICKETS_IN_PROGRESS' | translate }}</h2>
       <a
         class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
         [queryParams]="{ status: 'in progress' }"
         routerLink="/tickets"
       >
-        View all
+        {{ 'COMMON.VIEW_ALL' | translate }}
       </a>
     </div>
 
     @if (ticketsResource.isLoading()) {
       <div class="flex gap-3 items-center justify-center py-10 text-gray-500 dark:text-gray-400">
-        <app-spinner size="sm" color="blue" loadingText="Loading tickets..." direction="row"></app-spinner>
+        <app-spinner size="sm" color="blue" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
       </div>
     } @else if (inProgressTickets().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -207,12 +207,12 @@
               <span
                 class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0 uppercase tracking-wider"
               >
-                In Progress
+                {{ 'DASHBOARD.STATUS_IN_PROGRESS' | translate }}
               </span>
             </div>
 
             <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4 flex-1">
-              {{ ticket.about || ticket.description || 'No description provided.' }}
+              {{ ticket.about || ticket.description || ('COMMON.NO_DESCRIPTION' | translate) }}
             </p>
 
             <div
@@ -250,9 +250,9 @@
             alt="icon"
           />
         </div>
-        <h3 class="text-gray-900 dark:text-gray-100 font-semibold mb-1">No tasks in progress</h3>
+        <h3 class="text-gray-900 dark:text-gray-100 font-semibold mb-1">{{ 'DASHBOARD.NO_TASKS_IN_PROGRESS' | translate }}</h3>
         <p class="text-gray-500 dark:text-gray-400 text-sm">
-          When tasks are moved to "In Progress", they will appear here.
+          {{ 'DASHBOARD.NO_TASKS_IN_PROGRESS_DESC' | translate }}
         </p>
       </div>
     }
@@ -261,19 +261,19 @@
   <!-- Sounds Good (Done Tickets) Section -->
   <div class="mt-10 mb-10">
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">Tickets Done</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">{{ 'DASHBOARD.TICKETS_DONE' | translate }}</h2>
       <a
         class="text-sm font-medium text-green-600 hover:text-green-800 transition-colors"
         [queryParams]="{ status: 'done' }"
         routerLink="/tickets"
       >
-        View all done
+        {{ 'DASHBOARD.VIEW_ALL_DONE' | translate }}
       </a>
     </div>
 
     @if (ticketsResource.isLoading()) {
       <div class="flex gap-3 items-center justify-center py-10 text-gray-500 dark:text-gray-400">
-        <app-spinner size="sm" color="green" loadingText="Loading tickets..." direction="row"></app-spinner>
+        <app-spinner size="sm" color="green" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
       </div>
     } @else if (doneTickets().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -291,12 +291,12 @@
               <span
                 class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-green-50 text-green-700 border border-green-200 shrink-0 uppercase tracking-wider"
               >
-                Done
+                {{ 'DASHBOARD.STATUS_DONE' | translate }}
               </span>
             </div>
 
             <p class="text-sm text-gray-400 line-clamp-3 mb-4 flex-1">
-              {{ ticket.about || ticket.description || 'No description provided.' }}
+              {{ ticket.about || ticket.description || ('COMMON.NO_DESCRIPTION' | translate) }}
             </p>
 
             <div
@@ -327,8 +327,8 @@
             alt="icon"
           />
         </div>
-        <h3 class="text-gray-900 dark:text-gray-100 font-semibold mb-1">No completed tasks</h3>
-        <p class="text-gray-500 dark:text-gray-400 text-sm">When tasks are marked as "Done", they will appear here.</p>
+        <h3 class="text-gray-900 dark:text-gray-100 font-semibold mb-1">{{ 'DASHBOARD.NO_COMPLETED_TASKS' | translate }}</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">{{ 'DASHBOARD.NO_COMPLETED_TASKS_DESC' | translate }}</p>
       </div>
     }
   </div>

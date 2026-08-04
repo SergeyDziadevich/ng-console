@@ -30,7 +30,7 @@
           <!-- Email -->
           <div class="mb-5">
             <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">
-              Email address
+              {{ 'LOGIN.EMAIL' | translate }}
             </label>
             <input
               id="email"
@@ -57,7 +57,7 @@
           <!-- Password -->
           <div class="mb-6">
             <label class="block text-sm font-medium text-gray-300 mb-1.5" for="password">
-              Password
+              {{ 'LOGIN.PASSWORD' | translate }}
             </label>
             <input
               class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
@@ -103,10 +103,10 @@
                   src="/assets/icons/icon-920aa01c.svg"
                   alt="icon"
                 />
-                Signing in…
+                {{ 'COMMON.LOADING' | translate }}
               </span>
             } @else {
-              Sign in
+              {{ 'LOGIN.SIGN_IN' | translate }}
             }
           </button>
 

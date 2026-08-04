@@ -3,7 +3,7 @@
   <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
     <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 dark:text-white">
       <img class="h-7 w-7 brightness-0 shrink-0 dark:invert" src="/assets/icons/icon-users.svg" alt="icon" />
-      User Management
+      {{ 'USER_MANAGEMENT.TITLE' | translate }}
     </h1>
     <a
       class="flex items-center gap-2 px-4 py-2 btn-primary"
@@ -11,7 +11,7 @@
       routerLink="add-user"
     >
       <img class="w-4 h-4 shrink-0" src="/assets/icons/icon-plus.svg" alt="add icon" />
-      Add User
+      {{ 'USER_MANAGEMENT.ADD_USER' | translate }}
     </a>
   </div>
 
@@ -40,8 +40,8 @@
         alt="icon"
       />
       <div>
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Something went wrong</h2>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">We couldn't load the users. Please try again.</p>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">{{ 'COMMON.ERROR' | translate }}</h2>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ 'USER_MANAGEMENT.NO_USERS_FOUND' | translate }}</p>
       </div>
       <button class="mt-2 px-5 py-2 btn-primary" (click)="usersResource.reload()">Retry</button>
     </div>

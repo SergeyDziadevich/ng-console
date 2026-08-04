@@ -14,7 +14,8 @@ NgConsole is the frontend Angular application that serves as the administrative 
 - **AI Assistant:** An integrated, intelligent chat assistant powered by Firebase Genkit AI to help users navigate, perform tasks, and search through uploaded documents using Retrieval-Augmented Generation (RAG).
 - **Analytics Dashboard:** A centralized dashboard displaying system metrics and insights.
 - **User Management:** Create, edit, and manage user accounts with role-based access control.
-- **Profile & Settings:** Personalized user settings allowing for account configuration, theme customization, notification preferences, and integration management.
+- **Profile & Settings:** Personalized user settings allowing for account configuration, theme customization, display language selection, notification preferences, and integration management.
+- **Multi-Language & i18n Support:** Comprehensive localization for English (`en`), Spanish (`es`), German (`de`), and French (`fr`). Includes real-time language switching from top bar and settings, persistent locale preferences, and complete translation coverage across all screens.
 - **Document Management:** Upload, delete, securely share documents via short public links without requiring user authentication, digitally sign PDF documents, and dynamically generate new PDFs using customizable templates.
 - **Google Drive Integration:** Automated Document Backup — Securely connect users to their personal Google Drive accounts using native OAuth2, enabling automated backups and real-time synchronization of all generated documents.
 - **Subscription Management:** Full Stripe payment integration for upgrading plans, viewing current subscription status (with start/end dates), and accessing the Stripe billing portal.
@@ -27,6 +28,7 @@ NgConsole is the frontend Angular application that serves as the administrative 
 ## Main Functionality
 
 - **AI Integration:** Leverages Firebase Genkit AI (`@genkit-ai/google-genai`) for intelligent assistant features directly in the browser.
+- **Internationalization (i18n):** Reactive, signal-driven translation engine with dynamic locale switching (`en`, `es`, `de`, `fr`), locale fallback, and seamless asset dictionary loading.
 - **Modern UI Framework:** Built with Angular 22 and styled with TailwindCSS 4 for a responsive and sleek user experience.
 - **Real-Time Interactions:** Integrated with Socket.IO client for live chat, notifications, and instant updates.
 - **Robust Testing:** Configured with Vitest for fast unit testing and Playwright for reliable end-to-end (e2e) tests.

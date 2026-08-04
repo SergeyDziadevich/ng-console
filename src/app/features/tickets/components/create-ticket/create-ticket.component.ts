@@ -8,10 +8,12 @@ import { UserService } from '../../../../services/user-service';
 import { Ticket, TicketPriority, TicketStatus } from '../../models/ticket.model';
 import { Toast, SpinnerComponent } from '@ng-console-platform/ui';
 
+import { TranslatePipe } from '../../../../pipes/translate.pipe';
+
 @Component({
   selector: 'app-create-ticket',
   standalone: true,
-  imports: [FormField, FormRoot, RouterLink, CommonModule, Toast, SpinnerComponent],
+  imports: [FormField, FormRoot, RouterLink, CommonModule, Toast, SpinnerComponent, TranslatePipe],
   templateUrl: './create-ticket.component.html',
 })
 export class CreateTicketComponent implements OnInit {
