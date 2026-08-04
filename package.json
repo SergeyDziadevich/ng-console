@@ -28,7 +28,7 @@
     "@genkit-ai/google-genai": "^1.36.0",
     "@ng-icons/core": "^34.0.0",
     "@ng-icons/lucide": "^34.0.0",
-    "@stripe/stripe-js": "^9.9.0",
+    "@stripe/stripe-js": "^9.12.1",
     "ngx-quill": "^31.0.1",
     "quill": "^2.0.3",
     "rxjs": "~7.8.0",
