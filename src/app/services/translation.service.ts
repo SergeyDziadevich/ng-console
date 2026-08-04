@@ -44,13 +44,14 @@ export class TranslationService {
     this.setLanguage(validLang);
   }
 
-  async setLanguage(lang: SupportedLanguage): Promise<void> {
+  async setLanguage(lang: string): Promise<void> {
     if (!['en', 'es', 'de', 'fr'].includes(lang)) {
       return;
     }
-    this.langSignal.set(lang);
-    localStorage.setItem('app-lang', lang);
-    document.documentElement.lang = lang;
+    const supportedLang = lang as SupportedLanguage;
+    this.langSignal.set(supportedLang);
+    localStorage.setItem('app-lang', supportedLang);
+    document.documentElement.lang = supportedLang;
 
     this.isLoadingSignal.set(true);
     try {

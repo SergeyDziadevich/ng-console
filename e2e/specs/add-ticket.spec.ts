@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { TicketFlow } from '../flows/ticket.flow';
 
 test.describe('Ticket Management', () => {
