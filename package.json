@@ -65,7 +65,7 @@
     "dotenv": "^17.4.2",
     "eslint": "^10.3.0",
     "jsdom": "^29.1.1",
-    "nx": "23.0.1",
+    "nx": "23.1.1",
     "postcss": "^8.5.24",
     "prettier": "^3.8.1",
     "prettier-plugin-organize-attributes": "^1.0.0",
