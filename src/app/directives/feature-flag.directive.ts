@@ -1,4 +1,4 @@
-import { Directive, effect, inject, input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, effect, inject, input, linkedSignal, TemplateRef, ViewContainerRef } from '@angular/core';
 import { FeatureFlagService } from '../services/feature-flag.service';
 
 @Directive({
@@ -12,12 +12,15 @@ export class FeatureFlagDirective {
   /** Feature flag key passed to structural directive */
   appFeatureFlag = input.required<string>();
 
+  /** Reactive state linked to input flag key and feature flag service state */
+  readonly isEnabled = linkedSignal(() => {
+    const flagKey = this.appFeatureFlag();
+    return this.featureFlagService.getFlagSignal(flagKey)();
+  });
+
   constructor() {
     effect(() => {
-      const flagKey = this.appFeatureFlag();
-      const isEnabled = this.featureFlagService.getFlagSignal(flagKey)();
-
-      if (isEnabled) {
+      if (this.isEnabled()) {
         if (this.viewContainer.length === 0) {
           this.viewContainer.createEmbeddedView(this.templateRef);
         }
