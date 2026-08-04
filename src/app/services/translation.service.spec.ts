@@ -72,7 +72,7 @@ describe('TranslationService', () => {
   });
 
   it('should ignore unsupported language codes', async () => {
-    await service.setLanguage('invalid' as any);
+    await service.setLanguage('invalid');
     expect(service.currentLang()).toBe('en');
   });
 });
