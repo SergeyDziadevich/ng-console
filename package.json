@@ -54,7 +54,7 @@
     "@nx/workspace": "23.0.1",
     "@oxc-project/runtime": "^0.115.0",
     "@playwright/test": "^1.62.0",
-    "@schematics/angular": "^22.0.8",
+    "@schematics/angular": "^22.1.2",
     "@swc/helpers": "~0.5.18",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^25.9.3",
