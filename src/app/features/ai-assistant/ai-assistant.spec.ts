@@ -62,4 +62,26 @@ describe('AiAssistant', () => {
       expect(component.isUsersMessage('Here are the users')).toBe(false);
     });
   });
+
+  describe('clearChat', () => {
+    it('should clear messages and error state', () => {
+      component.messages.set([{ role: 'user', text: 'Hello' }]);
+      component.error.set('Something went wrong');
+
+      component.clearChat();
+
+      expect(component.messages()).toEqual([]);
+      expect(component.error()).toBeNull();
+    });
+  });
+
+  describe('useSuggestion', () => {
+    it('should set prompt to suggestion text', () => {
+      component.useSuggestion('Here is the list of all users:');
+      // prompt is cleared when send() runs, but message is updated
+      expect(component.messages().length).toBe(1);
+      expect(component.messages()[0].text).toBe('Here is the list of all users:');
+    });
+  });
 });
+
