@@ -56,6 +56,23 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'customers',
+        loadComponent: () =>
+          import('./features/customers/customers').then((m) => m.Customers),
+        children: [
+          {
+            path: 'add-customer',
+            loadComponent: () =>
+              import('./features/customers/add-customer/add-customer').then((m) => m.AddCustomer),
+          },
+          {
+            path: 'edit-customer/:id',
+            loadComponent: () =>
+              import('./features/customers/edit-customer/edit-customer').then((m) => m.EditCustomer),
+          },
+        ],
+      },
+      {
         path: 'tickets',
         children: [
           {

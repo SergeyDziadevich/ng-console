@@ -171,7 +171,11 @@ export class AiAssistant {
   scrollToBottom() {
     const el = this.chatContainer()?.nativeElement;
     if (el) {
-      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+      if (typeof el.scrollTo === 'function') {
+        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+      } else {
+        el.scrollTop = el.scrollHeight;
+      }
     }
   }
 
