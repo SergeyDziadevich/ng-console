@@ -1,0 +1,112 @@
+<app-user-modal
+  [title]="'CUSTOMERS.EDIT_CUSTOMER' | translate"
+  [submitLabel]="'CUSTOMERS.EDIT_CUSTOMER' | translate"
+  [submitDisabled]="isSubmitDisabled()"
+  [error]="error()"
+  (closeModal)="close()"
+  (submitted)="onSubmit()"
+>
+  <ng-icon modal-icon name="lucideBuilding2" class="w-5 h-5 text-indigo-600 dark:text-indigo-400"></ng-icon>
+
+  <div class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="edit-cust-name">
+        {{ 'CUSTOMERS.NAME' | translate }} *
+      </label>
+      <input
+        id="edit-cust-name"
+        name="customerName"
+        type="text"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+        [placeholder]="'CUSTOMERS.NAME_PLACEHOLDER' | translate"
+        class="w-full px-3.5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-colors"
+        required
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="edit-cust-email">
+        {{ 'CUSTOMERS.EMAIL' | translate }}
+      </label>
+      <input
+        id="edit-cust-email"
+        name="customerEmail"
+        type="email"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+        [placeholder]="'CUSTOMERS.EMAIL_PLACEHOLDER' | translate"
+        class="w-full px-3.5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-colors"
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="edit-cust-phone">
+        {{ 'CUSTOMERS.PHONE' | translate }}
+      </label>
+      <input
+        id="edit-cust-phone"
+        name="customerPhone"
+        type="text"
+        [ngModel]="phone()"
+        (ngModelChange)="phone.set($event)"
+        [placeholder]="'CUSTOMERS.PHONE_PLACEHOLDER' | translate"
+        class="w-full px-3.5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-colors"
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="edit-cust-level">
+        {{ 'CUSTOMERS.LEVEL' | translate }}
+      </label>
+      <select
+        id="edit-cust-level"
+        name="customerLevel"
+        [ngModel]="level()"
+        (ngModelChange)="level.set($event)"
+        class="w-full px-3.5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-colors cursor-pointer"
+      >
+        @for (lvl of customerLevels; track lvl) {
+          <option [ngValue]="lvl">{{ ('CUSTOMERS.LEVEL_' + (lvl | uppercase)) | translate }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="edit-cust-parent">
+        {{ 'CUSTOMERS.PARENT_CUSTOMER' | translate }}
+      </label>
+      <select
+        id="edit-cust-parent"
+        name="customerParent"
+        [ngModel]="parentId()"
+        (ngModelChange)="parentId.set($event)"
+        class="w-full px-3.5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-colors cursor-pointer"
+      >
+        <option [ngValue]="undefined">{{ 'CUSTOMERS.NO_PARENT' | translate }}</option>
+        @for (parentCust of existingCustomers(); track parentCust.id) {
+          <option [ngValue]="parentCust.id">{{ parentCust.name }} ({{ ('CUSTOMERS.LEVEL_' + (parentCust.level | uppercase)) | translate }})</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="edit-cust-info">
+        {{ 'CUSTOMERS.INFORMATIONS' | translate }}
+      </label>
+      <textarea
+        id="edit-cust-info"
+        name="customerInfo"
+        rows="3"
+        [ngModel]="informations()"
+        (ngModelChange)="informations.set($event)"
+        [placeholder]="'CUSTOMERS.INFO_PLACEHOLDER' | translate"
+        class="w-full px-3.5 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-colors resize-none"
+      ></textarea>
+    </div>
+  </div>
+</app-user-modal>
+
+@if (showToast()) {
+  <app-toast [message]="'CUSTOMERS.UPDATED_SUCCESS' | translate" type="success"></app-toast>
+}

@@ -6,7 +6,7 @@ import { AuthResponse } from '@app/services/auth.service';
 import { ChatService } from '@app/services/chat.service';
 import { TranslatePipe } from '@app/pipes/translate.pipe';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp } from '@ng-icons/lucide';
+import { lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp, lucideBuilding2 } from '@ng-icons/lucide';
 
 interface NavItem {
   label: string;
@@ -27,7 +27,7 @@ interface NavItem {
   imports: [RouterLink, RouterLinkActive, NgIconComponent, TranslatePipe],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
-  viewProviders: [provideIcons({ lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp })],
+  viewProviders: [provideIcons({ lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp, lucideBuilding2 })],
 })
 export class Sidebar {
   chatService = inject(ChatService);
@@ -64,6 +64,12 @@ export class Sidebar {
       labelKey: 'NAV.USER_MANAGEMENT',
       icon: 'icon-users.svg',
       route: '/user-management',
+    },
+    {
+      label: 'Customers',
+      labelKey: 'NAV.CUSTOMERS',
+      icon: 'lucideBuilding2',
+      route: '/customers',
     },
     {
       label: 'Tickets',
