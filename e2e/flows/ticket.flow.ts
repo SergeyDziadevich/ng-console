@@ -49,7 +49,7 @@ export class TicketFlow {
     await this.page.reload();
 
     // Verify the ticket exists in the list using an auto-retrying locator
-    const ticketCard = this.page.locator('.bg-white.rounded-lg.shadow h3', { hasText: data.title });
+    const ticketCard = this.page.locator('.ticket-card h3', { hasText: data.title });
     await expect(ticketCard).toBeVisible();
   }
 }
