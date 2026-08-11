@@ -44,8 +44,9 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# Environment secrets — never commit the real .env
+# Environment secrets — never commit the real .env or config.json
 .env
+src/assets/config.json
 
 tasks.json
 
