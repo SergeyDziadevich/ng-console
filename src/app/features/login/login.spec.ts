@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Signal, WritableSignal } from '@angular/core';
+import { Signal, WritableSignal, signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { Login, GoogleCredentialResponse } from './login';
 import { AuthService } from '../../services/auth.service';
+import { ConfigService } from '../../services/config.service';
 
 interface MockAuthService {
   login: Mock;
@@ -47,6 +48,7 @@ describe('Login Component', () => {
       providers: [
         { provide: AuthService, useValue: mockAuthService },
         { provide: Router, useValue: mockRouter },
+        { provide: ConfigService, useValue: { config: signal({ googleClientId: 'test-google-client-id' }) } },
       ],
     }).compileComponents();
 
