@@ -11,7 +11,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ConfigService } from '../../services/config.service';
-import { environment } from '../../../environments/environment';
 
 export interface GoogleCredentialResponse {
   credential: string;
@@ -74,7 +73,7 @@ export class Login {
       setTimeout(() => this.renderGoogleButton(element), 100);
       return;
     }
-    const clientId = this.configService.config()?.googleClientId || environment.googleClientId;
+    const clientId = this.configService.config()?.googleClientId || '';
     google.accounts.id.initialize({
       client_id: clientId,
       callback: this.handleGoogleCredentialResponse.bind(this),
