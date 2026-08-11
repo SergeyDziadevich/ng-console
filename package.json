@@ -28,7 +28,7 @@
     "@angular/router": "^22.0.0",
     "@genkit-ai/google-genai": "^1.36.0",
     "@ng-icons/core": "^34.0.0",
-    "@ng-icons/lucide": "^34.0.0",
+    "@ng-icons/lucide": "^35.0.1",
     "@stripe/stripe-js": "^9.12.1",
     "ngx-quill": "^31.0.1",
     "quill": "^2.0.3",
