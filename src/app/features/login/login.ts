@@ -10,6 +10,7 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ConfigService } from '../../services/config.service';
 import { environment } from '../../../environments/environment';
 
 export interface GoogleCredentialResponse {
@@ -40,6 +41,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 export class Login {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly configService = inject(ConfigService);
   private readonly router = inject(Router);
 
   protected readonly loading = signal(false);
@@ -72,8 +74,9 @@ export class Login {
       setTimeout(() => this.renderGoogleButton(element), 100);
       return;
     }
+    const clientId = this.configService.config()?.googleClientId || environment.googleClientId;
     google.accounts.id.initialize({
-      client_id: environment.googleClientId,
+      client_id: clientId,
       callback: this.handleGoogleCredentialResponse.bind(this),
     });
     google.accounts.id.renderButton(element, { theme: 'outline', size: 'large', width: '320' });
