@@ -25,7 +25,7 @@
     "@angular/forms": "^22.0.0",
     "@angular/localize": "^22.1.0",
     "@angular/platform-browser": "^22.0.0",
-    "@angular/router": "^22.0.0",
+    "@angular/router": "^22.1.1",
     "@genkit-ai/google-genai": "^1.36.0",
     "@ng-icons/core": "^34.0.0",
     "@ng-icons/lucide": "^35.0.1",
