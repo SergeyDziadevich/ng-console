@@ -1,0 +1,80 @@
+<div class="builder-layout">
+  <!-- Left Sidebar: Toolbox -->
+  <aside class="toolbox">
+    <h2>Actions</h2>
+    <p class="subtitle">Drag actions into your workflow</p>
+    
+    <div 
+      cdkDropList 
+      id="toolboxList"
+      [cdkDropListData]="availableActions()"
+      [cdkDropListConnectedTo]="['workflowList']"
+      class="action-list"
+    >
+      @for (action of availableActions(); track action.id) {
+        <div class="action-item" cdkDrag>
+          <div class="icon">⚡</div>
+          <span>{{ action.name }}</span>
+          <!-- Provide a custom preview to avoid dragging the whole element -->
+          <div *cdkDragPreview class="action-item-preview">
+            {{ action.name }}
+          </div>
+        </div>
+      }
+    </div>
+  </aside>
+
+  <!-- Main Canvas -->
+  <main class="canvas">
+    <div class="canvas-header">
+      <h1>Workflow Builder</h1>
+      <button class="btn-primary" (click)="saveWorkflow()">Save Workflow</button>
+    </div>
+
+    <div class="flow-container">
+      <!-- Trigger Node -->
+      <div class="trigger-node">
+        <div class="badge">Trigger</div>
+        <h3>{{ trigger().name }}</h3>
+      </div>
+
+      <div class="connector-line"></div>
+
+      <!-- Dropzone for Workflow Steps -->
+      <div 
+        cdkDropList 
+        id="workflowList"
+        [cdkDropListData]="workflowSteps()"
+        class="workflow-dropzone"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @if (workflowSteps().length === 0) {
+          <div class="empty-state">
+            Drop actions here...
+          </div>
+        }
+
+        @for (step of workflowSteps(); track step.id; let i = $index) {
+          <div class="workflow-step" cdkDrag>
+            <div class="step-content">
+              <h4>{{ step.name }}</h4>
+              <button class="btn-icon" (click)="removeStep(i)">✕</button>
+            </div>
+          </div>
+          
+          @if (i < workflowSteps().length - 1) {
+            <div class="connector-line"></div>
+          }
+        }
+      </div>
+    </div>
+  </main>
+
+  <!-- Right Sidebar: Configuration (Optional) -->
+  <aside class="config-panel">
+    <h2>Configuration</h2>
+    <div class="config-empty">
+      Select a node to configure
+    </div>
+  </aside>
+</div>

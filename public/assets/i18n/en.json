@@ -48,7 +48,8 @@
     "AUDIT_LOGS": "Audit Logs",
     "GENERATE_DOCUMENT": "Generate Document",
     "SUBSCRIPTIONS": "Subscriptions",
-    "BILLING_HISTORY": "Billing History"
+    "BILLING_HISTORY": "Billing History",
+    "WORKFLOWS": "Workflows"
   },
   "TOPBAR": {
     "MY_PROFILE": "My Profile",

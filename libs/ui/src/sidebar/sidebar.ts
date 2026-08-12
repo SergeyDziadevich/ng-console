@@ -6,7 +6,7 @@ import { AuthResponse } from '@app/services/auth.service';
 import { ChatService } from '@app/services/chat.service';
 import { TranslatePipe } from '@app/pipes/translate.pipe';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp, lucideBuilding2 } from '@ng-icons/lucide';
+import { lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp, lucideBuilding2, lucideWorkflow } from '@ng-icons/lucide';
 
 interface NavItem {
   label: string;
@@ -27,7 +27,7 @@ interface NavItem {
   imports: [RouterLink, RouterLinkActive, NgIconComponent, TranslatePipe],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
-  viewProviders: [provideIcons({ lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp, lucideBuilding2 })],
+  viewProviders: [provideIcons({ lucideFilePlus, lucideCreditCard, lucideChevronDown, lucideChevronUp, lucideBuilding2, lucideWorkflow })],
 })
 export class Sidebar {
   chatService = inject(ChatService);
@@ -87,6 +87,13 @@ export class Sidebar {
       children: [
         { label: 'Generate Document', labelKey: 'NAV.GENERATE_DOCUMENT', route: '/documents/generate', icon: 'lucideFilePlus' }
       ]
+    },
+    {
+      label: 'Workflows',
+      labelKey: 'NAV.WORKFLOWS',
+      icon: 'lucideWorkflow',
+      route: '/workflows',
+      badge: { text: 'New', labelKey: 'BADGES.NEW', classes: 'sidebar-badge-green' },
     },
     {
       label: 'Chats',

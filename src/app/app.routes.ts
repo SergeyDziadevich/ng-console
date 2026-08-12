@@ -164,6 +164,22 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'workflows',
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('./features/workflows/workflows.component').then((m) => m.WorkflowsComponent),
+          },
+          {
+            path: 'builder',
+            loadComponent: () =>
+              import('./features/workflows/workflow-builder/workflow-builder.component').then((m) => m.WorkflowBuilderComponent),
+          },
+        ]
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

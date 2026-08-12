@@ -1,0 +1,20 @@
+<div class="workflows-container">
+  <div class="header">
+    <h1>Workflows</h1>
+    <a routerLink="builder" class="btn-primary">Create Workflow</a>
+  </div>
+
+  <div class="workflows-list">
+    @for (workflow of workflows(); track workflow.id) {
+      <div class="workflow-card">
+        <h3>{{ workflow.name }}</h3>
+        <p>Trigger: {{ workflow.triggerType }}</p>
+        <span class="status" [class.active]="workflow.isActive">
+          {{ workflow.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
+    } @empty {
+      <p>No workflows found.</p>
+    }
+  </div>
+</div>
