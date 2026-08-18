@@ -1,10 +1,9 @@
 import { defineConfig } from 'vitest/config';
 import angular from '@analogjs/vite-plugin-angular';
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [angular(), nxViteTsPaths()],
+  plugins: [angular()],
   resolve: {
     alias: {
       '@ng-console-platform/ui': path.resolve(__dirname, './libs/ui/src/index.ts'),
