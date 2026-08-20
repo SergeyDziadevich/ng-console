@@ -3,7 +3,7 @@ import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, vi, afterEach, Mock } from 'vitest';
 import { authInterceptor } from './auth.interceptor';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from "@ng-console/shared/data-access";
 
 interface MockAuthService {
   getToken: Mock;

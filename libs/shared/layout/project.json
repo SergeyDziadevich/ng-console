@@ -1,0 +1,25 @@
+{
+  "name": "shared-layout",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/layout/src",
+  "prefix": "lib",
+  "tags": [
+    "scope:shared",
+    "scope:shared-layout"
+  ],
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "config": "libs/shared/layout/vite.config.mts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

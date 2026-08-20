@@ -1,42 +1,58 @@
-// @ts-check
-const eslint = require('@eslint/js');
-const { defineConfig } = require('eslint/config');
-const tseslint = require('typescript-eslint');
-const angular = require('angular-eslint');
+const nx = require("@nx/eslint-plugin");
 
-module.exports = defineConfig([
+module.exports = [
+  ...nx.configs["flat/base"],
+  ...nx.configs["flat/typescript"],
+  ...nx.configs["flat/javascript"],
   {
-    files: ['**/*.ts'],
-    extends: [
-      eslint.configs.recommended,
-      tseslint.configs.recommended,
-      tseslint.configs.stylistic,
-      angular.configs.tsRecommended,
-    ],
-    processor: angular.processInlineTemplates,
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@angular-eslint/directive-selector': [
-        'error',
+      "@nx/enforce-module-boundaries": [
+        "error",
         {
-          type: 'attribute',
-          prefix: 'app',
-          style: 'camelCase',
-        },
-      ],
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'app',
-          style: 'kebab-case',
+          enforceBuildableLibDependency: false,
+          allowCircularSelfDependency: true,
+          allow: ["@ng-console/shared/**", "@ng-console-platform/**", "@env/**", "@app/**"],
+          depConstraints: [
+            {
+              sourceTag: "scope:root",
+              onlyDependOnLibsWithTags: ["*"],
+            },
+            {
+              sourceTag: "scope:shell",
+              onlyDependOnLibsWithTags: ["scope:shared", "scope:mfe-remote", "scope:shared-models", "scope:shared-data-access", "scope:shared-ui", "scope:shared-layout", "scope:shared-util", "*"],
+            },
+            {
+              sourceTag: "scope:mfe-remote",
+              onlyDependOnLibsWithTags: ["scope:shared", "scope:shared-models", "scope:shared-data-access", "scope:shared-ui", "scope:shared-layout", "scope:shared-util"],
+            },
+            {
+              sourceTag: "scope:shared-layout",
+              onlyDependOnLibsWithTags: ["scope:shared", "scope:shared-ui", "scope:shared-data-access", "scope:shared-models", "scope:shared-util"],
+            },
+            {
+              sourceTag: "scope:shared-ui",
+              onlyDependOnLibsWithTags: ["scope:shared", "scope:shared-models", "scope:shared-util"],
+            },
+            {
+              sourceTag: "scope:shared-data-access",
+              onlyDependOnLibsWithTags: ["scope:shared", "scope:shared-models", "scope:shared-util"],
+            },
+            {
+              sourceTag: "scope:shared-util",
+              onlyDependOnLibsWithTags: ["scope:shared", "scope:shared-models"],
+            },
+            {
+              sourceTag: "scope:shared-models",
+              onlyDependOnLibsWithTags: [],
+            },
+            {
+              sourceTag: "*",
+              onlyDependOnLibsWithTags: ["*"],
+            },
+          ],
         },
       ],
     },
   },
-  {
-    files: ['**/*.html'],
-    extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
-    rules: {},
-  },
-]);
+];

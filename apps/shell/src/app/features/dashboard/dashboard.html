@@ -1,0 +1,335 @@
+<div class="p-6 max-w-7xl mx-auto w-full">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">{{ 'DASHBOARD.TITLE' | translate }}</h1>
+    <p class="text-gray-500 dark:text-gray-400 mt-1">{{ 'DASHBOARD.WELCOME_BACK' | translate: { name: currentUser()?.name || 'User' } }}</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Assigned Tickets Widget -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col relative overflow-hidden group"
+    >
+      @if (assignedTicketsCount() > 0) {
+        <a
+          class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
+          [routerLink]="['/tickets']"
+          [queryParams]="{ assignedToMe: 'true' }"
+        >
+          <div
+            class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full group-hover:scale-110 transition-transform duration-300"
+          ></div>
+          <div class="relative z-10 w-full flex flex-col items-center">
+            <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              {{ 'DASHBOARD.MY_ASSIGNED_TICKETS' | translate }}
+            </h3>
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-bold text-blue-600">{{ assignedTicketsCount() }}</span>
+              <span class="text-sm font-medium text-gray-400">{{ 'DASHBOARD.TICKETS_UNIT' | translate }}</span>
+            </div>
+            <span
+              class="text-xs text-blue-500 mt-2 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+              >{{ 'COMMON.CLICK_TO_VIEW' | translate }}</span
+            >
+          </div>
+        </a>
+      } @else {
+        <div class="p-6 flex flex-col items-center justify-center w-full h-full">
+          <div
+            class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full group-hover:scale-110 transition-transform duration-300"
+          ></div>
+          <div class="relative z-10 w-full flex flex-col items-center">
+            <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              {{ 'DASHBOARD.MY_ASSIGNED_TICKETS' | translate }}
+            </h3>
+            @if (ticketsResource.isLoading()) {
+              <app-spinner size="sm" color="blue" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
+            } @else {
+              <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-bold text-blue-600">0</span>
+                <span class="text-sm font-medium text-gray-400">{{ 'DASHBOARD.TICKETS_UNIT' | translate }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Tickets Status Chart Widget -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col h-full group"
+    >
+      <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+        {{ 'DASHBOARD.TICKET_STATUS' | translate }}
+      </h3>
+      <div class="flex-1 flex items-center justify-between gap-6">
+        <!-- Donut Chart -->
+        <div
+          class="relative w-24 h-24 shrink-0 rounded-full group-hover:scale-105 transition-transform duration-300"
+          [style.background]="ticketChartGradient()"
+        >
+          <div
+            class="absolute inset-[15%] bg-white dark:bg-gray-800 rounded-full flex flex-col items-center justify-center"
+          >
+            <span class="text-xl font-bold text-gray-800 dark:text-gray-200 leading-none">{{ totalTickets() }}</span>
+          </div>
+        </div>
+        <!-- Legend -->
+        <div class="flex flex-col justify-center gap-2 flex-1">
+          <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium">
+              <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span> {{ 'DASHBOARD.STATUS_TODO' | translate }}
+            </div>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{{ todoTicketsCount() }}</span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> {{ 'DASHBOARD.STATUS_IN_PROGRESS' | translate }}
+            </div>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{{ inProgressTicketsCount() }}</span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span> {{ 'DASHBOARD.STATUS_DONE' | translate }}
+            </div>
+            <span class="font-bold text-gray-800 dark:text-gray-200">{{ doneTicketsCount() }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Documents Widget -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col relative overflow-hidden group"
+    >
+      <a
+        class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
+        [routerLink]="['/documents']"
+      >
+        <div
+          class="absolute -right-4 -top-4 w-24 h-24 bg-yellow-50 rounded-full group-hover:scale-110 transition-transform duration-300"
+        ></div>
+        <div class="relative z-10 w-full flex flex-col items-center">
+          <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+            {{ 'DASHBOARD.TOTAL_DOCUMENTS' | translate }}
+          </h3>
+          @if (isLoadingDocuments()) {
+            <app-spinner size="sm" color="yellow" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
+          } @else {
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-bold text-yellow-600">{{ totalDocuments() }}</span>
+              <span class="text-sm font-medium text-gray-400">{{ 'DASHBOARD.FILES_UNIT' | translate }}</span>
+            </div>
+            <span
+              class="text-xs text-yellow-500 mt-2 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+              >{{ 'COMMON.CLICK_TO_VIEW' | translate }}</span
+            >
+          }
+        </div>
+      </a>
+    </div>
+    <!-- Subscription Widget -->
+    <div
+      class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col relative overflow-hidden group"
+    >
+      @if (planName()) {
+        <a
+          class="p-6 flex flex-col items-center justify-center w-full h-full hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
+          [routerLink]="['/payments/billing-history']"
+        >
+          <div
+            class="absolute -right-4 -top-4 w-24 h-24 bg-purple-50 rounded-full group-hover:scale-110 transition-transform duration-300"
+          ></div>
+          <div class="relative z-10 w-full flex flex-col items-center">
+            <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+              {{ 'DASHBOARD.CURRENT_PLAN' | translate }}
+            </h3>
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-bold text-purple-600">{{ planName() }}</span>
+            </div>
+            <span
+              class="text-xs text-purple-500 mt-2 font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+              >{{ 'DASHBOARD.MANAGE_SUBSCRIPTION' | translate }}</span
+            >
+          </div>
+        </a>
+      } @else {
+        <a
+          class="p-6 flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-colors cursor-pointer text-white"
+          [routerLink]="['/payments/subscriptions']"
+        >
+          <div class="relative z-10 w-full flex flex-col items-center text-center">
+            <h3 class="text-sm font-semibold text-indigo-100 uppercase tracking-wider mb-2">
+              {{ 'DASHBOARD.UNLOCK_PREMIUM' | translate }}
+            </h3>
+            <div class="flex items-baseline gap-2 mb-2">
+              <span class="text-2xl font-bold">{{ 'DASHBOARD.UPGRADE_NOW' | translate }}</span>
+            </div>
+            <p class="text-xs text-indigo-100 mb-2">{{ 'DASHBOARD.ACCESS_ALL_FEATURES' | translate }}</p>
+            <span
+              class="text-xs font-medium bg-white dark:bg-gray-800/20 px-3 py-1 rounded-full group-hover:bg-white dark:hover:bg-gray-800/30 transition-colors"
+              >{{ 'DASHBOARD.VIEW_PLANS' | translate }}</span
+            >
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+
+  <!-- Tickets In Progress Section -->
+  <div class="mt-10">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">{{ 'DASHBOARD.TICKETS_IN_PROGRESS' | translate }}</h2>
+      <a
+        class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+        [queryParams]="{ status: 'in progress' }"
+        routerLink="/tickets"
+      >
+        {{ 'COMMON.VIEW_ALL' | translate }}
+      </a>
+    </div>
+
+    @if (ticketsResource.isLoading()) {
+      <div class="flex gap-3 items-center justify-center py-10 text-gray-500 dark:text-gray-400">
+        <app-spinner size="sm" color="blue" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
+      </div>
+    } @else if (inProgressTickets().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @for (ticket of inProgressTickets(); track ticket.id) {
+          <a
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 hover:shadow-md hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col group"
+            [routerLink]="['/tickets', ticket.id]"
+          >
+            <div class="flex justify-between items-start gap-3 mb-3">
+              <h3
+                class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight flex-1"
+              >
+                {{ ticket.title }}
+              </h3>
+              <span
+                class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0 uppercase tracking-wider"
+              >
+                {{ 'DASHBOARD.STATUS_IN_PROGRESS' | translate }}
+              </span>
+            </div>
+
+            <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-3 mb-4 flex-1">
+              {{ ticket.about || ticket.description || ('COMMON.NO_DESCRIPTION' | translate) }}
+            </p>
+
+            <div
+              class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-50 pt-3 mt-auto"
+            >
+              <div
+                class="flex items-center gap-1.5 font-medium"
+                [class.text-red-600]="ticket.priority === 'critical'"
+                [class.text-orange-600]="ticket.priority === 'high'"
+                [class.text-yellow-600]="ticket.priority === 'medium'"
+                [class.text-gray-600]="ticket.priority === 'low'"
+                [class.dark:text-gray-400]="ticket.priority === 'low'"
+              >
+                <span class="uppercase tracking-wide">{{ ticket.priority }}</span>
+              </div>
+              @if (ticket.epic) {
+                <span
+                  class="bg-purple-50 text-purple-700 border border-purple-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase truncate max-w-[100px]"
+                >
+                  {{ ticket.epic.name }}
+                </span>
+              }
+            </div>
+          </a>
+        }
+      </div>
+    } @else {
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-10 text-center flex flex-col items-center justify-center"
+      >
+        <div class="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mb-4">
+          <img
+            class="w-8 h-8 text-gray-400 shrink-0"
+            src="/assets/icons/icon-561adb86.svg"
+            alt="icon"
+          />
+        </div>
+        <h3 class="text-gray-900 dark:text-gray-100 font-semibold mb-1">{{ 'DASHBOARD.NO_TASKS_IN_PROGRESS' | translate }}</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">
+          {{ 'DASHBOARD.NO_TASKS_IN_PROGRESS_DESC' | translate }}
+        </p>
+      </div>
+    }
+  </div>
+
+  <!-- Sounds Good (Done Tickets) Section -->
+  <div class="mt-10 mb-10">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-white">{{ 'DASHBOARD.TICKETS_DONE' | translate }}</h2>
+      <a
+        class="text-sm font-medium text-green-600 hover:text-green-800 transition-colors"
+        [queryParams]="{ status: 'done' }"
+        routerLink="/tickets"
+      >
+        {{ 'DASHBOARD.VIEW_ALL_DONE' | translate }}
+      </a>
+    </div>
+
+    @if (ticketsResource.isLoading()) {
+      <div class="flex gap-3 items-center justify-center py-10 text-gray-500 dark:text-gray-400">
+        <app-spinner size="sm" color="green" [loadingText]="'COMMON.LOADING' | translate" direction="row"></app-spinner>
+      </div>
+    } @else if (doneTickets().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @for (ticket of doneTickets(); track ticket.id) {
+          <a
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 hover:shadow-md hover:border-green-200 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col group"
+            [routerLink]="['/tickets', ticket.id]"
+          >
+            <div class="flex justify-between items-start gap-3 mb-3">
+              <h3
+                class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-green-600 transition-colors line-clamp-2 leading-tight flex-1 line-through opacity-70"
+              >
+                {{ ticket.title }}
+              </h3>
+              <span
+                class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-green-50 text-green-700 border border-green-200 shrink-0 uppercase tracking-wider"
+              >
+                {{ 'DASHBOARD.STATUS_DONE' | translate }}
+              </span>
+            </div>
+
+            <p class="text-sm text-gray-400 line-clamp-3 mb-4 flex-1">
+              {{ ticket.about || ticket.description || ('COMMON.NO_DESCRIPTION' | translate) }}
+            </p>
+
+            <div
+              class="flex items-center justify-between text-xs text-gray-400 border-t border-gray-50 pt-3 mt-auto"
+            >
+              <div class="flex items-center gap-1.5 font-medium opacity-60">
+                <span class="uppercase tracking-wide">{{ ticket.priority }}</span>
+              </div>
+              @if (ticket.epic) {
+                <span
+                  class="bg-purple-50 text-purple-700 border border-purple-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase truncate max-w-[100px] opacity-70"
+                >
+                  {{ ticket.epic.name }}
+                </span>
+              }
+            </div>
+          </a>
+        }
+      </div>
+    } @else {
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 p-10 text-center flex flex-col items-center justify-center"
+      >
+        <div class="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mb-4">
+          <img
+            class="w-8 h-8 text-green-400 shrink-0"
+            src="/assets/icons/icon-98363850.svg"
+            alt="icon"
+          />
+        </div>
+        <h3 class="text-gray-900 dark:text-gray-100 font-semibold mb-1">{{ 'DASHBOARD.NO_COMPLETED_TASKS' | translate }}</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">{{ 'DASHBOARD.NO_COMPLETED_TASKS_DESC' | translate }}</p>
+      </div>
+    }
+  </div>
+</div>

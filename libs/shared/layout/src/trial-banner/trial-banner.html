@@ -1,0 +1,9 @@
+@if (!isHidden() && daysLeft() !== null) {
+  <div class="trial-banner">
+    <div class="banner-content">
+      <span class="message">{{ 'TRIAL_BANNER.MESSAGE' | translate: { days: daysLeft() ?? 0 } }}</span>
+      <a routerLink="/payments/subscriptions" class="upgrade-link">{{ 'TRIAL_BANNER.UPGRADE_NOW' | translate }}</a>
+    </div>
+    <button class="close-btn" (click)="dismiss()" aria-label="Dismiss banner">×</button>
+  </div>
+}

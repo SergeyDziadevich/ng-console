@@ -1,0 +1,102 @@
+@if (userResource.isLoading()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <app-spinner size="lg"></app-spinner>
+  </div>
+}
+
+@if (userResource.value()) {
+  <app-user-modal
+    [submitDisabled]="editForm().invalid()"
+    [error]="error()"
+    (closeModal)="close()"
+    (submitted)="onSubmit()"
+    [title]="'USER_MANAGEMENT.EDIT_USER' | translate"
+    [submitLabel]="'COMMON.SAVE' | translate"
+  >
+    <!-- Pencil icon -->
+    <img class="w-5 h-5 text-blue-500 shrink-0" src="/assets/icons/icon-bc1a93f7.svg" alt="icon" />
+
+    <!-- Name -->
+    <div class="form-field">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-name">{{ 'USER_MANAGEMENT.NAME' | translate }}</label>
+      <input
+        class="px-4 py-2 form-input transition-all"
+        id="edit-name"
+        [formField]="editForm.username"
+        type="text"
+        placeholder="John Doe"
+      />
+      @if (editForm.username().touched() && editForm.username().invalid()) {
+        <div class="error-message">
+          @for (err of editForm.username().errors(); track err) {
+            <p>{{ err.message }}</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Email -->
+    <div class="form-field">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-email">{{ 'USER_MANAGEMENT.EMAIL' | translate }}</label>
+      <input
+        class="px-4 py-2 form-input transition-all"
+        id="edit-email"
+        [formField]="editForm.email"
+        type="email"
+        placeholder="john@example.com"
+      />
+      @if (editForm.email().touched() && editForm.email().invalid()) {
+        <div class="error-message">
+          @for (err of editForm.email().errors(); track err) {
+            <p>{{ err.message }}</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Role -->
+    <div class="form-field">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="edit-role">{{ 'USER_MANAGEMENT.ROLE' | translate }}</label>
+      <select
+        class="px-4 py-2 form-input border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+        id="edit-role"
+        [formField]="editForm.role"
+      >
+        @for (role of userRoles; track role) {
+          <option [value]="role">{{ role }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Avatar -->
+    <div class="form-field">
+      <label class="text-sm font-medium text-gray-700 dark:text-gray-300" for="avatar">Avatar</label>
+      <div class="flex items-center gap-4 mt-1">
+        @if (avatarPreview()) {
+          <img
+            class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+            [src]="avatarPreview()"
+            alt="Avatar preview"
+          />
+        } @else {
+          <div
+            class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-400"
+          >
+            <img class="w-6 h-6 shrink-0" src="/assets/icons/icon-4a9e6849.svg" alt="icon" />
+          </div>
+        }
+        <input
+          class="text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900/30 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:bg-blue-900/40 dark:hover:file:bg-blue-900/50 cursor-pointer"
+          id="avatar"
+          (change)="onAvatarChange($event)"
+          type="file"
+          accept="image/*"
+        />
+      </div>
+    </div>
+  </app-user-modal>
+}
+
+@if (showToast()) {
+  <app-toast message="User updated successfully!"></app-toast>
+}

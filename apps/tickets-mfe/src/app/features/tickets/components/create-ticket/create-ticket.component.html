@@ -1,0 +1,175 @@
+<div class="max-w-3xl mx-auto my-8">
+  <div class="mb-4">
+    <a
+      class="inline-flex text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 items-center gap-1 transition-colors"
+      routerLink="/tickets"
+    >
+      <img class="h-4 w-4 shrink-0" src="/assets/icons/icon-ccdbfa9e.svg" alt="icon" />
+      {{ 'COMMON.BACK' | translate }}
+    </a>
+  </div>
+
+  <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 dark:text-white">
+        <img
+          class="h-7 w-7 brightness-0 shrink-0 dark:invert"
+          src="/assets/icons/icon-tickets.svg"
+          alt="icon"
+        />
+        {{ 'TICKETS.CREATE_TICKET' | translate }}
+      </h1>
+    </div>
+
+    <form class="space-y-6" [formRoot]="ticketForm">
+      <!-- Title -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="title">Title *</label>
+        <input
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+          id="title"
+          [formField]="ticketForm.title"
+          type="text"
+          placeholder="Brief summary of the issue or task"
+        />
+        @if (ticketForm.title().touched() && ticketForm.title().invalid()) {
+          <p class="mt-1 text-sm text-red-600">Title is required.</p>
+        }
+      </div>
+
+      <!-- About -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="about">About</label>
+        <textarea
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+          id="about"
+          [formField]="ticketForm.about"
+          rows="2"
+          placeholder="Any other details about this ticket..."
+        ></textarea>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="description"
+          >Description *</label
+        >
+        <textarea
+          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+          id="description"
+          [formField]="ticketForm.description"
+          rows="4"
+          placeholder="Detailed description of the ticket"
+        ></textarea>
+        @if (ticketForm.description().touched() && ticketForm.description().invalid()) {
+          <p class="mt-1 text-sm text-red-600">Description is required.</p>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Status -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="status">Status</label>
+          <select
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
+            id="status"
+            [formField]="ticketForm.status"
+          >
+            <option [value]="TicketStatus.TODO">Todo</option>
+            <option [value]="TicketStatus.IN_PROGRESS">In Progress</option>
+            <option [value]="TicketStatus.DONE">Done</option>
+          </select>
+        </div>
+
+        <!-- Priority -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="priority"
+            >Priority</label
+          >
+          <select
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
+            id="priority"
+            [formField]="ticketForm.priority"
+          >
+            <option [value]="TicketPriority.LOW">Low</option>
+            <option [value]="TicketPriority.MEDIUM">Medium</option>
+            <option [value]="TicketPriority.HIGH">High</option>
+            <option [value]="TicketPriority.CRITICAL">Critical</option>
+          </select>
+        </div>
+
+        <!-- Assignee -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="assignedPersonId"
+            >Assign To</label
+          >
+          <select
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
+            id="assignedPersonId"
+            [formField]="ticketForm.assignedPersonId"
+          >
+            <option value="">Unassigned</option>
+            @for (user of usersResource.value(); track user._id) {
+              <option [value]="user._id">{{ user.displayName || user.username }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="epicId">Epic</label>
+          <select
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow bg-white dark:bg-gray-800"
+            id="epicId"
+            [formField]="ticketForm.epicId"
+          >
+            <option value="">No Epic</option>
+            @for (epic of epicsResource.value(); track epic.id) {
+              <option [value]="epic.id">{{ epic.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="estimations"
+            >Estimation (hours)</label
+          >
+          <input
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
+            id="estimations"
+            [formField]="ticketForm.estimations"
+            type="number"
+            step="1"
+            placeholder="e.g. 5"
+          />
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-700 gap-3">
+        <button
+          class="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+          type="button"
+          routerLink="/tickets"
+        >
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button
+          class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          [disabled]="ticketForm().invalid() || isSubmitting()"
+          type="submit"
+        >
+          @if (isSubmitting()) {
+            <app-spinner size="sm" color="white"></app-spinner>
+            {{ 'COMMON.LOADING' | translate }}
+          } @else {
+            {{ 'TICKETS.CREATE_TICKET' | translate }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@if (showToast()) {
+  <app-toast [message]="'Ticket created successfully!'" [type]="'success'"></app-toast>
+}

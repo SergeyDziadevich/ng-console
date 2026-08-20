@@ -2,6 +2,7 @@
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "name": "ng-console-platform",
   "projectType": "application",
+  "tags": ["scope:shell", "scope:root", "scope:shared"],
   "generators": {
     "@schematics/angular:component": {
       "style": "scss"

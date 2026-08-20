@@ -1,0 +1,90 @@
+{
+  "name": "chat-mfe",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/chat-mfe/src",
+  "tags": [
+    "scope:mfe-remote"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/chat-mfe",
+        "index": "apps/chat-mfe/src/index.html",
+        "browser": "apps/chat-mfe/src/main.ts",
+        "polyfills": [
+          "@angular/localize/init"
+        ],
+        "tsConfig": "apps/chat-mfe/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/chat-mfe/src/assets",
+            "output": "assets"
+          }
+        ],
+        "styles": [
+          "node_modules/quill/dist/quill.core.css",
+          "node_modules/quill/dist/quill.snow.css",
+          "apps/chat-mfe/src/styles.scss"
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1MB",
+              "maximumError": "2MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "50kB",
+              "maximumError": "100kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "options": {
+        "port": 4205
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "chat-mfe:build:production"
+        },
+        "development": {
+          "buildTarget": "chat-mfe:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "config": "apps/chat-mfe/vite.config.mts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

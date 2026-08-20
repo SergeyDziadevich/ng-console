@@ -1,0 +1,9 @@
+<div class="shell-container">
+  <app-top-bar />
+  <div class="shell-content">
+    <app-sidebar [currentUser]="currentUser()" />
+    <main class="shell-main">
+      <router-outlet />
+    </main>
+  </div>
+</div>

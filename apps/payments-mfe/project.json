@@ -1,0 +1,90 @@
+{
+  "name": "payments-mfe",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/payments-mfe/src",
+  "tags": [
+    "scope:mfe-remote"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/payments-mfe",
+        "index": "apps/payments-mfe/src/index.html",
+        "browser": "apps/payments-mfe/src/main.ts",
+        "polyfills": [
+          "@angular/localize/init"
+        ],
+        "tsConfig": "apps/payments-mfe/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/payments-mfe/src/assets",
+            "output": "assets"
+          }
+        ],
+        "styles": [
+          "node_modules/quill/dist/quill.core.css",
+          "node_modules/quill/dist/quill.snow.css",
+          "apps/payments-mfe/src/styles.scss"
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1MB",
+              "maximumError": "2MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "50kB",
+              "maximumError": "100kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "options": {
+        "port": 4204
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "payments-mfe:build:production"
+        },
+        "development": {
+          "buildTarget": "payments-mfe:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "config": "apps/payments-mfe/vite.config.mts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

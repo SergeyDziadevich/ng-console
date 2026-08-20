@@ -1,14 +1,49 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "importHelpers": true,
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "target": "ES2022",
     "module": "preserve",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
     "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
     "paths": {
-      "@ng-console-platform/ui": ["./libs/ui/src/index.ts"],
-      "@app/*": ["./src/app/*"]
+      "@ng-console/shared/models": [
+        "./libs/shared/models/src/index.ts"
+      ],
+      "@ng-console/shared/data-access": [
+        "./libs/shared/data-access/src/index.ts"
+      ],
+      "@ng-console/shared/ui": [
+        "./libs/shared/ui/src/index.ts"
+      ],
+      "@ng-console/shared/layout": [
+        "./libs/shared/layout/src/index.ts"
+      ],
+      "@ng-console/shared/util": [
+        "./libs/shared/util/src/index.ts"
+      ],
+      "@ng-console-platform/ui": [
+        "./libs/shared/ui/src/index.ts"
+      ],
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@env/*": [
+        "./src/environments/*"
+      ],
+      "@env/environment": [
+        "./src/environments/environment.ts"
+      ]
     }
   }
 }

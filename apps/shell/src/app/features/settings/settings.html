@@ -1,0 +1,228 @@
+<div class="settings">
+  <div class="settings__header">
+    <h1 class="settings__title">{{ 'SETTINGS.TITLE' | translate }}</h1>
+    <p class="settings__subtitle">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
+  </div>
+
+  @if (successMessage()) {
+    <div class="settings__alert settings__alert--success animate-fade-in">
+      <ng-icon name="lucideCheck"></ng-icon>
+      <span>{{ successMessage() }}</span>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="settings__alert settings__alert--error animate-fade-in">
+      <ng-icon name="lucideAlertCircle"></ng-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="settings__loading">
+      <app-spinner size="lg" color="indigo"></app-spinner>
+    </div>
+  } @else {
+    <div class="settings__grid">
+      <div class="settings__column">
+        <!-- Appearance Section -->
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <ng-icon name="lucidePalette" class="settings-card__icon"></ng-icon>
+            {{ 'SETTINGS.APPEARANCE' | translate }}
+          </h2>
+          <div class="settings-row">
+            <div class="settings-row__content">
+              <h3 class="settings-row__title">{{ 'SETTINGS.THEME' | translate }}</h3>
+              <p class="settings-row__desc">{{ 'SETTINGS.THEME_DESC' | translate }}</p>
+            </div>
+            <div class="settings-row__action">
+              <select
+                class="settings-select"
+                [value]="currentTheme()"
+                (change)="updateTheme($event)"
+              >
+                <option value="light">{{ 'SETTINGS.LIGHT_MODE' | translate }}</option>
+                <option value="dark">{{ 'SETTINGS.DARK_MODE' | translate }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-row settings-row--bordered">
+            <div class="settings-row__content">
+              <h3 class="settings-row__title">{{ 'SETTINGS.LANGUAGE_TITLE' | translate }}</h3>
+              <p class="settings-row__desc">{{ 'SETTINGS.LANGUAGE_DESC' | translate }}</p>
+            </div>
+            <div class="settings-row__action">
+              <select
+                class="settings-select"
+                [value]="currentLang()"
+                (change)="updateLanguage($event)"
+              >
+                @for (lang of supportedLanguages; track lang.code) {
+                  <option [value]="lang.code" [selected]="lang.code === currentLang()">{{ lang.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- Notifications Section -->
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <ng-icon name="lucideBell" class="settings-card__icon"></ng-icon>
+            {{ 'SETTINGS.NOTIFICATIONS' | translate }}
+          </h2>
+
+          <div class="settings-card__body">
+            <div class="settings-row">
+              <div class="settings-row__content">
+                <h3 class="settings-row__title">{{ 'SETTINGS.PUSH_NOTIFICATIONS' | translate }}</h3>
+                <p class="settings-row__desc">{{ 'SETTINGS.PUSH_NOTIFICATIONS_DESC' | translate }}</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer settings-row__action">
+                <input class="sr-only peer" [checked]="receiveNotifications()" (change)="toggleSetting('receiveNotifications', $event)" type="checkbox" />
+                <div class="settings-toggle" [class.after:transition-transform]="isReady()"></div>
+              </label>
+            </div>
+
+            <div class="settings-row settings-row--bordered">
+              <div class="settings-row__content">
+                <h3 class="settings-row__title">Email Notifications</h3>
+                <p class="settings-row__desc">Get notified via email for critical alerts.</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer settings-row__action">
+                <input class="sr-only peer" [checked]="receiveEmails()" (change)="toggleSetting('receiveEmails', $event)" type="checkbox" />
+                <div class="settings-toggle" [class.after:transition-transform]="isReady()"></div>
+              </label>
+            </div>
+
+            <div class="settings-row settings-row--bordered settings-row--disabled">
+              <div class="settings-row__content">
+                <h3 class="settings-row__title">
+                  SMS Notifications
+                  <span class="settings-row__badge">Coming soon</span>
+                </h3>
+                <p class="settings-row__desc">Get text messages for immediate notifications.</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-not-allowed settings-row__action">
+                <input class="sr-only peer" [checked]="receiveSMS()" disabled type="checkbox" />
+                <div class="settings-toggle"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings__column">
+        <!-- Security Section -->
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <ng-icon name="lucideShieldCheck" class="settings-card__icon"></ng-icon>
+            {{ 'SETTINGS.SECURITY' | translate }}
+          </h2>
+
+          @if (!qrCodeUrl()) {
+            <div class="relative">
+              <p class="settings-2fa__desc">{{ 'SETTINGS.SECURITY_DESC' | translate }}</p>
+              <button
+                class="settings-btn settings-btn--primary"
+                [disabled]="isGenerating()"
+                (click)="generate2FA()"
+              >
+                <span>{{ isGenerating() ? ('SETTINGS.GENERATING' | translate) : ('SETTINGS.SETUP_2FA' | translate) }}</span>
+              </button>
+            </div>
+          } @else {
+            <div class="relative animate-fade-in">
+              <p class="settings-2fa__desc">{{ 'SETTINGS.QR_INSTRUCTIONS' | translate }}</p>
+
+              <div class="settings-2fa__qr-container">
+                <img
+                  class="settings-2fa__qr-image"
+                  [src]="qrCodeUrl()"
+                  alt="2FA QR Code"
+                />
+              </div>
+
+              <form [formGroup]="twoFactorForm" (ngSubmit)="turnOn2FA()" class="settings-form">
+                <div class="settings-form__group">
+                  <label class="settings-form__label" for="code">
+                    {{ 'SETTINGS.VERIFICATION_CODE' | translate }}
+                  </label>
+                  <input
+                    class="settings-form__input"
+                    id="code"
+                    type="text"
+                    formControlName="code"
+                    placeholder="e.g. 123456"
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="settings-form__actions">
+                  <button
+                    class="settings-btn settings-btn--primary"
+                    [disabled]="isSubmitting() || twoFactorForm.invalid"
+                    type="submit"
+                  >
+                    {{ isSubmitting() ? ('SETTINGS.VERIFYING' | translate) : ('SETTINGS.VERIFY_ENABLE' | translate) }}
+                  </button>
+                  <button
+                    class="settings-btn settings-btn--secondary"
+                    (click)="qrCodeUrl.set(null)"
+                    type="button"
+                  >
+                    {{ 'COMMON.CANCEL' | translate }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          }
+        </div>
+        <!-- Integrations Section -->
+        <div class="settings-card">
+          <h2 class="settings-card__title">
+            <ng-icon name="lucideLink" class="settings-card__icon"></ng-icon>
+            {{ 'SETTINGS.INTEGRATIONS' | translate }}
+          </h2>
+
+          <div class="settings-integration">
+            <div class="settings-integration__info">
+              <div class="settings-integration__icon-wrapper">
+                <ng-icon name="lucideHardDrive" class="settings-integration__icon"></ng-icon>
+              </div>
+              <div>
+                <h3 class="settings-integration__name">
+                  {{ 'SETTINGS.GOOGLE_DRIVE' | translate }}
+                </h3>
+                <p class="settings-integration__desc">{{ 'SETTINGS.GOOGLE_DRIVE_DESC' | translate }}</p>
+              </div>
+            </div>
+            <div>
+              @if (googleDriveSyncEnabled()) {
+                <button
+                  class="settings-btn settings-btn--danger"
+                  [disabled]="isGoogleDriveConnecting()"
+                  (click)="disconnectGoogleDrive()"
+                >
+                  {{ isGoogleDriveConnecting() ? ('SETTINGS.DISCONNECTING' | translate) : ('SETTINGS.DISCONNECT' | translate) }}
+                </button>
+              } @else {
+                <button
+                  class="settings-btn settings-btn--primary settings-btn--small"
+                  [disabled]="isGoogleDriveConnecting()"
+                  (click)="connectGoogleDrive()"
+                >
+                  {{ isGoogleDriveConnecting() ? ('SETTINGS.CONNECTING' | translate) : ('SETTINGS.CONNECT' | translate) }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+@if (toast()) {
+  <app-toast [message]="toast() ?? ''"></app-toast>
+}

@@ -20,6 +20,45 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./apps/shell/tsconfig.json"
+    },
+    {
+      "path": "./apps/users-mfe/tsconfig.json"
+    },
+    {
+      "path": "./apps/tickets-mfe/tsconfig.json"
+    },
+    {
+      "path": "./apps/documents-mfe/tsconfig.json"
+    },
+    {
+      "path": "./apps/payments-mfe/tsconfig.json"
+    },
+    {
+      "path": "./apps/chat-mfe/tsconfig.json"
+    },
+    {
+      "path": "./apps/ai-assistant-mfe/tsconfig.json"
+    },
+    {
+      "path": "./libs/shared/models/tsconfig.json"
+    },
+    {
+      "path": "./libs/shared/data-access/tsconfig.json"
+    },
+    {
+      "path": "./libs/shared/ui/tsconfig.json"
+    },
+    {
+      "path": "./libs/shared/layout/tsconfig.json"
+    },
+    {
+      "path": "./libs/shared/util/tsconfig.json"
+    },
+    {
+      "path": "./libs/ui/tsconfig.json"
     }
   ],
   "extends": "./tsconfig.base.json"

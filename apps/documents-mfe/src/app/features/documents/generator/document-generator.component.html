@@ -1,0 +1,219 @@
+<div class="document-generator-container">
+  <div class="generator-header">
+    <div class="header-text">
+      <h1>
+        <img src="/assets/icons/icon-documents.svg" alt="icon" />
+        {{ 'DOCUMENTS.GENERATE' | translate }}
+      </h1>
+      <p>Fill out the details to generate a PDF document from a template.</p>
+    </div>
+  </div>
+
+  <div class="generator-workspace">
+    <!-- Left Panel: Form -->
+    <div class="generator-form-panel">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="generator-form">
+        <div class="form-group">
+          <label for="templateType">Template Type</label>
+          <select id="templateType" formControlName="templateType">
+            <option value="msa">Master Services Agreement</option>
+            <option value="b2b-contract-pl">B2B IT Contract (Poland)</option>
+            <option value="invoice">Invoice</option>
+            <option value="contract">Contract</option>
+          </select>
+        </div>
+
+        <!-- MSA Fields -->
+        @if (form.get('templateType')?.value === 'msa') {
+          <div class="form-group">
+            <label for="providerName">Provider Name</label>
+            <input id="providerName" type="text" formControlName="providerName" placeholder="e.g. Provider Company LLC">
+          </div>
+          <div class="form-group">
+            <label for="clientName">Client Name</label>
+            <input id="clientName" type="text" formControlName="clientName" placeholder="e.g. Client Company Inc.">
+          </div>
+          <div class="form-group">
+            <label for="effectiveDate">Effective Date</label>
+            <input id="effectiveDate" type="text" formControlName="effectiveDate" placeholder="e.g. July 10, 2026">
+          </div>
+          <div class="form-group">
+            <label for="governingLaw">Governing Law</label>
+            <input id="governingLaw" type="text" formControlName="governingLaw" placeholder="e.g. State of Delaware">
+          </div>
+          <div class="form-group">
+            <label for="servicesDescription">Services Description (General Scope)</label>
+            <input id="servicesDescription" type="text" formControlName="servicesDescription" placeholder="e.g. software development and consulting services">
+          </div>
+        }
+
+        <!-- Invoice Fields -->
+        @if (form.get('templateType')?.value === 'invoice') {
+          <div class="form-group">
+            <label for="customerName">Customer Name</label>
+            <input id="customerName" type="text" formControlName="customerName" placeholder="e.g. Acme Corp">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input id="description" type="text" formControlName="description" placeholder="e.g. Software Development Services">
+          </div>
+          <div class="form-group">
+            <label for="amount">Total Amount ($)</label>
+            <input id="amount" type="number" formControlName="amount" placeholder="e.g. 1500.00">
+          </div>
+        }
+
+        <!-- Contract Fields -->
+        @if (form.get('templateType')?.value === 'contract') {
+          <div class="form-group">
+            <label for="partyA">Party A</label>
+            <input id="partyA" type="text" formControlName="partyA" placeholder="Your Company Name">
+          </div>
+          <div class="form-group">
+            <label for="partyB">Party B</label>
+            <input id="partyB" type="text" formControlName="partyB" placeholder="Client Name">
+          </div>
+          <div class="form-group">
+            <label for="terms">Terms and Conditions</label>
+            <textarea id="terms" formControlName="terms" rows="4" placeholder="Enter the terms of the contract..."></textarea>
+          </div>
+        }
+
+        <!-- B2B IT Contract (Poland) Fields -->
+        @if (form.get('templateType')?.value === 'b2b-contract-pl') {
+          <div class="form-group">
+            <label for="contractorName">Contractor Name (JDG)</label>
+            <input id="contractorName" type="text" formControlName="contractorName" placeholder="e.g. Jan Kowalski IT Services">
+          </div>
+          <div class="form-group">
+            <label for="clientName">Client Name</label>
+            <input id="clientName" type="text" formControlName="clientName" placeholder="e.g. Acme Corp Sp. z o.o.">
+          </div>
+          <div class="form-group">
+            <label for="servicesDescription">Services Description</label>
+            <input id="servicesDescription" type="text" formControlName="servicesDescription" placeholder="e.g. Software architecture and development services">
+          </div>
+          <div class="form-group">
+            <label for="monthlyFee">Monthly Net Fee (PLN)</label>
+            <input id="monthlyFee" type="number" formControlName="monthlyFee" placeholder="e.g. 25000">
+          </div>
+          <div class="form-group">
+            <label for="noticePeriod">Notice Period</label>
+            <input id="noticePeriod" type="text" formControlName="noticePeriod" placeholder="e.g. 1 month">
+          </div>
+        }
+
+        @if (error) {
+          <p class="error-message">{{ error }}</p>
+        }
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="isGenerating">
+            {{ isGenerating ? 'Generating...' : 'Generate PDF' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Right Panel: Live Preview -->
+    <div class="generator-preview-panel">
+      <div class="preview-title">Live Template Preview</div>
+      <div class="a4-preview-page">
+        <!-- Render depending on selected templateType -->
+        @if (form.get('templateType')?.value === 'msa') {
+          <div class="msa-preview">
+            <h2 class="preview-header">MASTER SERVICES AGREEMENT</h2>
+            <div class="preview-meta">Effective Date: {{ form.value.effectiveDate || '[Effective Date]' }}</div>
+            <p class="preview-paragraph">
+              This Master Services Agreement ("Agreement") is entered into by and between <strong>{{ form.value.providerName || '[Provider Name]' }}</strong> ("Provider") and <strong>{{ form.value.clientName || '[Client Name]' }}</strong> ("Client").
+            </p>
+            <h3 class="preview-section-title">1. Scope of Services</h3>
+            <p class="preview-paragraph">
+              Provider shall perform services for Client as described in individual Statements of Work ("SOW") executed by both parties. This Agreement establishes the general terms under which all such <strong>{{ form.value.servicesDescription || '[services description]' }}</strong> will be provided.
+            </p>
+            <h3 class="preview-section-title">2. Fees and Payment Terms</h3>
+            <p class="preview-paragraph">
+              Fees and billing terms will be set forth in each SOW. Unless specified otherwise, invoices are due net 30 days.
+            </p>
+            <h3 class="preview-section-title">6. Governing Law</h3>
+            <p class="preview-paragraph">
+              This Agreement shall be governed by the laws of <strong>{{ form.value.governingLaw || '[Governing Law]' }}</strong>.
+            </p>
+            <div class="preview-signatures">
+              <div>Provider: ___________________</div>
+              <div>Client: ___________________</div>
+            </div>
+          </div>
+        }
+        @if (form.get('templateType')?.value === 'b2b-contract-pl') {
+          <div class="b2b-pl-preview">
+            <h2 class="preview-header">UMOWA O ŚWIADCZENIE USŁUG INFORMATYCZNYCH (B2B)</h2>
+            <div class="preview-meta">Zawarta w Warszawie, pomiędzy:</div>
+            <p class="preview-paragraph">
+              <strong>Zamawiającym</strong>: {{ form.value.clientName || '[Nazwa Zlecającego Sp. z o.o. / Siedziba / NIP]' }}
+            </p>
+            <div class="text-center my-2 text-xs font-semibold">a</div>
+            <p class="preview-paragraph">
+              <strong>Wykonawcą</strong>: {{ form.value.contractorName || '[Nazwa Wykonawcy / JDG / NIP]' }}
+            </p>
+            <h3 class="preview-section-title">§ 1 Przedmiot Umowy</h3>
+            <p class="preview-paragraph">
+              1. Zamawiający zleca, a Wykonawca zobowiązuje się do świadczenia usług informatycznych polegających na: <strong>{{ form.value.servicesDescription || '[zakres usług]' }}</strong>.
+            </p>
+            <h3 class="preview-section-title">§ 4 Wynagrodzenie</h3>
+            <p class="preview-paragraph">
+              1. Z tytułu świadczenia usług Wykonawcy przysługuje wynagrodzenie w wysokości: <strong>{{ form.value.monthlyFee || '[kwota]' }}</strong> PLN netto.
+            </p>
+            <h3 class="preview-section-title">§ 6 Postanowienia Końcowe</h3>
+            <p class="preview-paragraph">
+              1. Okres wypowiedzenia wynosi: <strong>{{ form.value.noticePeriod || '1-miesięcznego' }}</strong>.
+            </p>
+            <div class="preview-signatures">
+              <div>Zamawiający: ___________________</div>
+              <div>Wykonawca: ___________________</div>
+            </div>
+          </div>
+        }
+        @if (form.get('templateType')?.value === 'invoice') {
+          <div class="invoice-preview">
+            <h2 class="preview-header text-right">INVOICE</h2>
+            <div class="preview-meta">Date: {{ todayDate }}</div>
+            <div class="mb-4">
+              <strong>Customer:</strong> {{ form.value.customerName || '[Customer Name]' }}
+            </div>
+            <table class="w-full border-collapse mb-4 text-xs">
+              <thead>
+                <tr class="border-b bg-gray-50 dark:bg-gray-900">
+                  <th class="text-left py-2">Description</th>
+                  <th class="text-right py-2">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b">
+                  <td class="py-2">{{ form.value.description || '[Description of Services]' }}</td>
+                  <td class="text-right py-2">${{ form.value.amount || '0.00' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-right text-sm font-bold">
+              Total Amount: ${{ form.value.amount || '0.00' }}
+            </div>
+          </div>
+        }
+        @if (form.get('templateType')?.value === 'contract') {
+          <div class="contract-preview">
+            <h2 class="preview-header">CONTRACT</h2>
+            <div class="preview-meta">Date: {{ todayDate }}</div>
+            <p class="preview-paragraph">
+              Between: <strong>{{ form.value.partyA || 'Party A' }}</strong> AND <strong>{{ form.value.partyB || 'Party B' }}</strong>.
+            </p>
+            <h3 class="preview-section-title">Terms and Conditions</h3>
+            <p class="preview-paragraph italic">
+              {{ form.value.terms || 'No terms specified.' }}
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

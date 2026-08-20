@@ -1,28 +1,45 @@
-# Build stage
-FROM node:24-alpine AS build
+# ==============================================================================
+# Stage 1: Build Stage
+# ==============================================================================
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies
+# Accept application name as build argument (e.g. shell, users-mfe, tickets-mfe, etc.)
+ARG APP_NAME=shell
+
+# Install build dependencies
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 
-# Copy source code and build
+# Copy workspace source files
 COPY . .
-RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+# Build target Angular application with production configuration
+RUN npx nx build ${APP_NAME} --configuration=production
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# ==============================================================================
+# Stage 2: Unprivileged Production Runtime Stage
+# ==============================================================================
+FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
 
-# Clean default nginx html directory
+ARG APP_NAME=shell
+
+# Clean default web directory
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy compiled output from build stage
-# Note: Angular 17+ outputs to dist/<project-name>/browser
-COPY --from=build /app/dist/ng-console/browser /usr/share/nginx/html/
+# Copy custom Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 80
+# Copy build artifacts from builder stage
+COPY --from=builder /app/dist/apps/${APP_NAME}/browser/ /usr/share/nginx/html/
+
+# Expose unprivileged port 8080
+EXPOSE 8080
+
+# Configure container healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -q -O - http://localhost:8080/health || exit 1
+
+# Start Nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]

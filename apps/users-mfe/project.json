@@ -1,0 +1,90 @@
+{
+  "name": "users-mfe",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/users-mfe/src",
+  "tags": [
+    "scope:mfe-remote"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/users-mfe",
+        "index": "apps/users-mfe/src/index.html",
+        "browser": "apps/users-mfe/src/main.ts",
+        "polyfills": [
+          "@angular/localize/init"
+        ],
+        "tsConfig": "apps/users-mfe/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/users-mfe/src/assets",
+            "output": "assets"
+          }
+        ],
+        "styles": [
+          "node_modules/quill/dist/quill.core.css",
+          "node_modules/quill/dist/quill.snow.css",
+          "apps/users-mfe/src/styles.scss"
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "1MB",
+              "maximumError": "2MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "50kB",
+              "maximumError": "100kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "options": {
+        "port": 4201
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "users-mfe:build:production"
+        },
+        "development": {
+          "buildTarget": "users-mfe:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "config": "apps/users-mfe/vite.config.mts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "users-mfe": "http://localhost:4201/remoteEntry.json",
+  "tickets-mfe": "http://localhost:4202/remoteEntry.json",
+  "documents-mfe": "http://localhost:4203/remoteEntry.json",
+  "payments-mfe": "http://localhost:4204/remoteEntry.json",
+  "chat-mfe": "http://localhost:4205/remoteEntry.json",
+  "ai-assistant-mfe": "http://localhost:4206/remoteEntry.json"
+}

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { PaymentsService } from '../../../services/payments.service';
-import { AuthService } from '../../../services/auth.service';
-import { SpinnerComponent } from '@ng-console-platform/ui';
+import { PaymentsService } from "@ng-console/shared/data-access";
+import { AuthService } from "@ng-console/shared/data-access";
+import { SpinnerComponent } from "@ng-console/shared/ui";
 
 @Component({
   selector: 'app-payment-success',

@@ -1,0 +1,202 @@
+<div class="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <!-- Logo & Title -->
+    <div class="flex flex-col items-center mb-8">
+      <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center mb-4">
+        <img class="w-8 h-8 text-white shrink-0" src="/assets/icons/icon-ea3a40d1.svg" alt="icon" />
+      </div>
+      <h1 class="text-2xl font-bold text-white dark:text-white">Ng Console</h1>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-8">
+      @if (step() === 1) {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <!-- Error Alert -->
+          @if (errorMessage()) {
+            <div
+              class="mb-5 flex items-start gap-2 rounded-lg bg-red-900/40 border border-red-700 px-4 py-3 text-sm text-red-300"
+              role="alert"
+            >
+              <img
+                class="w-4 h-4 shrink-0 mt-0.5"
+                src="/assets/icons/icon-63d3948b.svg"
+                alt="icon"
+              />
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <!-- Email -->
+          <div class="mb-5">
+            <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">
+              {{ 'LOGIN.EMAIL' | translate }}
+            </label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              aria-required="true"
+              [attr.aria-describedby]="form.controls.email.invalid && form.controls.email.touched ? 'email-error' : null"
+              class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              [class.border-red-500]="form.controls.email.invalid && form.controls.email.touched"
+              [class.border-gray-600]="!(form.controls.email.invalid && form.controls.email.touched)" />
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+              <p id="email-error" class="mt-1.5 text-xs text-red-400" role="alert">
+                @if (form.controls.email.errors?.['required']) {
+                  Email is required.
+                } @else {
+                  Enter a valid email address.
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Password -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-300 mb-1.5" for="password">
+              {{ 'LOGIN.PASSWORD' | translate }}
+            </label>
+            <input
+              class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              id="password"
+              [attr.aria-describedby]="
+                form.controls.password.invalid && form.controls.password.touched
+                  ? 'password-error'
+                  : null
+              "
+              [class.border-red-500]="
+                form.controls.password.invalid && form.controls.password.touched
+              "
+              [class.border-gray-600]="
+                !(form.controls.password.invalid && form.controls.password.touched)
+              "
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              aria-required="true"
+            />
+            @if (form.controls.password.invalid && form.controls.password.touched) {
+              <p class="mt-1.5 text-xs text-red-400" id="password-error" role="alert">
+                @if (form.controls.password.errors?.['required']) {
+                  Password is required.
+                } @else {
+                  Password must be at least 6 characters.
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Submit -->
+          <button
+            class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+            [disabled]="loading()"
+            type="submit"
+          >
+            @if (loading()) {
+              <span class="flex items-center justify-center gap-2">
+                <img
+                  class="animate-spin w-4 h-4 shrink-0"
+                  src="/assets/icons/icon-920aa01c.svg"
+                  alt="icon"
+                />
+                {{ 'COMMON.LOADING' | translate }}
+              </span>
+            } @else {
+              {{ 'LOGIN.SIGN_IN' | translate }}
+            }
+          </button>
+
+          <div class="mt-6">
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-600"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-gray-800 text-gray-400">Or continue with</span>
+              </div>
+            </div>
+            <div class="mt-6 flex justify-center">
+              <div #googleBtn></div>
+            </div>
+          </div>
+        </form>
+      } @else {
+        <form [formGroup]="codeForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- Error Alert -->
+          @if (errorMessage()) {
+            <div
+              class="mb-5 flex items-start gap-2 rounded-lg bg-red-900/40 border border-red-700 px-4 py-3 text-sm text-red-300"
+              role="alert"
+            >
+              <img
+                class="w-4 h-4 shrink-0 mt-0.5"
+                src="/assets/icons/icon-63d3948b.svg"
+                alt="icon"
+              />
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <!-- 2FA Code -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-300 mb-1.5" for="twoFactorCode">
+              2FA Code
+            </label>
+            <input
+              class="w-full rounded-lg bg-gray-700 border px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              id="twoFactorCode"
+              [attr.aria-describedby]="
+                codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched
+                  ? 'code-error'
+                  : null
+              "
+              [class.border-red-500]="
+                codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched
+              "
+              [class.border-gray-600]="
+                !(
+                  codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched
+                )
+              "
+              type="text"
+              formControlName="twoFactorCode"
+              placeholder="6-digit code"
+              aria-required="true"
+            />
+            @if (
+              codeForm.controls.twoFactorCode.invalid && codeForm.controls.twoFactorCode.touched
+            ) {
+              <p class="mt-1.5 text-xs text-red-400" id="code-error" role="alert">
+                Code is required.
+              </p>
+            }
+          </div>
+
+          <!-- Submit -->
+          <button
+            class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+            [disabled]="loading()"
+            type="submit"
+          >
+            @if (loading()) {
+              <span class="flex items-center justify-center gap-2">
+                <img
+                  class="animate-spin w-4 h-4 shrink-0"
+                  src="/assets/icons/icon-920aa01c.svg"
+                  alt="icon"
+                />
+                Verifying…
+              </span>
+            } @else {
+              Verify Code
+            }
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</div>

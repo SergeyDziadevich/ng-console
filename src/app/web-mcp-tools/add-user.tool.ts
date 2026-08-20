@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { UserService } from '../services/user-service';
-import { AuthService } from '../services/auth.service';
-import { CreateUser } from '../models/user.model';
-import { UserRole } from '../enums/user-role.enum';
+import { UserService } from "@ng-console/shared/data-access";
+import { AuthService } from "@ng-console/shared/data-access";
+import { CreateUser } from "@ng-console/shared/models";
+import { UserRole } from "@ng-console/shared/models";
 
 interface AddUserArgs {
   username: string;

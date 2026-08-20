@@ -6,7 +6,13 @@ export default defineConfig({
   plugins: [angular()],
   resolve: {
     alias: {
-      '@ng-console-platform/ui': path.resolve(__dirname, './libs/ui/src/index.ts'),
+      '@ng-console-platform/ui': path.resolve(__dirname, './libs/shared/ui/src/index.ts'),
+      '@ng-console/shared/models': path.resolve(__dirname, './libs/shared/models/src/index.ts'),
+      '@ng-console/shared/data-access': path.resolve(__dirname, './libs/shared/data-access/src/index.ts'),
+      '@ng-console/shared/ui': path.resolve(__dirname, './libs/shared/ui/src/index.ts'),
+      '@ng-console/shared/layout': path.resolve(__dirname, './libs/shared/layout/src/index.ts'),
+      '@ng-console/shared/util': path.resolve(__dirname, './libs/shared/util/src/index.ts'),
+      '@env/environment': path.resolve(__dirname, './src/environments/environment.ts'),
       '@app': path.resolve(__dirname, './src/app'),
     },
   },

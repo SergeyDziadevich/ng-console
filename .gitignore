@@ -53,7 +53,7 @@ tasks.json
 AGENTS.md
 .github/copilot-instructions.md
 
-
+.agents/
 
 .nx/cache
 .nx/workspace-data

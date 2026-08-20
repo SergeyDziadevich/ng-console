@@ -1,0 +1,217 @@
+<div class="audit-logs-container">
+  <header>
+    <h1 class="text-2xl font-bold flex items-center gap-3 mb-1 dark:text-white">
+      <img
+        class="h-7 w-7 brightness-0 shrink-0 dark:invert"
+        src="/assets/icons/icon-activity-log.svg"
+        alt="icon"
+      />
+      {{ 'AUDIT_LOGS.TITLE' | translate }}
+    </h1>
+    <div class="settings">
+      <div class="retention-group">
+        <label for="retention">Data Retention</label>
+        <div class="info-tooltip">
+          <img class="info-icon" src="/assets/icons/icon-info-circle.svg" alt="info" />
+          <div class="tooltip-text">
+            Specifies how long audit logs are kept before being automatically deleted.
+          </div>
+        </div>
+        <select
+          id="retention"
+          [ngModel]="auditService.retentionDays()"
+          (ngModelChange)="onRetentionChange($event)"
+        >
+          @for (option of retentionOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="separator"></div>
+      <button class="export-btn" (click)="exportLogs()" title="Export to JSON">
+        <img class="w-4 h-4 brightness-0 invert dark:invert" src="/assets/icons/icon-export.svg" alt="export" />
+        Export
+      </button>
+    </div>
+  </header>
+
+  <div class="controls">
+    <input
+      class="search-input"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="onSearchChange($event)"
+      type="text"
+      placeholder="Search by action, entity type, or actor..."
+    />
+
+    <div class="date-filter-group">
+      <div class="date-input">
+        <label for="startDate">From:</label>
+        <input
+          class="date-picker"
+          id="startDate"
+          [ngModel]="startDate()"
+          (ngModelChange)="startDate.set($event); onDateChange()"
+          type="date"
+          title="Start Date"
+        />
+      </div>
+      <div class="date-input">
+        <label for="endDate">To:</label>
+        <input
+          class="date-picker"
+          id="endDate"
+          [ngModel]="endDate()"
+          (ngModelChange)="endDate.set($event); onDateChange()"
+          type="date"
+          title="End Date"
+        />
+      </div>
+    </div>
+
+    <div class="action-filter-group">
+      <div
+        class="multiselect-input-container"
+        (click)="searchInput.focus()"
+        (keydown.enter)="searchInput.focus()"
+        tabindex="0"
+      >
+        <div class="tags-container">
+          @for (action of selectedActions(); track action) {
+            <span class="action-tag">
+              {{ action }}
+              <button
+                class="remove-tag"
+                (mousedown)="$event.preventDefault(); toggleActionFilter(action)"
+              >
+                &times;
+              </button>
+            </span>
+          }
+          <input
+            class="action-search-input"
+            #searchInput
+            [placeholder]="selectedActions().length > 0 ? '' : 'Filter actions...'"
+            [ngModel]="actionSearchQuery()"
+            (ngModelChange)="actionSearchQuery.set($event)"
+            (focus)="dropdownOpen.set(true)"
+            (blur)="dropdownOpen.set(false)"
+            type="text"
+          />
+        </div>
+      </div>
+
+      @if (dropdownOpen() && filteredAvailableActions().length > 0) {
+        <div class="dropdown-content">
+          @for (action of filteredAvailableActions(); track action) {
+            <div
+              class="dropdown-item"
+              (mousedown)="
+                $event.preventDefault(); toggleActionFilter(action); actionSearchQuery.set('')
+              "
+            >
+              {{ action }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="checkbox-group">
+      <label class="checkbox-label">
+        <input
+          [ngModel]="showDetails()"
+          (ngModelChange)="showDetails.set($event)"
+          type="checkbox"
+        />
+        Expand all
+      </label>
+    </div>
+  </div>
+
+  <div class="logs-list">
+    @for (log of auditService.logs(); track log._id) {
+      <div class="log-item">
+        <details class="log-details" [open]="showDetails() || searchQuery().trim().length > 0">
+          <summary class="log-header">
+            <div class="header-left">
+              <div class="chevron">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  style="width: 1rem; height: 1rem"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <span class="time">{{ log.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</span>
+              <span class="action" [attr.data-action]="log.action">{{ log.action }}</span>
+              <span class="summary-details">
+                <span class="author">{{ log.authorId }}</span>
+                <span class="separator">/</span>
+                <span class="entity">{{ log.entityType }}</span>
+                @if (log.entityId) {
+                  <span class="entity-id">{{ log.entityId }}</span>
+                }
+              </span>
+            </div>
+          </summary>
+          <div class="log-content">
+            <div class="log-meta-info">
+              <div><span class="label">Entity Type:</span> {{ log.entityType }}</div>
+              <div><span class="label">Author:</span> {{ log.authorId }}</div>
+              @if (log.entityId) {
+                <div><span class="label">Entity ID:</span> {{ log.entityId }}</div>
+              }
+            </div>
+            @if (log.metadata) {
+              <div class="log-meta">{{ log.metadata | json }}</div>
+            }
+          </div>
+        </details>
+      </div>
+    } @empty {
+      <div class="no-logs">
+        <img src="/assets/icons/icon-activity-log.svg" class="no-logs-icon" alt="No logs icon" />
+        <span class="no-logs-text">No audit logs found.</span>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showRetentionModal()) {
+  <div class="modal-overlay z-50">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm flex flex-col gap-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+          <img
+            class="w-5 h-5 text-amber-500 shrink-0"
+            src="/assets/icons/icon-warning.svg"
+            alt="warning"
+          />
+        </div>
+        <div>
+          <h3 class="text-base font-semibold text-gray-800">Change Data Retention</h3>
+          <p class="text-sm text-gray-500 mt-0.5">
+            Are you sure you want to change the data retention period to
+            <span class="font-medium text-gray-700">{{ pendingRetentionDays() }} days</span>? Audit
+            logs older than this new period will be automatically permanently deleted.
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button class="px-4 py-2 btn-secondary" (click)="cancelRetentionChange()">Cancel</button>
+        <button
+          class="px-4 py-2 rounded-lg bg-amber-500 text-white text-sm font-medium hover:bg-amber-600 active:scale-95 transition-all"
+          (click)="confirmRetentionChange()"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,58 @@
+@if (conversationalText()) {
+  <span class="text-sm leading-relaxed whitespace-pre-wrap block mb-3">{{ conversationalText() }}</span>
+}
+<div
+  class="mt-2 mb-2 w-full max-w-2xl bg-white dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-indigo-100/50 overflow-hidden"
+>
+  <div class="px-5 py-4 border-b border-indigo-50 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div
+        class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center"
+      >
+        <img src="/assets/icons/icon-document-text.svg" width="20" height="20" alt="Relevant Documents" />
+      </div>
+      <h3 class="font-semibold text-gray-800 dark:text-gray-200">Relevant Documents</h3>
+    </div>
+    <span class="text-xs font-bold px-2.5 py-1 bg-indigo-500 text-white rounded-full shadow-sm"
+      >{{ documents().length }} Results</span
+    >
+  </div>
+  
+  <div class="p-5 max-h-[400px] overflow-y-auto custom-scrollbar flex flex-col gap-4">
+    @for (doc of documents(); track doc.id) {
+      <div
+        class="group flex flex-col gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-900/50 hover:bg-white dark:hover:bg-gray-800 transition-all border border-gray-100 dark:border-gray-700 hover:border-indigo-200 hover:shadow-sm"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 truncate">
+            <img src="/assets/icons/icon-document.svg" width="16" height="16" alt="Document" class="document-icon" />
+            {{ doc.filename }}
+          </div>
+          
+          <div class="flex gap-2">
+            <button
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors"
+              (click)="viewDocument(doc)"
+            >
+              View
+            </button>
+            <button
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors flex items-center gap-1 disabled:opacity-50"
+              (click)="downloadDocument(doc)"
+              [disabled]="isDownloading() === doc.id"
+            >
+              @if (isDownloading() === doc.id) {
+                Downloading...
+              } @else {
+                Download
+              }
+            </button>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700/50 leading-relaxed italic">
+          "...{{ doc.snippet }}..."
+        </p>
+      </div>
+    }
+  </div>
+</div>

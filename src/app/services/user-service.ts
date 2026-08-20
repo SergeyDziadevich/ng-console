@@ -1,8 +1,8 @@
 import { inject, Injectable, signal, Signal } from '@angular/core';
 import { mockUsers } from '../mocks/users-mock';
-import { CreateUser, UpdateUser, User } from '../models/user.model';
+import { CreateUser, UpdateUser, User } from "@ng-console/shared/models";
 import { HttpClient, httpResource } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from "@env/environment";
 import { Observable } from 'rxjs';
 
 export interface UserFilter {

@@ -1,4 +1,4 @@
-import { UserRole } from '../enums/user-role.enum';
+import { UserRole } from "@ng-console/shared/models";
 
 export interface UserSettings {
   receiveNotifications?: boolean;

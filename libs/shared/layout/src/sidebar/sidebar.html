@@ -1,0 +1,111 @@
+<aside
+  class="sidebar-container"
+  [class.sidebar-collapsed]="collapsed()"
+  [class.sidebar-expanded]="!collapsed()"
+>
+  <!-- Header -->
+  <div class="sidebar-header">
+    <!--
+    @if (!collapsed()) {
+      <span class="text-lg font-bold tracking-wide whitespace-nowrap">Menu</span>
+    }
+    -->
+    <button
+      class="sidebar-toggle-btn"
+      [title]="collapsed() ? 'Expand' : 'Collapse'"
+      (click)="toggle()"
+    >
+      @if (collapsed()) {
+        <img class="sidebar-icon" src="/assets/icons/icon-expand.svg" alt="icon" />
+      } @else {
+        <img class="sidebar-icon" src="/assets/icons/icon-collapse.svg" alt="icon" />
+      }
+    </button>
+  </div>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    @for (item of navItems; track item.route) {
+      @if (!item.adminOnly || currentUser()?.role === 'admin') {
+        <div class="sidebar-nav-item-wrapper">
+          <a
+            class="sidebar-nav-item"
+            [routerLink]="item.route"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            routerLinkActive="rla-active"
+            #rla="routerLinkActive"
+            [class.active]="rla.isActive || isItemActive()[item.route]"
+            [class.expanded]="item.children && !collapsed() && (rla.isActive || isItemActive()[item.route])"
+          >
+            @if (item.icon.endsWith('.svg')) {
+              <img class="sidebar-icon" [src]="'/assets/icons/' + item.icon" alt="icon" />
+            } @else {
+              <ng-icon class="sidebar-icon" [name]="item.icon"></ng-icon>
+            }
+            @if (!collapsed()) {
+              <span class="sidebar-nav-label">
+                {{ (item.labelKey ? (item.labelKey | translate) : item.label) }}
+                @if (item.label === 'Chats' && chatService.hasUnreadChats()) {
+                  <span class="sidebar-unread-indicator">
+                    <span class="sidebar-unread-dot"></span>
+                  </span>
+                }
+              </span>
+              @if (item.badge) {
+                <span class="sidebar-badge {{ item.badge.classes }}">
+                  {{ (item.badge.labelKey ? (item.badge.labelKey | translate) : item.badge.text) }}
+                </span>
+              }
+              @if (item.children) {
+                @if (rla.isActive || isItemActive()[item.route]) {
+                  <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronUp"></ng-icon>
+                } @else {
+                  <ng-icon class="w-4 h-4 ml-auto opacity-70 shrink-0" name="lucideChevronDown"></ng-icon>
+                }
+              }
+            }
+          </a>
+          @if (item.children && !collapsed() && (rla.isActive || isItemActive()[item.route])) {
+            <div class="sidebar-submenu">
+              @for (child of item.children; track child.route) {
+                <a
+                  class="sidebar-submenu-item"
+                  [routerLink]="child.route"
+                  routerLinkActive="active"
+                >
+                  @if (child.icon) {
+                    @if (child.icon.endsWith('.svg')) {
+                      <img class="w-6 h-6 -ml-1 opacity-70" [src]="'/assets/icons/' + child.icon" alt="icon" />
+                    } @else {
+                      <ng-icon class="w-6 h-6 -ml-1 opacity-70 shrink-0" [name]="child.icon"></ng-icon>
+                    }
+                  }
+                  {{ (child.labelKey ? (child.labelKey | translate) : child.label) }}
+                </a>
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </nav>
+
+  <!-- Footer -->
+  <div class="sidebar-footer">
+    @if (!collapsed() && currentUser()) {
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-avatar">
+          A
+        </div>
+        <div class="sidebar-user-details">
+          <p class="sidebar-user-role">{{ currentUser()?.role }} {{ planName() }}</p>
+          <p class="sidebar-user-email">{{ currentUser()?.email }}</p>
+        </div>
+      </div>
+    } @else {
+      <div class="sidebar-user-avatar-collapsed">
+        A
+      </div>
+    }
+  </div>
+</aside>

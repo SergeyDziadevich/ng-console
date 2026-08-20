@@ -11,7 +11,7 @@ export const routes: Routes = [
     path: 'login',
     // canMatch prevents loading the login chunk when the user is already authenticated
     canMatch: [noAuthGuard],
-    loadComponent: () => import('./features/login/login').then((m) => m.Login),
+    loadComponent: () => import('./features/login/login.component').then((m) => m.Login),
   },
   {
     path: 'sign-invoice',
@@ -22,7 +22,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    loadComponent: () => import('@ng-console-platform/ui').then((m) => m.Shell),
+    loadComponent: () => import('@ng-console/shared/layout').then((m) => m.Shell),
     // canMatch prevents downloading the shell (and all child) bundles when not authenticated
     canMatch: [canMatchAuthGuard],
     canActivate: [authGuard],
@@ -30,45 +30,45 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
+        loadComponent: () => import('./features/dashboard/dashboard.component').then((m) => m.Dashboard),
       },
       {
         path: 'ai-assistant',
         loadComponent: () =>
-          import('./features/ai-assistant/ai-assistant').then((m) => m.AiAssistant),
+          import('./features/ai-assistant/ai-assistant.component').then((m) => m.AiAssistant),
       },
       {
         path: 'user-management',
         loadComponent: () =>
-          import('./features/user-management/user-management').then((m) => m.UserManagement),
+          import('./features/user-management/user-management.component').then((m) => m.UserManagement),
         children: [
           {
             path: 'add-user',
             loadComponent: () =>
-              import('./features/user-management/add-user/add-user').then((m) => m.AddUser),
+              import('./features/user-management/add-user/add-user.component').then((m) => m.AddUser),
           },
           {
             path: 'edit-user/:id',
             canActivate: [canUserEdit],
             loadComponent: () =>
-              import('./features/user-management/edit-user/edit-user').then((m) => m.EditUser),
+              import('./features/user-management/edit-user/edit-user.component').then((m) => m.EditUser),
           },
         ],
       },
       {
         path: 'customers',
         loadComponent: () =>
-          import('./features/customers/customers').then((m) => m.Customers),
+          import('./features/customers/customers.component').then((m) => m.Customers),
         children: [
           {
             path: 'add-customer',
             loadComponent: () =>
-              import('./features/customers/add-customer/add-customer').then((m) => m.AddCustomer),
+              import('./features/customers/add-customer/add-customer.component').then((m) => m.AddCustomer),
           },
           {
             path: 'edit-customer/:id',
             loadComponent: () =>
-              import('./features/customers/edit-customer/edit-customer').then((m) => m.EditCustomer),
+              import('./features/customers/edit-customer/edit-customer.component').then((m) => m.EditCustomer),
           },
         ],
       },
@@ -106,7 +106,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings',
-        loadComponent: () => import('./features/settings/settings').then((m) => m.Settings),
+        loadComponent: () => import('./features/settings/settings.component').then((m) => m.Settings),
       },
       {
         path: 'chats',
@@ -116,7 +116,7 @@ export const routes: Routes = [
       {
         path: 'documents',
         loadComponent: () =>
-          import('./features/documents/documents').then((m) => m.DocumentsComponent),
+          import('./features/documents/documents.component').then((m) => m.DocumentsComponent),
       },
       {
         path: 'documents/generate',
