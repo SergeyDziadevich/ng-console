@@ -1,90 +1,113 @@
 <p align="center">
-  <img src="./angular.png" width="200" alt="Angular Icon" />
+  <img src="./angular.png" width="160" alt="Angular Icon" />
 </p>
 
-# NgConsole
-NgConsole is the frontend Angular application that serves as the administrative interface for the Cloud Console ecosystem.
+# NgConsole (Micro-Frontends Monorepo)
+
+NgConsole is an enterprise-grade micro-frontend platform built with **Angular v20+**, **Nx**, and **Native Federation** (`@angular-architects/native-federation`). It serves as the administrative interface for the Cloud Console ecosystem.
 
 **Backend API:** [ng-console-api](https://github.com/SergeyDziadevich/ng-console-api/)
 
+---
 
-## Key User Features
+## Architecture Overview
 
-- **Authentication & Security:** Secure login flow with support for Google OAuth2 and Two-Factor Authentication (2FA).
-- **AI Assistant:** An integrated, intelligent chat assistant powered by Firebase Genkit AI to help users navigate, perform tasks, and search through uploaded documents using Retrieval-Augmented Generation (RAG).
-- **Analytics Dashboard:** A centralized dashboard displaying system metrics and insights.
-- **User Management:** Create, edit, and manage user accounts with role-based access control.
-- **Profile & Settings:** Personalized user settings allowing for account configuration, theme customization, display language selection, notification preferences, and integration management.
-- **Multi-Language & i18n Support:** Comprehensive localization for English (`en`), Spanish (`es`), German (`de`), and French (`fr`). Includes real-time language switching from top bar and settings, persistent locale preferences, and complete translation coverage across all screens.
-- **Document Management:** Upload, delete, securely share documents via short public links without requiring user authentication, digitally sign PDF documents, and dynamically generate new PDFs using customizable templates.
-- **Google Drive Integration:** Automated Document Backup — Securely connect users to their personal Google Drive accounts using native OAuth2, enabling automated backups and real-time synchronization of all generated documents.
-- **Subscription Management:** Full Stripe payment integration for upgrading plans, viewing current subscription status (with start/end dates), and accessing the Stripe billing portal.
-- **Real-Time Chat:** Live messaging system to keep users connected.
-- **Notifications:** Notifications system to keep users informed.
-- **Support Ticketing:** Integrated ticketing system for users to submit requests and for administrators to manage and resolve support issues.
-- **Audit Logs & AI Auditing:** A dedicated interface for administrators to view, filter (by date, action, actor), and export comprehensive audit trails, with customizable data retention settings. Includes detailed tracking of AI Assistant interactions, such as user prompts, agent responses, tool invocations, and autonomous system modifications.
+NgConsole uses a modular Nx monorepo architecture with a host shell and dynamic remote micro-frontends powered by ESM Native Federation:
 
-
-## Main Functionality
-
-- **AI Integration:** Leverages Firebase Genkit AI (`@genkit-ai/google-genai`) for intelligent assistant features directly in the browser.
-- **Internationalization (i18n):** Reactive, signal-driven translation engine with dynamic locale switching (`en`, `es`, `de`, `fr`), locale fallback, and seamless asset dictionary loading.
-- **Modern UI Framework:** Built with Angular 22 and styled with TailwindCSS 4 for a responsive and sleek user experience.
-- **Real-Time Interactions:** Integrated with Socket.IO client for live chat, notifications, and instant updates.
-- **Robust Testing:** Configured with Vitest for fast unit testing and Playwright for reliable end-to-end (e2e) tests.
-
-## Development server
-
-To start a local development server, run:
-
-```bash
-ng serve
+```
+ng-console/
+├── apps/
+│   ├── shell/                # Host Shell application (port 4200) - dynamic remote loader & layout
+│   ├── users-mfe/            # User Management Remote (port 4201)
+│   ├── tickets-mfe/          # Support Ticketing Remote (port 4202)
+│   ├── documents-mfe/        # Documents, RAG & Digital Signatures Remote (port 4203)
+│   ├── payments-mfe/         # Stripe Subscriptions & Billing Remote (port 4204)
+│   ├── chat-mfe/             # Real-Time Chat & Messaging Remote (port 4205)
+│   └── ai-assistant-mfe/     # GenAI Assistant Remote (port 4206)
+├── libs/
+│   └── shared/
+│       ├── models/           # Shared TypeScript models and interfaces
+│       ├── data-access/      # Shared API services, HTTP interceptors, and state
+│       ├── ui/               # Reusable presentation components (modals, toasts, icons)
+│       ├── layout/           # Header, sidebar, command palette, and trial banner
+│       └── util/             # Guards, directives, pipes, and utility functions
+└── k8s/                      # Kubernetes manifests and Kustomize overlays
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## Key Features
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Micro-Frontend Architecture**: Host Shell with independent remote micro-frontends loaded on-demand via browser-native ESM federation without Webpack bundling overhead.
+- **Modern Angular v20+**: 100% `ChangeDetectionStrategy.OnPush`, signal-based state (`signal()`, `computed()`, `input()`, `output()`), and native control flow (`@if`, `@for`, `@switch`).
+- **Authentication & RBAC**: JWT and Google OAuth2 authentication with role-based access control and route guards.
+- **AI Assistant**: Intelligent assistant powered by Firebase Genkit with document Retrieval-Augmented Generation (RAG) and tool calling.
+- **Document Hub & E-Signatures**: Upload, PDF document generation, digital signatures, public share links, and Google Drive auto-sync.
+- **Billing & Subscriptions**: Stripe checkout integration, subscription tier management, and billing portal access.
+- **Real-Time Communications**: Live chat and notification delivery over WebSockets.
+- **Internationalization (i18n)**: Reactive multi-language switching (`en`, `es`, `de`, `fr`).
+- **Comprehensive Quality Gates**: 100% strict TypeScript (zero `any`), Vitest unit tests, and multi-tier Playwright E2E suites.
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Getting Started
 
-```bash
-ng generate --help
-```
+### Prerequisites
 
-## Building
+- **Node.js**: `v20.x` or `v22.x`
+- **npm**: `v10.x` or higher
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Installation
 
 ```bash
-ng test
+# Install dependencies
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Running Locally
 
 ```bash
-ng e2e
+# Start the Host Shell (http://localhost:4200)
+npx nx serve shell
+
+# Start all micro-frontend applications simultaneously
+npm run start:all
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## Workspace Commands
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Command | Description |
+|---|---|
+| `npx nx serve shell` | Run the Host Shell application |
+| `npx nx serve <mfe-name>` | Run a specific remote micro-frontend (e.g., `users-mfe`) |
+| `npx nx run-many -t build` | Build all applications and shared libraries |
+| `npx nx run-many -t test` | Run unit tests across all workspace projects via Vitest |
+| `npx nx run-many -t lint` | Run ESLint across all projects |
+| `npx playwright test` | Execute the Playwright end-to-end test suite |
+| `npm run e2e:harness` | Run the unified multi-tier test harness |
+
+---
+
+## Containerization & Kubernetes Deployment
+
+Multi-stage production Dockerfiles and Kustomize overlays are available under `k8s/`:
+
+```bash
+# Build Docker image
+docker build -f Dockerfile.frontend -t ng-console-frontend:latest .
+
+# Validate Kubernetes manifests
+./scripts/validate-k8s.sh
+
+# Apply Kubernetes Kustomize overlay (local / staging)
+kubectl apply -k k8s/overlays/local
+```
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
