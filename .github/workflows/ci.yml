@@ -2,34 +2,57 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
-  build-and-test:
+  affected-ci:
+    name: Lint, Test, and Build
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Use Node.js 24.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: '24.x'
-        cache: 'npm'
+      - name: Set up Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run Lint
-      run: npm run lint
+      - name: Configure Nx SHAs
+        uses: nrwl/nx-set-shas@v4
 
-    - name: Run Unit Tests
-      run: npm run test -- --watch=false --coverage --runnerConfig=vitest.config.ts
+      - name: Run Affected Linters
+        run: npx nx affected -t lint --parallel=3
 
-#    - name: Install Playwright Browsers
-#      run: npx playwright install --with-deps
+      - name: Run Affected Unit Tests
+        run: npx nx affected -t test --parallel=3
 
-#    - name: Run E2E Tests
-#      run: npm run e2e
+      - name: Run Affected Builds
+        run: npx nx affected -t build --parallel=3
+
+      - name: Validate Kubernetes Manifests
+        run: |
+          chmod +x scripts/validate-k8s.sh
+          ./scripts/validate-k8s.sh
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright E2E Tests
+        run: npm run e2e:tier1
+
+      - name: Upload Playwright Test Report on Failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
