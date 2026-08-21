@@ -58,7 +58,7 @@
     "@schematics/angular": "22.1.2",
     "@swc/helpers": "~0.5.18",
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.2.0",
     "@typescript-eslint/utils": "^8.67.0",
     "@vitest/coverage-v8": "^4.1.10",
     "@vitest/ui": "~4.1.0",
