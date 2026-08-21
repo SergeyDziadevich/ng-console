@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { createTestContext, TestContext } from '../harness/test-context';
+import { RpcRequest } from '../harness/rpc-harness';
 import {
   UserCreatedEvent,
   TicketAssignedEvent,
@@ -81,7 +82,7 @@ test.describe('Tier 5 Adversarial: Synchronous RPC Transports & Malformed Payloa
   });
 
   test('T5-RPC01: All standard RPC patterns execute synchronously within latency threshold', async () => {
-    const patterns = [
+    const patterns: RpcRequest[] = [
       { pattern: 'auth.login', data: { email: 'admin@cloud.io', password: 'secretPassword' } },
       { pattern: 'users.find_all', data: {} },
       { pattern: 'users.find_by_id', data: { id: 'usr_target_1' } },

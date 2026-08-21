@@ -3,7 +3,7 @@
  * Verifies TCP and Redis microservice message patterns against interface contracts.
  */
 
-export interface RpcRequest<TPayload> {
+export interface RpcRequest<TPayload = unknown> {
   pattern: string;
   data: TPayload;
 }
@@ -96,7 +96,7 @@ export class RpcTransportHarness {
     this.registeredPatterns.set(pattern, handler);
   }
 
-  async send<TPayload, TResult>(request: RpcRequest<TPayload>): Promise<RpcResponse<TResult>> {
+  async send<TPayload = unknown, TResult = unknown>(request: RpcRequest<TPayload>): Promise<RpcResponse<TResult>> {
     const start = Date.now();
     const handler = this.registeredPatterns.get(request.pattern);
 
